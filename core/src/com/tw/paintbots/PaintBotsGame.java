@@ -17,6 +17,13 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.TimeUtils;
 
+import com.badlogic.gdx.graphics.Color;
+
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Pixmap.Blending;
+import com.badlogic.gdx.graphics.Pixmap.Format;
+// import com.badlogic.gdx.graphics.GL20;
+
 public class PaintBotsGame extends ApplicationAdapter {
 	private Texture dropImage;
 	private Texture bucketImage;
@@ -27,6 +34,11 @@ public class PaintBotsGame extends ApplicationAdapter {
 	private Rectangle bucket;
 	private Array<Rectangle> raindrops;
 	private long lastDropTime;
+
+	private Pixmap canvas_pixmap;
+	private Texture canvas_texture;
+	private final Color clearColor = new Color(0, 0, 0, 0);
+	private final Color drawColor = new Color(1, 1, 1, 1);
 
 	@Override
 	public void create() {
@@ -57,6 +69,14 @@ public class PaintBotsGame extends ApplicationAdapter {
 		// create the raindrops array and spawn the first raindrop
 		raindrops = new Array<Rectangle>();
 		spawnRaindrop();
+
+		// canvas_pixmap = new Pixmap(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), Format.RGBA8888);
+		canvas_pixmap = new Pixmap(1000, 1000, Format.RGBA8888);
+		canvas_pixmap.setColor(clearColor);
+		canvas_pixmap.fill();
+		canvas_pixmap.setColor(drawColor);
+		canvas_pixmap.fillCircle(500, 500, 10);
+		canvas_texture = new Texture(canvas_pixmap);
 	}
 
 	private void spawnRaindrop() {
@@ -77,6 +97,9 @@ public class PaintBotsGame extends ApplicationAdapter {
 		// of the color to be used to clear the screen.
 		ScreenUtils.clear(0, 0, 0.2f, 1);
 
+		// Gdx.gl.glClearColor(0, 0, 0, 1);
+		// Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
 		// tell the camera to update its matrices.
 		camera.update();
 
@@ -84,9 +107,15 @@ public class PaintBotsGame extends ApplicationAdapter {
 		// coordinate system specified by the camera.
 		batch.setProjectionMatrix(camera.combined);
 
+		canvas_pixmap.setColor(Color.RED);
+		// canvas_pixmap.fillCircle(50, 50, 50);
+		canvas_texture.draw(canvas_pixmap, 0, 0);
+
 		// begin a new batch and draw the bucket and
 		// all drops
 		batch.begin();
+
+		batch.draw(canvas_texture, 0, 0);
 		batch.draw(bucketImage, bucket.x, bucket.y);
 		for (Rectangle raindrop : raindrops) {
 			batch.draw(dropImage, raindrop.x, raindrop.y);
@@ -108,6 +137,8 @@ public class PaintBotsGame extends ApplicationAdapter {
 			bucket.y += 400 * Gdx.graphics.getDeltaTime();
 		if (Gdx.input.isKeyPressed(Keys.DOWN))
 			bucket.y -= 400 * Gdx.graphics.getDeltaTime();
+
+		canvas_pixmap.fillCircle((int) bucket.x, 1000 - (int) bucket.y, 50);
 
 		// make sure the bucket stays within the screen bounds
 		if (bucket.x < 0)
