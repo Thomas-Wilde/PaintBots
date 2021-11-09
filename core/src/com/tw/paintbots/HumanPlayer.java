@@ -9,9 +9,9 @@ public class HumanPlayer extends Player {
   /** The key_map_ maps the keyboard controls to the player ID. */
   private int[][] key_map_ = {{Keys.LEFT, Keys.RIGHT}, {Keys.A, Keys.D},
       {Keys.N, Keys.M}, {Keys.NUMPAD_4, Keys.NUMPAD_6}};
-
   /** Defines the rotation in which the player moves. */
   private float rot_degree_ = 0.0f;
+
   /**
    * We distinguish 720 different move directions, that are defined by sine and
    * cosine values. We precompute a lookUp table for the directions.
@@ -27,6 +27,11 @@ public class HumanPlayer extends Player {
     // ---
     if (dir_look_up_ == null)
       initDirectionArray();
+  }
+
+  // --------------------------------------------------------------- //
+  public PlayerType getType() {
+    return PlayerType.HUMAN;
   }
 
   // --------------------------------------------------------------- //

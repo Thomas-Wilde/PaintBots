@@ -80,4 +80,8 @@ public abstract class Player extends Entity {
   // --------------------------------------------------------------- //
   @Override
   public abstract void update();
+
+  // --------------------------------------------------------------- //
+  public abstract PlayerType getType();
+
 }
