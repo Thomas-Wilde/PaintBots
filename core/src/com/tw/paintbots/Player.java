@@ -5,7 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-public abstract class Player extends Entity {
+public abstract class Player extends Entity implements Renderable {
   /** Maximum number of allowed players. */
   public static final int max_count_ = 4;
   private static int id_counter_ = 0;
@@ -21,19 +21,23 @@ public abstract class Player extends Entity {
     super(name);
     player_id_ = id_counter_++;
     if (player_id_ >= max_count_)
-      throw new PlayerException("Tried to create to many players.");
+      throw new PlayerException("Tried to create too many players.");
     // ---
     texture_ = new Texture(Gdx.files.internal("dummy_bot.png"));
   }
 
   // --------------------------------------------------------------- //
   /**
-   * Get the current position of the player.
-   *
-   * @return A copy of the position vector.
+   *  Get the current position of the player.
+   * \return A copy of the position vector.
    */
   public Vector2 getPosition() {
     return pos_.cpy();
+  }
+
+  // --------------------------------------------------------------- //
+  public void setPosition(Vector2 position) {
+    pos_ = position.cpy();
   }
 
   // --------------------------------------------------------------- //
@@ -41,10 +45,19 @@ public abstract class Player extends Entity {
    * Get the current direction, in which the player will move in the next
    * update-step.
    *
-   * @return A reference to the direction vector.
+   * \return A reference to the direction vector.
    */
   public Vector2 getDirection() {
     return dir_;
+  }
+
+  // --------------------------------------------------------------- //
+  public PlayerState getState() {
+    PlayerState state = new PlayerState();
+    state.pos = this.pos_.cpy();
+    state.dir = this.dir_.cpy();
+    state.type = this.getType();
+    return state;
   }
 
   // --------------------------------------------------------------- //
@@ -67,6 +80,7 @@ public abstract class Player extends Entity {
   }
 
   // --------------------------------------------------------------- //
+  @Override
   public void render(SpriteBatch batch) {
     batch.draw(texture_, pos_.x, pos_.y);
   }
