@@ -30,11 +30,6 @@ public class HumanPlayer extends Player {
   }
 
   // --------------------------------------------------------------- //
-  public PlayerType getType() {
-    return PlayerType.HUMAN;
-  }
-
-  // --------------------------------------------------------------- //
   /** Precompute the possible move directions. */
   private static void initDirectionArray() {
     dir_look_up_ = new double[dir_look_up_count_][2];
@@ -46,11 +41,30 @@ public class HumanPlayer extends Player {
   }
 
   // --------------------------------------------------------------- //
+  public PlayerType getType() {
+    return PlayerType.HUMAN;
+  }
+
+  // --------------------------------------------------------------- //
+  /** Map the direction to the current rotation. */
+  @Override
+  public void setDirection(Vector2 dir) throws PlayerException {
+    super.setDirection(dir);
+    rot_degree_ = mapDirectionVectorToRotation(dir);
+  }
+
+  // --------------------------------------------------------------- //
   /** Read the keyboard input and adapt the move direction accordingly. */
   @Override
   public void update() {
     mapKeyToRotation();
-    mapRotationToDirectionVector();
+    // ---
+    Vector2 dir = mapRotationToDirectionVector();
+    try {
+      super.setDirection(dir);
+    } catch (Exception e) {
+      System.out.print(e.getMessage());
+    }
   }
 
   // --------------------------------------------------------------- //
@@ -74,10 +88,22 @@ public class HumanPlayer extends Player {
    * Map the continuous rotation value to a discrete direction value from the
    * look up table.
    */
-  private void mapRotationToDirectionVector() {
+  private Vector2 mapRotationToDirectionVector() {
     int dir_id = (int) (rot_degree_ / delta_dir_) % dir_look_up_count_;
     float x = (float) dir_look_up_[dir_id][0];
     float y = (float) dir_look_up_[dir_id][1];
-    super.setDirection(new Vector2(x, y));
+    return new Vector2(x, y);
+  }
+
+  // --------------------------------------------------------------- //
+  /**
+   * Map the direction vector to the rotation that corresponds to an entry
+   * in the rotation look up table. The direction vector needs to be normalized.
+   */
+  private float mapDirectionVectorToRotation(Vector2 dir) {
+    float tmp_deg = (float) (Math.asin(dir.x) * 180.0 / Math.PI);
+    if (dir.y < 0.0)
+      tmp_deg = 360.0f - tmp_deg;
+    return tmp_deg;
   }
 }
