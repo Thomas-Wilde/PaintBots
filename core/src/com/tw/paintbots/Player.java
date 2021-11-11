@@ -13,7 +13,7 @@ public abstract class Player extends Entity implements Renderable {
 
   private Vector2 pos_ = new Vector2(0.0f, 0.0f);
   private Vector2 dir_ = new Vector2(1.0f, 0.0f);
-  private Mesh mesh_ = new Mesh(10.0);
+  private final Mesh mesh_ = new Mesh(32.0);
   private Texture texture_ = null;
 
   // --------------------------------------------------------------- //
@@ -44,7 +44,6 @@ public abstract class Player extends Entity implements Renderable {
   /**
    * Get the current direction, in which the player will move in the next
    * update-step.
-   *
    * \return A reference to the direction vector.
    */
   public Vector2 getDirection() {
@@ -88,6 +87,12 @@ public abstract class Player extends Entity implements Renderable {
   @Override
   public void render(SpriteBatch batch) {
     batch.draw(texture_, pos_.x, pos_.y);
+  }
+
+  // --------------------------------------------------------------- //
+  /** Get the mesh of the Player object, that is used for collision. */
+  public Mesh getMesh() {
+    return mesh_;
   }
 
   // --------------------------------------------------------------- //
