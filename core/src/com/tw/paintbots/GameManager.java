@@ -10,6 +10,7 @@ public class GameManager {
   private GameSettings map_settings = null;
   private Player[] players = null;
   private PlayerState[] player_states = null;
+  private Floor floor_ = null;
 
   private ArrayList<Entity> entities = new ArrayList<>();
 
@@ -18,6 +19,7 @@ public class GameManager {
     map_settings = settings;
     sanityCheckPlayerSettings(); // throws an exception if something is wrong
     createPlayers();
+    createFloor();
   }
 
   // --------------------------------------------------------------- //
@@ -79,6 +81,16 @@ public class GameManager {
    */
   private void savePlayerState(int idx) {
     player_states[idx] = players[idx].getState();
+  }
+
+  // --------------------------------------------------------------- //
+  // --------------------------------------------------------------- //
+  private void createFloor() {
+    String floor_texture = map_settings.floor_texture;
+    int width = map_settings.board_dimensions[0];
+    int height = map_settings.board_dimensions[1];
+    floor_ = new Floor(floor_texture, width, height);
+    addRenderableToLayer(floor_, floor_.getRenderLayer());
   }
 
   // --------------------------------------------------------------- //
