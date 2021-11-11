@@ -1,7 +1,8 @@
 package com.tw.paintbots;
 
+import java.util.List;
 import java.util.ArrayList;
-
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
@@ -13,6 +14,14 @@ public class GameManager {
   private Floor floor_ = null;
 
   private ArrayList<Entity> entities = new ArrayList<>();
+  private List<List<Renderable>> render_layers_ = null;
+
+  // --------------------------------------------------------------- //
+  public GameManager() {
+    render_layers_ = new ArrayList<List<Renderable>>();
+    for (int i = 0; i < 8; ++i)
+      render_layers_.add(new ArrayList<Renderable>());
+  }
 
   // =============================================================== //
   public void loadMap(GameSettings settings) throws GameMangerException {
@@ -84,6 +93,14 @@ public class GameManager {
   }
 
   // --------------------------------------------------------------- //
+  /** Add a renderable item to the render layers. Layers with a lower index
+  *  are rendered before layers with a higher index.
+  */
+  private void addRenderableToLayer(Renderable item, int layer_idx) {
+    List layer = render_layers_.get(layer_idx);
+    layer.add(item);
+  }
+
   // --------------------------------------------------------------- //
   private void createFloor() {
     String floor_texture = map_settings.floor_texture;
@@ -151,8 +168,9 @@ public class GameManager {
 
   // --------------------------------------------------------------- //
   public void render(SpriteBatch batch) {
-    // update all entities
-    for (Player player : players)
-      player.render(batch);
+    // --- render all layers
+    for (List<Renderable> layer_items : render_layers_)
+      for (Renderable renderable : layer_items)
+        renderable.render(batch);
   }
 }
