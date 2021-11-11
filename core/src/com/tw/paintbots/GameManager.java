@@ -52,7 +52,6 @@ public class GameManager {
 
   // --------------------------------------------------------------- //
   private void createPlayers() throws GameMangerException {
-
     // --- create players
     int count = map_settings.player_types.length;
     players = new Player[count];
@@ -61,10 +60,12 @@ public class GameManager {
       for (int i = 0; i < count; ++i) {
         if (map_settings.player_types[i] == PlayerType.AI)
           throw new GameMangerException("No AI players implemented.");
-        players[i] = new HumanPlayer("Player" + i);
-        entities.add(players[i]);
+        Player player = new HumanPlayer("Player" + i);
+        players[i] = player;
         initPlayer(i);
         savePlayerState(i);
+        entities.add(players[i]);
+        addRenderableToLayer(player, player.getRenderLayer());
       }
     } catch (Exception e) {
       System.out.println(e.getMessage());
