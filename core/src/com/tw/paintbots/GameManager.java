@@ -65,7 +65,11 @@ public class GameManager {
   /** Read the properties of player idx from the current game settings. */
   private void initPlayer(int idx) {
     players[idx].setPosition(map_settings.start_positions[idx]);
-    players[idx].setDirection(map_settings.start_directions[idx]);
+    try {
+      players[idx].setDirection(map_settings.start_directions[idx]);
+    } catch (Exception e) {
+      System.out.println(e.getMessage());
+    }
   }
 
   // --------------------------------------------------------------- //
@@ -104,9 +108,29 @@ public class GameManager {
     Vector2 old_pos = player_states[idx].pos;
     Player player = players[idx];
     Vector2 move_dir = player.getDirection();
+    double player_radius = player.getMesh().getDimensions()[0];
+    // ---
     Vector2 new_pos = old_pos.cpy();
-    new_pos.add(move_dir.scl(400.0f * Gdx.graphics.getDeltaTime()));
+    new_pos.add(move_dir.scl(200.0f * Gdx.graphics.getDeltaTime()));
+    clampPositionToBoard(new_pos, player_radius * 2.0);
+    // ---
     player.setPosition(new_pos);
+  }
+
+  // --------------------------------------------------------------- //
+  /** Checks if the given position is inside of the game board. If not, fix
+   * the corresponding coordinate.*/
+  private void clampPositionToBoard(Vector2 pos, double offset) {
+    pos.x = Math.max(pos.x, 0);
+    pos.x = Math.min(pos.x, map_settings.board_dimensions[0] - (float) offset);
+    pos.y = Math.max(pos.y, 0);
+    pos.y = Math.min(pos.y, map_settings.board_dimensions[1] - (float) offset);
+  }
+
+  // --------------------------------------------------------------- //
+  /** calls 'clampPosition(pos, 0.0f);' */
+  private void clampPositionToBoard(Vector2 pos) {
+    clampPositionToBoard(pos, 0.0);
   }
 
   // --------------------------------------------------------------- //
