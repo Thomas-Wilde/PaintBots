@@ -30,7 +30,7 @@ public abstract class Entity {
   }
 
   /** Manually called at the end of the lifetime, e.g. to clean up resources. */
-  public void destroy() {}
+  public abstract void destroy();
 
   /// This method is called once per loop and can be used to update the state of
   /// an entity.
