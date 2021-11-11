@@ -84,15 +84,21 @@ public abstract class Player extends Entity implements Renderable {
   }
 
   // --------------------------------------------------------------- //
+  /** Get the mesh of the Player object, that is used for collision. */
+  public Mesh getMesh() {
+    return mesh_;
+  }
+
+  // --------------------------------------------------------------- //
   @Override
   public void render(SpriteBatch batch) {
     batch.draw(texture_, pos_.x, pos_.y);
   }
 
   // --------------------------------------------------------------- //
-  /** Get the mesh of the Player object, that is used for collision. */
-  public Mesh getMesh() {
-    return mesh_;
+  @Override
+  public int getRenderLayer() {
+    return 2;
   }
 
   // --------------------------------------------------------------- //
