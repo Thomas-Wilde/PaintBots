@@ -98,12 +98,16 @@ public class GameManager {
   }
 
   // --------------------------------------------------------------- //
+  /** Calls 'movePlayer(int idx)' for each player */
   private void moveAllPlayers() {
     for (int idx = 0; idx < players.length; ++idx)
       movePlayer(idx);
   }
 
   // --------------------------------------------------------------- //
+  /** Performs a move step in the current move direction if possible. The
+   *  translation vector depends on the move speed. The movement is clamped at
+   *  the borders of the board. */
   private void movePlayer(int idx) {
     Vector2 old_pos = player_states[idx].pos;
     Player player = players[idx];
