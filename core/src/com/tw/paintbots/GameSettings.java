@@ -9,7 +9,7 @@ public class GameSettings {
   public Vector2[] start_directions =
       {new Vector2(-1.0f, 0.0f), new Vector2(1.0f, 0.0f),};
 
-  public String floor_texture = "";
+  public String floor_texture = "dummy_floor.png";
   public int[] board_dimensions = {1000, 1000};
 
 }
