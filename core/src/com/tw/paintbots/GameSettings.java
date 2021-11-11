@@ -10,6 +10,6 @@ public class GameSettings {
       {new Vector2(-1.0f, 0.0f), new Vector2(1.0f, 0.0f),};
 
   public String floor_texture = "";
-  public int[] floor_dimension = {1000, 1000};
+  public int[] board_dimensions = {1000, 1000};
 
 }
