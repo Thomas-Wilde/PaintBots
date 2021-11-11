@@ -9,8 +9,8 @@ public class Mesh {
   }
 
   // --------------------------------------------------------------- //
-  private Shape shape_ = null;
-  private double[] dim_ = null; // dimension of the mesh object
+  private final Shape shape_;
+  private final double[] dim_; // dimension of the mesh object
   private Vector2 pos_ = new Vector2(0.0f, 0.0f);
 
   // --------------------------------------------------------------- //
