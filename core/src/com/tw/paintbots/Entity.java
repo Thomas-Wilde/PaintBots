@@ -15,8 +15,8 @@ public abstract class Entity {
 
   /// Create an Entity with a unique ID and the given name.
   protected Entity(String name) {
-    name_ = name;
     id_ = id_counter_++;
+    name_ = id_ + "_" + name;
   }
 
   /// Get the descriptive name of the Entity.
