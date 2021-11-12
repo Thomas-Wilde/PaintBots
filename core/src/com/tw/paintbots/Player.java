@@ -19,6 +19,7 @@ public abstract class Player extends Entity implements Renderable {
   // --------------------------------------------------------------- //
   Player(String name) throws PlayerException {
     super(name);
+    // ---
     player_id_ = id_counter_++;
     if (player_id_ >= max_count_)
       throw new PlayerException("Tried to create too many players.");
@@ -38,6 +39,11 @@ public abstract class Player extends Entity implements Renderable {
     state.type = this.getType();
     return state;
   }
+
+  // --------------------------------------------------------------- //
+  /**
+   * Get the current position of the player. \return A copy of the position
+   * vector.
    */
   public Vector2 getPosition() {
     return pos_.cpy();
