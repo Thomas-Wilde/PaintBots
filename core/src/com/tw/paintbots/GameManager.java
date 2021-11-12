@@ -171,8 +171,8 @@ public class GameManager {
 
   // --------------------------------------------------------------- //
   /**
-   * Checks if the given position is inside of the game board. If not, fix the
-   * corresponding coordinate.
+   * Checks if the given position is inside of the game board. If not, change
+   * the corresponding coordinates to be insider.
    */
   private void clampPositionToBoard(Vector2 pos, double offset) {
     pos.x = Math.max(pos.x, 0);
