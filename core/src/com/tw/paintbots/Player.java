@@ -30,6 +30,14 @@ public abstract class Player extends Entity implements Renderable {
   /**
    *  Get the current position of the player.
    * \return A copy of the position vector.
+  // --------------------------------------------------------------- //
+  public PlayerState getState() {
+    PlayerState state = new PlayerState();
+    state.old_pos = this.pos_.cpy();
+    state.dir = this.dir_.cpy();
+    state.type = this.getType();
+    return state;
+  }
    */
   public Vector2 getPosition() {
     return pos_.cpy();
