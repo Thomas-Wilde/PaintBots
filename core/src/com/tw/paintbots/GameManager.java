@@ -12,6 +12,7 @@ public class GameManager {
   private Player[] players = null;
   private PlayerState[] player_states = null;
   private Floor floor_ = null;
+  private Canvas canvas_ = null;
 
   private ArrayList<Entity> entities = new ArrayList<>();
   private List<List<Renderable>> render_layers_ = null;
@@ -29,14 +30,16 @@ public class GameManager {
     sanityCheckPlayerSettings(); // throws an exception if something is wrong
     createPlayers();
     createFloor();
+    createCanvas();
   }
 
   // --------------------------------------------------------------- //
-  /** Check the game settings for correctness. If something is wrong, throw an
-   * exceptions. Things that may be wrong are:
-   * - the number of players is not in [1,4]
-   * - not each player gets a start position
-   * - not each player gets a start direction */
+  /**
+   * Check the game settings for correctness. If something is wrong, throw an
+   * exceptions. Things that may be wrong are: - the number of players is not in
+   * [1,4] - not each player gets a start position - not each player gets a
+   * start direction
+   */
   private void sanityCheckPlayerSettings() throws GameMangerException {
     // --- sanity check
     int player_count = map_settings.player_types.length;
@@ -85,18 +88,20 @@ public class GameManager {
   }
 
   // --------------------------------------------------------------- //
-  /** Write the current state of the player idx into the player_state array.
-   * This is done to prevent cheatinge attempts, i.e. only the GameManager can
-   * change the state of the player.
+  /**
+   * Write the current state of the player idx into the player_state array. This
+   * is done to prevent cheatinge attempts, i.e. only the GameManager can change
+   * the state of the player.
    */
   private void savePlayerState(int idx) {
     player_states[idx] = players[idx].getState();
   }
 
   // --------------------------------------------------------------- //
-  /** Add a renderable item to the render layers. Layers with a lower index
-  *  are rendered before layers with a higher index.
-  */
+  /**
+   * Add a renderable item to the render layers. Layers with a lower index are
+   * rendered before layers with a higher index.
+   */
   private void addRenderableToLayer(Renderable item, int layer_idx) {
     List layer = render_layers_.get(layer_idx);
     layer.add(item);
@@ -109,6 +114,16 @@ public class GameManager {
     int height = map_settings.board_dimensions[1];
     floor_ = new Floor(floor_texture, width, height);
     addRenderableToLayer(floor_, floor_.getRenderLayer());
+    entities.add(floor_);
+  }
+
+  // --------------------------------------------------------------- //
+  private void createCanvas() {
+    int width = map_settings.board_dimensions[0];
+    int height = map_settings.board_dimensions[1];
+    canvas_ = new Canvas(width, height);
+    addRenderableToLayer(canvas_, canvas_.getRenderLayer());
+    entities.add(canvas_);
   }
 
   // --------------------------------------------------------------- //
@@ -119,6 +134,7 @@ public class GameManager {
       entity.update();
     // ---
     moveAllPlayers();
+    paintOnCanvas();
   }
 
   // --------------------------------------------------------------- //
@@ -135,11 +151,13 @@ public class GameManager {
   }
 
   // --------------------------------------------------------------- //
-  /** Performs a move step in the current move direction if possible. The
-   *  translation vector depends on the move speed. The movement is clamped at
-   *  the borders of the board. */
+  /**
+   * Performs a move step in the current move direction if possible. The
+   * translation vector depends on the move speed. The movement is clamped at
+   * the borders of the board.
+   */
   private void movePlayer(int idx) {
-    Vector2 old_pos = player_states[idx].pos;
+    Vector2 old_pos = player_states[idx].old_pos;
     Player player = players[idx];
     Vector2 move_dir = player.getDirection();
     double player_radius = player.getMesh().getDimensions()[0];
@@ -149,11 +167,14 @@ public class GameManager {
     clampPositionToBoard(new_pos, player_radius * 2.0);
     // ---
     player.setPosition(new_pos);
+    player_states[idx].new_pos = new_pos;
   }
 
   // --------------------------------------------------------------- //
-  /** Checks if the given position is inside of the game board. If not, fix
-   * the corresponding coordinate.*/
+  /**
+   * Checks if the given position is inside of the game board. If not, fix the
+   * corresponding coordinate.
+   */
   private void clampPositionToBoard(Vector2 pos, double offset) {
     pos.x = Math.max(pos.x, 0);
     pos.x = Math.min(pos.x, map_settings.board_dimensions[0] - (float) offset);
@@ -165,6 +186,16 @@ public class GameManager {
   /** calls 'clampPosition(pos, 0.0f);' */
   private void clampPositionToBoard(Vector2 pos) {
     clampPositionToBoard(pos, 0.0);
+  }
+
+  // --------------------------------------------------------------- //
+  private void paintOnCanvas() {
+    for (int idx = 0; idx < players.length; ++idx) {
+      Player player = players[idx];
+      Vector2 position = player_states[idx].new_pos;
+      canvas_.paint(position, player.getPainColor(), 40);
+    }
+    canvas_.sendPixmapToTexture();
   }
 
   // --------------------------------------------------------------- //
