@@ -15,7 +15,8 @@ public abstract class Player extends Entity implements Renderable {
 
   private Vector2 pos_ = new Vector2(0.0f, 0.0f);
   private Vector2 dir_ = new Vector2(1.0f, 0.0f);
-  private final Mesh mesh_ = new Mesh(32.0);
+  private int sprite_width_ = 64;
+  private final Mesh mesh_;
   private Texture texture_ = null;
 
   // --------------------------------------------------------------- //
@@ -27,6 +28,7 @@ public abstract class Player extends Entity implements Renderable {
       throw new PlayerException("Tried to create too many players.");
     // ---
     texture_ = new Texture(Gdx.files.internal("dummy_bot.png"));
+    mesh_ = new Mesh(sprite_width_);
   }
 
   // --------------------------------------------------------------- //
@@ -99,7 +101,8 @@ public abstract class Player extends Entity implements Renderable {
   // --------------------------------------------------------------- //
   @Override
   public void render(SpriteBatch batch) {
-    batch.draw(texture_, pos_.x, pos_.y);
+    int offset = sprite_width_ / 2;
+    batch.draw(texture_, pos_.x - offset, pos_.y - offset);
   }
 
   // --------------------------------------------------------------- //

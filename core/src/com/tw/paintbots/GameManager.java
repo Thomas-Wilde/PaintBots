@@ -160,11 +160,10 @@ public class GameManager {
     Vector2 old_pos = player_states[idx].old_pos;
     Player player = players[idx];
     Vector2 move_dir = player.getDirection();
-    double player_radius = player.getMesh().getDimensions()[0];
     // ---
     Vector2 new_pos = old_pos.cpy();
     new_pos.add(move_dir.scl(200.0f * Gdx.graphics.getDeltaTime()));
-    clampPositionToBoard(new_pos, player_radius * 2.0);
+    clampPositionToBoard(new_pos);
     // ---
     player.setPosition(new_pos);
     player_states[idx].new_pos = new_pos;
