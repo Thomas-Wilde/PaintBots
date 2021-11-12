@@ -76,11 +76,9 @@ public class HumanPlayer extends Player {
     if (Gdx.input.isKeyPressed(key_map_[id][1]))
       rot_degree_ += 5.0;
 
-    // avoid negative values due to dirction look up id.
-    if (rot_degree_ < 0.0) {
+    // --- avoid negative values due to dirction look up id.
+    if (rot_degree_ < 0.0)
       rot_degree_ += 360.0;
-      System.out.println("clamp");
-    }
   }
 
   // --------------------------------------------------------------- //
@@ -97,8 +95,8 @@ public class HumanPlayer extends Player {
 
   // --------------------------------------------------------------- //
   /**
-   * Map the direction vector to the rotation that corresponds to an entry
-   * in the rotation look up table. The direction vector needs to be normalized.
+   * Map the direction vector to the rotation that corresponds to an entry in
+   * the rotation look up table. The direction vector needs to be normalized.
    */
   private float mapDirectionVectorToRotation(Vector2 dir) {
     float tmp_deg = (float) (Math.asin(dir.x) * 180.0 / Math.PI);
