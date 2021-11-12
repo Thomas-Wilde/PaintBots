@@ -5,7 +5,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-/** This class shows the bottom with some kind of cobblestone texture  */
+// --------------------------------------------------------------- //
+/** This class shows the bottom with some kind of cobblestone texture */
 public class Floor extends Entity implements Renderable {
   private Texture texture_ = null;
   private TextureRegion tex_region_ = null;
@@ -14,7 +15,8 @@ public class Floor extends Entity implements Renderable {
   Floor(String texture_file, int width, int height) {
     super("floor");
     texture_ = new Texture(Gdx.files.internal(texture_file));
-    texture_.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
+    texture_.setWrap(Texture.TextureWrap.MirroredRepeat,
+        Texture.TextureWrap.MirroredRepeat);
     tex_region_ = new TextureRegion(texture_);
     tex_region_.setRegion(0, 0, width, height);
   }
