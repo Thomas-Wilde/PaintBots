@@ -10,6 +10,8 @@ public abstract class Player extends Entity implements Renderable {
   public static final int max_count_ = 4;
   private static int id_counter_ = 0;
   private int player_id_ = -1;
+  private PaintColor paint_colors_[] =
+      {PaintColor.GREEN, PaintColor.PURPLE, PaintColor.BLUE, PaintColor.ORANGE};
 
   private Vector2 pos_ = new Vector2(0.0f, 0.0f);
   private Vector2 dir_ = new Vector2(1.0f, 0.0f);
