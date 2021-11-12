@@ -29,8 +29,19 @@ public abstract class Player extends Entity implements Renderable {
 
   // --------------------------------------------------------------- //
   /**
-   *  Get the current position of the player.
-   * \return A copy of the position vector.
+   * Get the ID of the player. It is an element in [0,3], i.e. we allow at most
+   * 4 players. The ID is set at the beginning of the game and it is immutable.
+   */
+  public int getPlayerID() {
+    return player_id_;
+  }
+
+  // --------------------------------------------------------------- //
+  /** Access the unique painting color of the current player. */
+  public PaintColor getPainColor() {
+    return paint_colors_[player_id_];
+  }
+
   // --------------------------------------------------------------- //
   public PlayerState getState() {
     PlayerState state = new PlayerState();
@@ -57,20 +68,10 @@ public abstract class Player extends Entity implements Renderable {
   // --------------------------------------------------------------- //
   /**
    * Get the current direction, in which the player will move in the next
-   * update-step.
-   * \return A reference to the direction vector.
+   * update-step. \return A reference to the direction vector.
    */
   public Vector2 getDirection() {
     return dir_;
-  }
-
-  // --------------------------------------------------------------- //
-  public PlayerState getState() {
-    PlayerState state = new PlayerState();
-    state.pos = this.pos_.cpy();
-    state.dir = this.dir_.cpy();
-    state.type = this.getType();
-    return state;
   }
 
   // --------------------------------------------------------------- //
@@ -78,23 +79,13 @@ public abstract class Player extends Entity implements Renderable {
    * Set the direction, in which the player will move in the next update-step.
    * The direction vector needs to be normalized, i.e. it has an euclidean
    * length of 1.0. Setting the direction vector is the main option to define
-   * the movement of your player.
-   *
-   * Throws an PlayerException if the 'dir' does not have lenght 1.0.
+   * the movement of your player. Throws an PlayerException if the 'dir' does
+   * not have lenght 1.0.
    */
   public void setDirection(Vector2 dir) throws PlayerException {
     if (Math.abs(dir.len() - 1.0) > 1.0e-5)
       throw (new PlayerException("Length of direction vector must be 1.0."));
     dir_ = dir;
-  }
-
-  // --------------------------------------------------------------- //
-  /**
-   * Get the ID of the player. It is an element in [0,3], i.e. we allow at most
-   * 4 players. The ID is set at the beginning of the game and it is immutable.
-   */
-  public int getPlayerID() {
-    return player_id_;
   }
 
   // --------------------------------------------------------------- //
