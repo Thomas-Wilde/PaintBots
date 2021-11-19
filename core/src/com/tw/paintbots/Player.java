@@ -19,6 +19,7 @@ public abstract class Player extends Entity implements Renderable {
   private int character_width_ = 64;
   private final Mesh mesh_;
   private PlayerAnimation animation_ = null;
+  private AnimatedObject dir_indicator_ = null;
   private float anim_time_ = 0.0f;
 
   // --------------------------------------------------------------- //
@@ -29,8 +30,9 @@ public abstract class Player extends Entity implements Renderable {
     if (player_id_ >= max_count_)
       throw new PlayerException("Tried to create too many players.");
     // ---
-    animation_ = new PlayerAnimation("chief_walk.png");
     mesh_ = new Mesh(character_width_);
+    animation_ = new PlayerAnimation("chief_walk.png");
+    dir_indicator_ = new AnimatedObject("dir_indicator.png", 1, 2, 0.5f);
   }
 
   // --------------------------------------------------------------- //
