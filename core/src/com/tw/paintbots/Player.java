@@ -29,7 +29,7 @@ public abstract class Player extends Entity implements Renderable {
     if (player_id_ >= max_count_)
       throw new PlayerException("Tried to create too many players.");
     // ---
-    animation_ = new PlayerAnimation("chief_walk.png", 8, 8, 0.75f);
+    animation_ = new PlayerAnimation("chief_walk.png");
     mesh_ = new Mesh(sprite_width_);
   }
 
@@ -110,7 +110,7 @@ public abstract class Player extends Entity implements Renderable {
     float pos_y = pos_.y - offset;
     // ---
     anim_time_ += Gdx.graphics.getDeltaTime();
-    TextureRegion frame = animation_.getFrame(anim_time_, getDirection());
+    TextureRegion frame = animation_.getFrame(getDirection(), anim_time_);
     batch.draw(frame, pos_x, pos_y);
   }
 
