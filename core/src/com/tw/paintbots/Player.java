@@ -2,7 +2,6 @@ package com.tw.paintbots;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
@@ -32,7 +31,7 @@ public abstract class Player extends Entity implements Renderable {
     // ---
     mesh_ = new Mesh(character_width_);
     animation_ = new PlayerAnimation("chief_walk.png");
-    dir_indicator_ = new AnimatedObject("dir_indicator.png", 1, 2, 0.5f);
+    dir_indicator_ = new AnimatedObject("dir_indicator.png", 1, 4, 0.5f);
   }
 
   // --------------------------------------------------------------- //
