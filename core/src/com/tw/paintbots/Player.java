@@ -137,10 +137,14 @@ public abstract class Player extends Entity implements Renderable {
    * Map the direction vector to a rotation degree. The direction vector needs
    * to be normalized.
    */
-  protected float mapDirectionVectorToRotation(Vector2 dir) {
-    float tmp_deg = (float) (Math.asin(dir.x) * 180.0 / Math.PI);
-    if (dir.y < 0.0)
-      tmp_deg = 360.0f - tmp_deg;
+  protected float dirVectorToRotDegree(Vector2 dir) {
+    float tmp_deg = (float) (Math.asin(dir.y) * 180.0 / Math.PI);
+    // --- include 360 instead of 180 degrees
+    if (dir.x < 0.0)
+      tmp_deg = 180.0f - tmp_deg;
+    // --- shift to positive values
+    if (tmp_deg < 0.0)
+      tmp_deg += 360.f;
     return tmp_deg;
   }
 

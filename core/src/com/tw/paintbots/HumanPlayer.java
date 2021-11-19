@@ -50,7 +50,7 @@ public class HumanPlayer extends Player {
   @Override
   public void setDirection(Vector2 dir) throws PlayerException {
     super.setDirection(dir);
-    rot_degree_ = mapDirectionVectorToRotation(dir);
+    rot_degree_ = dirVectorToRotDegree(dir);
   }
 
   // --------------------------------------------------------------- //
