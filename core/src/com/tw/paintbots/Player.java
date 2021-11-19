@@ -72,10 +72,12 @@ public abstract class Player extends Entity implements Renderable {
   // --------------------------------------------------------------- //
   /**
    * Get the current direction, in which the player will move in the next
-   * update-step. \return A reference to the direction vector.
+   * update-step.
+   *
+   * @return A copy to the direction vector.
    */
   public Vector2 getDirection() {
-    return dir_;
+    return dir_.cpy();
   }
 
   // --------------------------------------------------------------- //
