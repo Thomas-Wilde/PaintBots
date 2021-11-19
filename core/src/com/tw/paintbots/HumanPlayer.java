@@ -35,8 +35,8 @@ public class HumanPlayer extends Player {
     dir_look_up_ = new double[dir_look_up_count_][2];
     for (int i = 0; i < dir_look_up_count_; ++i) {
       double rad = Math.toRadians((double) i * delta_dir_);
-      dir_look_up_[i][0] = Math.sin(rad);
-      dir_look_up_[i][1] = Math.cos(rad);
+      dir_look_up_[i][0] = Math.cos(rad);
+      dir_look_up_[i][1] = Math.sin(rad);
     }
   }
 
@@ -72,9 +72,9 @@ public class HumanPlayer extends Player {
   private void mapKeyToRotation() {
     int id = getPlayerID();
     if (Gdx.input.isKeyPressed(key_map_[id][0]))
-      rot_degree_ -= 5.0;
-    if (Gdx.input.isKeyPressed(key_map_[id][1]))
       rot_degree_ += 5.0;
+    if (Gdx.input.isKeyPressed(key_map_[id][1]))
+      rot_degree_ -= 5.0;
 
     // --- avoid negative values due to dirction look up id.
     if (rot_degree_ < 0.0)
