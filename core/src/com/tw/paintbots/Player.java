@@ -105,12 +105,16 @@ public abstract class Player extends Entity implements Renderable {
   // --------------------------------------------------------------- //
   @Override
   public void render(SpriteBatch batch) {
-    int offset = sprite_width_ / 2;
+    anim_time_ += Gdx.graphics.getDeltaTime();
+    renderCharacter(batch);
+  }
+
+  // --------------------------------------------------------------- //
+  private void renderCharacter(SpriteBatch batch) {
+    TextureRegion frame = animation_.getFrame(getDirection(), anim_time_);
+    int offset = frame.getRegionWidth() / 2;
     float pos_x = pos_.x - offset;
     float pos_y = pos_.y - offset;
-    // ---
-    anim_time_ += Gdx.graphics.getDeltaTime();
-    TextureRegion frame = animation_.getFrame(getDirection(), anim_time_);
     batch.draw(frame, pos_x, pos_y);
   }
 
