@@ -3,6 +3,7 @@ package com.tw.paintbots;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public abstract class Player extends Entity implements Renderable {
@@ -17,7 +18,8 @@ public abstract class Player extends Entity implements Renderable {
   private Vector2 dir_ = new Vector2(1.0f, 0.0f);
   private int sprite_width_ = 64;
   private final Mesh mesh_;
-  private Texture texture_ = null;
+  private PlayerAnimation animation_ = null;
+  private float anim_time_ = 0.0f;
 
   // --------------------------------------------------------------- //
   Player(String name) throws PlayerException {
@@ -27,7 +29,7 @@ public abstract class Player extends Entity implements Renderable {
     if (player_id_ >= max_count_)
       throw new PlayerException("Tried to create too many players.");
     // ---
-    texture_ = new Texture(Gdx.files.internal("dummy_bot.png"));
+    animation_ = new PlayerAnimation("chief_walk.png", 8, 8, 0.75f);
     mesh_ = new Mesh(sprite_width_);
   }
 
@@ -104,7 +106,12 @@ public abstract class Player extends Entity implements Renderable {
   @Override
   public void render(SpriteBatch batch) {
     int offset = sprite_width_ / 2;
-    batch.draw(texture_, pos_.x - offset, pos_.y - offset);
+    float pos_x = pos_.x - offset;
+    float pos_y = pos_.y - offset;
+    // ---
+    anim_time_ += Gdx.graphics.getDeltaTime();
+    TextureRegion frame = animation_.getFrame(anim_time_, getDirection());
+    batch.draw(frame, pos_x, pos_y);
   }
 
   // --------------------------------------------------------------- //
@@ -116,7 +123,7 @@ public abstract class Player extends Entity implements Renderable {
   // --------------------------------------------------------------- //
   @Override
   public void destroy() {
-    texture_.dispose();
+    animation_.destroy();
   }
 
   // --------------------------------------------------------------- //
