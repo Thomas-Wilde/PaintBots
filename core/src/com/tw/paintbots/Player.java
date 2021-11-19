@@ -108,6 +108,7 @@ public abstract class Player extends Entity implements Renderable {
   @Override
   public void render(SpriteBatch batch) {
     anim_time_ += Gdx.graphics.getDeltaTime();
+    renderDirectionIndicator(batch);
     renderCharacter(batch);
   }
 
@@ -118,6 +119,20 @@ public abstract class Player extends Entity implements Renderable {
     float pos_x = pos_.x - offset;
     float pos_y = pos_.y - offset;
     batch.draw(frame, pos_x, pos_y);
+  }
+
+  // --------------------------------------------------------------- //
+  private void renderDirectionIndicator(SpriteBatch batch) {
+    TextureRegion frame = dir_indicator_.getFrame(anim_time_);
+    // --- position
+    int width = frame.getRegionWidth();
+    int height = frame.getRegionHeight();
+    float pos_x = pos_.x - width / 2.0f;
+    float pos_y = pos_.y - height / 2.0f;
+    // --- rotation
+    float deg = dirVectorToRotDegree(getDirection());
+    batch.draw(frame, pos_x, pos_y, width / 2.0f, height / 2.0f, width, height,
+        1.0f, 1.0f, deg);
   }
 
   // --------------------------------------------------------------- //
