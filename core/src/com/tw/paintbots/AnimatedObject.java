@@ -72,4 +72,9 @@ public class AnimatedObject {
   public TextureRegion getFrame(int animation_id, float time) {
     return animation_.get(animation_id).getKeyFrame(time, true);
   }
+
+  // --------------------------------------------------------------- //
+  public TextureRegion getFrame(float time) {
+    return animation_.get(0).getKeyFrame(time, true);
+  }
 }
