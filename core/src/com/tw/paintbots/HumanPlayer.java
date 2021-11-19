@@ -92,16 +92,4 @@ public class HumanPlayer extends Player {
     float y = (float) dir_look_up_[dir_id][1];
     return new Vector2(x, y);
   }
-
-  // --------------------------------------------------------------- //
-  /**
-   * Map the direction vector to the rotation that corresponds to an entry in
-   * the rotation look up table. The direction vector needs to be normalized.
-   */
-  private float mapDirectionVectorToRotation(Vector2 dir) {
-    float tmp_deg = (float) (Math.asin(dir.x) * 180.0 / Math.PI);
-    if (dir.y < 0.0)
-      tmp_deg = 360.0f - tmp_deg;
-    return tmp_deg;
-  }
 }
