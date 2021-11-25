@@ -175,10 +175,12 @@ public class GameManager {
    * the corresponding coordinates to be insider.
    */
   private void clampPositionToBoard(Vector2 pos, double offset) {
+    int board_width = map_settings.board_dimensions[0];
+    int board_height = map_settings.board_dimensions[1];
     pos.x = Math.max(pos.x, 0);
-    pos.x = Math.min(pos.x, map_settings.board_dimensions[0] - (float) offset);
+    pos.x = Math.min(pos.x, board_width - (float) offset);
     pos.y = Math.max(pos.y, 0);
-    pos.y = Math.min(pos.y, map_settings.board_dimensions[1] - (float) offset);
+    pos.y = Math.min(pos.y, board_height - (float) offset);
   }
 
   // --------------------------------------------------------------- //
