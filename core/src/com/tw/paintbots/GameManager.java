@@ -112,7 +112,8 @@ public class GameManager {
     String floor_texture = map_settings.floor_texture;
     int width = map_settings.board_dimensions[0];
     int height = map_settings.board_dimensions[1];
-    floor_ = new Floor(floor_texture, width, height);
+    int border = map_settings.board_border;
+    floor_ = new Floor(floor_texture, width, height, border, border);
     addRenderableToLayer(floor_, floor_.getRenderLayer());
     entities.add(floor_);
   }
@@ -121,7 +122,8 @@ public class GameManager {
   private void createCanvas() {
     int width = map_settings.board_dimensions[0];
     int height = map_settings.board_dimensions[1];
-    canvas_ = new Canvas(width, height);
+    int border = map_settings.board_border;
+    canvas_ = new Canvas(width, height, border, border);
     addRenderableToLayer(canvas_, canvas_.getRenderLayer());
     entities.add(canvas_);
   }

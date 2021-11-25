@@ -15,12 +15,18 @@ public class Canvas extends Entity implements Renderable {
   private Pixmap pixmap = null;
   private Texture texture = null;
   private int[] dimension = new int[2];
+  private int[] offset = {0, 0};
 
   // --------------------------------------------------------------- //
   Canvas(int width, int height) {
+    this(width, height, 0, 0);
+  }
+
+  // --------------------------------------------------------------- //
+  Canvas(int width, int height, int offset_x, int offset_y) {
     super("canvas");
-    dimension[0] = width;
-    dimension[1] = height;
+    dimension = new int[] {width, height};
+    offset = new int[] {offset_x, offset_y};
     // ---
     canvas = new byte[width * height];
     for (int i = 0; i < width * height; ++i)
@@ -101,7 +107,7 @@ public class Canvas extends Entity implements Renderable {
   // --------------------------------------------------------------- //
   @Override
   public void render(SpriteBatch batch) {
-    batch.draw(texture, 0, 0);
+    batch.draw(texture, offset[0], offset[1]);
   }
 
   // --------------------------------------------------------------- //
