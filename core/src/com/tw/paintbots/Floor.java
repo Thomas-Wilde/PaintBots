@@ -8,17 +8,17 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 // --------------------------------------------------------------- //
 /** This class shows the bottom with some kind of cobblestone texture */
 public class Floor extends Entity implements Renderable {
-  private Texture texture_ = null;
-  private TextureRegion tex_region_ = null;
+  private Texture texture = null;
+  private TextureRegion tex_region = null;
 
   // --------------------------------------------------------------- //
   Floor(String texture_file, int width, int height) {
     super("floor");
-    texture_ = new Texture(Gdx.files.internal(texture_file));
-    texture_.setWrap(Texture.TextureWrap.MirroredRepeat,
+    texture = new Texture(Gdx.files.internal(texture_file));
+    texture.setWrap(Texture.TextureWrap.MirroredRepeat,
         Texture.TextureWrap.MirroredRepeat);
-    tex_region_ = new TextureRegion(texture_);
-    tex_region_.setRegion(0, 0, width, height);
+    tex_region = new TextureRegion(texture);
+    tex_region.setRegion(0, 0, width, height);
   }
 
   // --------------------------------------------------------------- //
@@ -28,7 +28,7 @@ public class Floor extends Entity implements Renderable {
   // --------------------------------------------------------------- //
   @Override
   public void render(SpriteBatch batch) {
-    batch.draw(tex_region_, 0, 0);
+    batch.draw(tex_region, 0, 0);
   }
 
   // --------------------------------------------------------------- //
@@ -40,7 +40,7 @@ public class Floor extends Entity implements Renderable {
   // --------------------------------------------------------------- //
   @Override
   public void destroy() {
-    texture_.dispose();
+    texture.dispose();
   }
 
 }
