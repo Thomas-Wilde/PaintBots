@@ -8,33 +8,36 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 public class PaintBotsGame extends ApplicationAdapter {
-  private Music music_;
+  private Music music;
   private SpriteBatch batch;
   private OrthographicCamera camera;
+  private final int ui_width = 300;
 
   private GameManager game_mgr = new GameManager();
 
   @Override
   public void create() {
-    // load the background "music"
-    music_ = Gdx.audio.newMusic(Gdx.files.internal("look_around.mp3"));
-
-    // start the playback of the background music immediately
-    music_.setLooping(true);
-    music_.play();
-
-    // create the camera and the SpriteBatch
-    camera = new OrthographicCamera();
-    camera.setToOrtho(false, 1000, 1000);
-    batch = new SpriteBatch();
-
-    // load game settings
+    // --- load game settings
     GameSettings settings = new GameSettings();
     try {
       game_mgr.loadMap(settings);
     } catch (Exception e) {
       System.out.println(e.getMessage());
     }
+
+    // ---
+    music = Gdx.audio.newMusic(Gdx.files.internal("look_around.mp3"));
+    music.setLooping(true);
+    // music_.play();
+
+    // --- create the camera and the SpriteBatch
+    int border = settings.board_border;
+    int[] board_dim = settings.board_dimensions;
+    int cam_witdh = board_dim[0] + border + ui_width;
+    int cam_height = board_dim[1] + border;
+    camera = new OrthographicCamera();
+    camera.setToOrtho(false, cam_witdh, cam_height);
+    batch = new SpriteBatch();
   }
 
   @Override
@@ -59,7 +62,7 @@ public class PaintBotsGame extends ApplicationAdapter {
   @Override
   public void dispose() {
     // dispose of all the native resources
-    music_.dispose();
+    music.dispose();
     batch.dispose();
   }
 }
