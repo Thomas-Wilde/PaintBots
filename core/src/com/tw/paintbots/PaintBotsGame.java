@@ -12,6 +12,8 @@ public class PaintBotsGame extends ApplicationAdapter {
   private SpriteBatch batch;
   private OrthographicCamera camera;
   private final int ui_width = 300;
+  private int cam_width = 0;
+  private int cam_height = 0;
 
   private GameManager game_mgr = new GameManager();
 
@@ -19,11 +21,6 @@ public class PaintBotsGame extends ApplicationAdapter {
   public void create() {
     // --- load game settings
     GameSettings settings = new GameSettings();
-    try {
-      game_mgr.loadMap(settings);
-    } catch (Exception e) {
-      System.out.println(e.getMessage());
-    }
 
     // ---
     music = Gdx.audio.newMusic(Gdx.files.internal("look_around.mp3"));
@@ -33,11 +30,19 @@ public class PaintBotsGame extends ApplicationAdapter {
     // --- create the camera and the SpriteBatch
     int[] border = settings.board_border;
     int[] board_dim = settings.board_dimensions;
-    int cam_witdh = board_dim[0] + 2 * border[0] + ui_width;
-    int cam_height = board_dim[1] + 2 * border[1];
+    cam_width = board_dim[0] + 2 * border[0] + ui_width;
+    cam_height = board_dim[1] + 2 * border[1];
     camera = new OrthographicCamera();
-    camera.setToOrtho(false, cam_witdh, cam_height);
+    camera.setToOrtho(false, cam_width, cam_height);
     batch = new SpriteBatch();
+
+    // --- load the map
+    game_mgr.setCameraResolution(new int[] {cam_width, cam_height});
+    try {
+      game_mgr.loadMap(settings);
+    } catch (Exception e) {
+      System.out.println(e.getMessage());
+    }
   }
 
   @Override
