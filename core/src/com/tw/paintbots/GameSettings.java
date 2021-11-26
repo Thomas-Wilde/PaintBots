@@ -14,5 +14,5 @@ public class GameSettings {
 
   public String floor_texture = "floor_stone_small.png";
   public int[] board_dimensions = {1000, 1000};
-  public int board_border = 200;
+  public int[] board_border = {200, 200};
 }

@@ -59,32 +59,36 @@ public class GameManager {
     int count = map_settings.player_types.length;
     players = new Player[count];
     player_states = new PlayerState[count];
-    try {
-      for (int i = 0; i < count; ++i) {
-        if (map_settings.player_types[i] == PlayerType.AI)
-          throw new GameMangerException("No AI players implemented.");
-        Player player = new HumanPlayer("Player" + i);
-        players[i] = player;
+    // ---
+    for (int i = 0; i < count; ++i) {
+      if (map_settings.player_types[i] == PlayerType.AI)
+        throw new GameMangerException("No AI players implemented.");
+      try {
+        players[i] = new HumanPlayer("Player" + i);
+        entities.add(players[i]);
+        addRenderableToLayer(players[i], players[i].getRenderLayer());
         initPlayer(i);
         savePlayerState(i);
-        entities.add(players[i]);
-        addRenderableToLayer(player, player.getRenderLayer());
+      } catch (Exception e) {
+        System.out.println(e.getMessage());
       }
-    } catch (Exception e) {
-      System.out.println(e.getMessage());
-      throw new GameMangerException("Creating players failed.");
     }
   }
 
   // --------------------------------------------------------------- //
-  /** Read the properties of player idx from the current game settings. */
-  private void initPlayer(int idx) {
-    players[idx].setPosition(map_settings.start_positions[idx]);
-    try {
-      players[idx].setDirection(map_settings.start_directions[idx]);
-    } catch (Exception e) {
-      System.out.println(e.getMessage());
-    }
+  /**
+   * Transfer player properties from the game settings to the player with the
+   * given index .
+   */
+  private void initPlayer(int idx) throws PlayerException {
+    Player player = players[idx];
+    Vector2 pos = map_settings.start_positions[idx];
+    Vector2 dir = map_settings.start_directions[idx];
+    int[] offset = map_settings.board_border;
+
+    player.setPosition(pos);
+    player.setDirection(dir);
+    player.setRenderOffset(offset);
   }
 
   // --------------------------------------------------------------- //
@@ -112,8 +116,9 @@ public class GameManager {
     String floor_texture = map_settings.floor_texture;
     int width = map_settings.board_dimensions[0];
     int height = map_settings.board_dimensions[1];
-    int border = map_settings.board_border;
-    floor_ = new Floor(floor_texture, width, height, border, border);
+    int[] offset = map_settings.board_border;
+    floor_ = new Floor(floor_texture, width, height);
+    floor_.setRenderOffset(offset);
     addRenderableToLayer(floor_, floor_.getRenderLayer());
     entities.add(floor_);
   }
@@ -122,8 +127,9 @@ public class GameManager {
   private void createCanvas() {
     int width = map_settings.board_dimensions[0];
     int height = map_settings.board_dimensions[1];
-    int border = map_settings.board_border;
-    canvas_ = new Canvas(width, height, border, border);
+    int[] offset = map_settings.board_border;
+    canvas_ = new Canvas(width, height);
+    canvas_.setRenderOffset(offset);
     addRenderableToLayer(canvas_, canvas_.getRenderLayer());
     entities.add(canvas_);
   }

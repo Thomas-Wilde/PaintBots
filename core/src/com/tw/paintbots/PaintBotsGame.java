@@ -31,10 +31,10 @@ public class PaintBotsGame extends ApplicationAdapter {
     // music_.play();
 
     // --- create the camera and the SpriteBatch
-    int border = settings.board_border;
+    int[] border = settings.board_border;
     int[] board_dim = settings.board_dimensions;
-    int cam_witdh = board_dim[0] + 2 * border + ui_width;
-    int cam_height = board_dim[1] + 2 * border;
+    int cam_witdh = board_dim[0] + 2 * border[0] + ui_width;
+    int cam_height = board_dim[1] + 2 * border[1];
     camera = new OrthographicCamera();
     camera.setToOrtho(false, cam_witdh, cam_height);
     batch = new SpriteBatch();
