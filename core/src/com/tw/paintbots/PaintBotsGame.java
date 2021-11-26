@@ -46,7 +46,7 @@ public class PaintBotsGame extends ApplicationAdapter {
     // arguments to clear are the red, green
     // blue and alpha component in the range [0,1]
     // of the color to be used to clear the screen.
-    ScreenUtils.clear(0, 0, 0.2f, 1);
+    ScreenUtils.clear(0.078f, 0.059f, 0.043f, 1.0f);
     // tell the camera to update its matrices.
     camera.update();
     // tell the SpriteBatch to render in the
