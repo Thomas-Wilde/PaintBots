@@ -106,28 +106,34 @@ public abstract class Player extends Entity implements Renderable {
   // --------------------------------------------------------------- //
   @Override
   public void render(SpriteBatch batch) {
-    anim_time_ += Gdx.graphics.getDeltaTime();
-    renderDirectionIndicator(batch);
-    renderCharacter(batch);
+    render(batch, new int[] {0, 0});
   }
 
   // --------------------------------------------------------------- //
-  private void renderCharacter(SpriteBatch batch) {
+  @Override
+  public void render(SpriteBatch batch, int[] shift) {
+    anim_time_ += Gdx.graphics.getDeltaTime();
+    renderCharacter(batch, shift);
+    renderDirectionIndicator(batch, shift);
+  }
+
+  // --------------------------------------------------------------- //
+  private void renderCharacter(SpriteBatch batch, int[] shift) {
     TextureRegion frame = animation_.getFrame(getDirection(), anim_time_);
     int offset = frame.getRegionWidth() / 2;
-    float pos_x = pos_.x - offset;
-    float pos_y = pos_.y - offset;
+    float pos_x = pos_.x - offset + shift[0];
+    float pos_y = pos_.y - offset + shift[1];
     batch.draw(frame, pos_x, pos_y);
   }
 
   // --------------------------------------------------------------- //
-  private void renderDirectionIndicator(SpriteBatch batch) {
+  private void renderDirectionIndicator(SpriteBatch batch, int[] shift) {
     TextureRegion frame = dir_indicator_.getFrame(anim_time_);
     // --- position
     int width = frame.getRegionWidth();
     int height = frame.getRegionHeight();
-    float pos_x = pos_.x - width / 2.0f;
-    float pos_y = pos_.y - height / 2.0f;
+    float pos_x = pos_.x - width / 2.0f + shift[0];
+    float pos_y = pos_.y - height / 2.0f + shift[1];
     // --- rotation
     float deg = dirVectorToRotDegree(getDirection());
     batch.draw(frame, pos_x, pos_y, width / 2.0f, height / 2.0f, width, height,

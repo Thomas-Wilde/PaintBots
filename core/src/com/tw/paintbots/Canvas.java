@@ -107,7 +107,13 @@ public class Canvas extends Entity implements Renderable {
   // --------------------------------------------------------------- //
   @Override
   public void render(SpriteBatch batch) {
-    batch.draw(texture, offset[0], offset[1]);
+    render(batch, new int[] {0, 0});
+  }
+
+  // --------------------------------------------------------------- //
+  @Override
+  public void render(SpriteBatch batch, int[] position) {
+    batch.draw(texture, position[0], position[1]);
   }
 
   // --------------------------------------------------------------- //

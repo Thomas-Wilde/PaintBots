@@ -36,7 +36,13 @@ public class Floor extends Entity implements Renderable {
   // --------------------------------------------------------------- //
   @Override
   public void render(SpriteBatch batch) {
-    batch.draw(tex_region, offset[0], offset[1]);
+    render(batch, new int[] {0, 0});
+  }
+
+  // --------------------------------------------------------------- //
+  @Override
+  public void render(SpriteBatch batch, int[] position) {
+    batch.draw(tex_region, position[0], position[1]);
   }
 
   // --------------------------------------------------------------- //
