@@ -7,10 +7,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public abstract class Player extends Entity implements Renderable {
   /** Maximum number of allowed players. */
-  public static final int max_count_ = 4;
-  private static int id_counter_ = 0;
-  private int player_id_ = -1;
-  private PaintColor paint_colors_[] =
+  public static final int MAX_COUNT = 4;
+  private static int id_counter = 0;
+  private int player_id = -1;
+  private PaintColor paint_colors[] =
       {PaintColor.GREEN, PaintColor.PURPLE, PaintColor.BLUE, PaintColor.ORANGE};
 
   private Vector2 pos_ = new Vector2(0.0f, 0.0f);
@@ -25,8 +25,8 @@ public abstract class Player extends Entity implements Renderable {
   Player(String name) throws PlayerException {
     super(name);
     // ---
-    player_id_ = id_counter_++;
-    if (player_id_ >= max_count_)
+    player_id = id_counter++;
+    if (player_id >= MAX_COUNT)
       throw new PlayerException("Tried to create too many players.");
     // ---
     mesh_ = new Mesh(character_width_);
@@ -40,13 +40,13 @@ public abstract class Player extends Entity implements Renderable {
    * 4 players. The ID is set at the beginning of the game and it is immutable.
    */
   public int getPlayerID() {
-    return player_id_;
+    return player_id;
   }
 
   // --------------------------------------------------------------- //
   /** Access the unique painting color of the current player. */
   public PaintColor getPainColor() {
-    return paint_colors_[player_id_];
+    return paint_colors[player_id];
   }
 
   // --------------------------------------------------------------- //
