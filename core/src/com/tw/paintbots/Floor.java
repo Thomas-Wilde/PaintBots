@@ -13,7 +13,7 @@ public class Floor extends Entity implements Renderable {
   private int[] render_offset = {0, 0};
 
   // --------------------------------------------------------------- //
-  Floor(String texture_file, int width, int height) {
+  public Floor(String texture_file, int width, int height) {
     super("floor");
     texture = new Texture(Gdx.files.internal(texture_file));
     texture.setWrap(Texture.TextureWrap.MirroredRepeat,
@@ -41,7 +41,7 @@ public class Floor extends Entity implements Renderable {
   // --------------------------------------------------------------- //
   @Override
   public int getRenderLayer() {
-    return 0;
+    return 1;
   }
 
   // --------------------------------------------------------------- //
