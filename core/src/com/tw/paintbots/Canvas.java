@@ -113,7 +113,7 @@ public class Canvas extends Entity implements Renderable {
   // --------------------------------------------------------------- //
   @Override
   public int getRenderLayer() {
-    return 1;
+    return 2;
   }
 
   // --------------------------------------------------------------- //
