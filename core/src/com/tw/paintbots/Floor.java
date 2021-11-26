@@ -10,23 +10,16 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 public class Floor extends Entity implements Renderable {
   private Texture texture = null;
   private TextureRegion tex_region = null;
-  private int[] offset = {0, 0};
+  private int[] render_offset = {0, 0};
 
   // --------------------------------------------------------------- //
   Floor(String texture_file, int width, int height) {
-    this(texture_file, width, height, 0, 0);
-  }
-
-  // --------------------------------------------------------------- //
-  Floor(String texture_file, int width, int height, int offset_x,
-      int offset_y) {
     super("floor");
     texture = new Texture(Gdx.files.internal(texture_file));
     texture.setWrap(Texture.TextureWrap.MirroredRepeat,
         Texture.TextureWrap.MirroredRepeat);
     tex_region = new TextureRegion(texture);
     tex_region.setRegion(0, 0, width, height);
-    offset = new int[] {offset_x, offset_y};
   }
 
   // --------------------------------------------------------------- //
@@ -36,7 +29,7 @@ public class Floor extends Entity implements Renderable {
   // --------------------------------------------------------------- //
   @Override
   public void render(SpriteBatch batch) {
-    render(batch, new int[] {0, 0});
+    render(batch, render_offset);
   }
 
   // --------------------------------------------------------------- //
@@ -49,6 +42,18 @@ public class Floor extends Entity implements Renderable {
   @Override
   public int getRenderLayer() {
     return 0;
+  }
+
+  // --------------------------------------------------------------- //
+  @Override
+  public void setRenderOffset(int[] offset) {
+    render_offset = offset;
+  }
+
+  // --------------------------------------------------------------- //
+  @Override
+  public int[] getRenderOffset() {
+    return render_offset;
   }
 
   // --------------------------------------------------------------- //

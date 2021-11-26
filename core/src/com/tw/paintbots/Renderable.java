@@ -8,4 +8,8 @@ interface Renderable {
   public void render(SpriteBatch batch, int[] position);
 
   public int getRenderLayer();
+
+  public void setRenderOffset(int[] offset);
+
+  public int[] getRenderOffset();
 }

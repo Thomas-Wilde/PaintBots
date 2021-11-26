@@ -20,6 +20,7 @@ public abstract class Player extends Entity implements Renderable {
   private PlayerAnimation animation_ = null;
   private AnimatedObject dir_indicator_ = null;
   private float anim_time_ = 0.0f;
+  private int[] render_offset = {0, 0};
 
   // --------------------------------------------------------------- //
   Player(String name) throws PlayerException {
@@ -106,7 +107,7 @@ public abstract class Player extends Entity implements Renderable {
   // --------------------------------------------------------------- //
   @Override
   public void render(SpriteBatch batch) {
-    render(batch, new int[] {0, 0});
+    render(batch, render_offset);
   }
 
   // --------------------------------------------------------------- //
@@ -115,6 +116,18 @@ public abstract class Player extends Entity implements Renderable {
     anim_time_ += Gdx.graphics.getDeltaTime();
     renderCharacter(batch, shift);
     renderDirectionIndicator(batch, shift);
+  }
+
+  // --------------------------------------------------------------- //
+  @Override
+  public void setRenderOffset(int[] offset) {
+    render_offset = offset;
+  }
+
+  // --------------------------------------------------------------- //
+  @Override
+  public int[] getRenderOffset() {
+    return render_offset;
   }
 
   // --------------------------------------------------------------- //
