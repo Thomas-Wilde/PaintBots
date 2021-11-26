@@ -13,6 +13,8 @@ public class GameManager {
   private PlayerState[] player_states = null;
   private Floor floor_ = null;
   private Canvas canvas_ = null;
+  private PlankBackground plank_background = null;
+  private int[] cam_resolution = {0, 0};
 
   private ArrayList<Entity> entities = new ArrayList<>();
   private List<List<Renderable>> render_layers_ = null;
@@ -24,6 +26,11 @@ public class GameManager {
       render_layers_.add(new ArrayList<Renderable>());
   }
 
+  // --------------------------------------------------------------- //
+  public void setCameraResolution(int[] resolution) {
+    cam_resolution = resolution;
+  }
+
   // =============================================================== //
   public void loadMap(GameSettings settings) throws GameMangerException {
     map_settings = settings;
@@ -31,6 +38,7 @@ public class GameManager {
     createPlayers();
     createFloor();
     createCanvas();
+    createPlankBackground();
   }
 
   // --------------------------------------------------------------- //
@@ -132,6 +140,13 @@ public class GameManager {
     canvas_.setRenderOffset(offset);
     addRenderableToLayer(canvas_, canvas_.getRenderLayer());
     entities.add(canvas_);
+  }
+
+  // --------------------------------------------------------------- //
+  private void createPlankBackground() {
+    plank_background = new PlankBackground(cam_resolution);
+    addRenderableToLayer(plank_background, plank_background.getRenderLayer());
+    entities.add(plank_background);
   }
 
   // --------------------------------------------------------------- //
