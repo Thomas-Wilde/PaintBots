@@ -40,6 +40,6 @@ public class PlayerAnimation extends AnimatedObject {
 
   // --------------------------------------------------------------- //
   public TextureRegion getFrame(CardinalDirection dir, float time) {
-    return animation_.get(dir.get()).getKeyFrame(time, true);
+    return animation.get(dir.get()).getKeyFrame(time, true);
   }
 }
