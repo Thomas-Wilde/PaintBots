@@ -218,7 +218,7 @@ public class GameManager {
     // for (int idx = 0; idx < players.length; ++idx) {
     // Player player = players[idx];
     // Vector2 position = player_states[idx].new_pos;
-    // canvas_.paint(position, player.getPainColor(), 40);
+    // canvas_.paint(position, player.getPaintColor(), 40);
     // }
     // canvas_.sendPixmapToTexture();
   }
