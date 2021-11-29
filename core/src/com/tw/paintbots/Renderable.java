@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 // =============================================================== //
 public class Renderable extends Entity {
+  // --------------------------------------------------------------- //
   protected final String texture_file;
   protected Texture texture;
   protected TextureRegion texture_region;
