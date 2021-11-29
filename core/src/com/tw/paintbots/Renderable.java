@@ -8,8 +8,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 // =============================================================== //
 public class Renderable extends Entity {
-  protected Texture texture;
   protected final String texture_file;
+  protected Texture texture;
   protected TextureRegion texture_region;
   protected int layer = 0;
   protected int[] render_position = {0, 0};
@@ -24,6 +24,13 @@ public class Renderable extends Entity {
   //@formatter:on
 
   // ====================== Renderable methods ====================== //
+  Renderable(String name, int layer) {
+    super(name);
+    texture_file = "";
+    this.layer = layer;
+  }
+
+  // --------------------------------------------------------------- //
   Renderable(String name, String texture_file, int layer) {
     this(name, texture_file, layer, new int[] {1, 1}, null);
   }
