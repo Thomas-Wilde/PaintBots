@@ -5,7 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-public abstract class Player extends Entity implements Renderable {
+public abstract class Player extends Renderable {
   /** Maximum number of allowed players. */
   public static final int MAX_COUNT = 4;
   private static int id_counter = 0;
@@ -24,7 +24,7 @@ public abstract class Player extends Entity implements Renderable {
 
   // --------------------------------------------------------------- //
   Player(String name) throws PlayerException {
-    super(name);
+    super(name, 5);
     // ---
     player_id = id_counter++;
     if (player_id >= MAX_COUNT)
@@ -46,7 +46,7 @@ public abstract class Player extends Entity implements Renderable {
 
   // --------------------------------------------------------------- //
   /** Access the unique painting color of the current player. */
-  public PaintColor getPainColor() {
+  public PaintColor getPaintColor() {
     return paint_colors[player_id];
   }
 
@@ -107,49 +107,31 @@ public abstract class Player extends Entity implements Renderable {
   // --------------------------------------------------------------- //
   @Override
   public void render(SpriteBatch batch) {
-    render(batch, render_offset);
-  }
-
-  // --------------------------------------------------------------- //
-  @Override
-  public void render(SpriteBatch batch, int[] shift) {
     anim_time_ += Gdx.graphics.getDeltaTime();
-    renderDirectionIndicator(batch, shift);
-    renderCharacter(batch, shift);
+    renderDirectionIndicator(batch);
+    renderCharacter(batch);
   }
 
   // --------------------------------------------------------------- //
-  @Override
-  public void setRenderOffset(int[] offset) {
-    render_offset = offset;
-  }
-
-  // --------------------------------------------------------------- //
-  @Override
-  public int[] getRenderOffset() {
-    return render_offset;
-  }
-
-  // --------------------------------------------------------------- //
-  private void renderCharacter(SpriteBatch batch, int[] shift) {
-    // get different frame for each player
+  private void renderCharacter(SpriteBatch batch) {
+    // get different animation frame for each player
     float anim_shift = anim_time_ / 4 * player_id;
     TextureRegion frame =
         animation_.getFrame(getDirection(), anim_time_ + anim_shift);
     int offset = frame.getRegionWidth() / 2;
-    float pos_x = pos_.x - offset + shift[0];
-    float pos_y = pos_.y - offset + shift[1];
+    float pos_x = pos_.x - offset + render_position[0];
+    float pos_y = pos_.y - offset + render_position[1];
     batch.draw(frame, pos_x, pos_y);
   }
 
   // --------------------------------------------------------------- //
-  private void renderDirectionIndicator(SpriteBatch batch, int[] shift) {
+  private void renderDirectionIndicator(SpriteBatch batch) {
     TextureRegion frame = dir_indicator_.getFrame(anim_time_);
     // --- position
     int width = frame.getRegionWidth();
     int height = frame.getRegionHeight();
-    float pos_x = pos_.x - width / 2.0f + shift[0];
-    float pos_y = pos_.y - height / 2.0f + shift[1];
+    float pos_x = pos_.x - width / 2.0f + render_position[0];
+    float pos_y = pos_.y - height / 2.0f + render_position[0];
     // --- rotation
     float deg = dirVectorToRotDegree(getDirection());
     batch.draw(frame, pos_x, pos_y, width / 2.0f, height / 2.0f, width, height,
@@ -158,14 +140,9 @@ public abstract class Player extends Entity implements Renderable {
 
   // --------------------------------------------------------------- //
   @Override
-  public int getRenderLayer() {
-    return 5;
-  }
-
-  // --------------------------------------------------------------- //
-  @Override
   public void destroy() {
     animation_.destroy();
+    dir_indicator_.destroy();
   }
 
   // --------------------------------------------------------------- //
@@ -183,10 +160,6 @@ public abstract class Player extends Entity implements Renderable {
       tmp_deg += 360.f;
     return tmp_deg;
   }
-
-  // --------------------------------------------------------------- //
-  @Override
-  public abstract void update();
 
   // --------------------------------------------------------------- //
   public abstract PlayerType getType();
