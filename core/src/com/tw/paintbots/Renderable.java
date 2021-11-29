@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 // =============================================================== //
 public class Renderable extends Entity {
-  protected final Texture texture;
+  protected Texture texture;
   protected final String texture_file;
   protected TextureRegion texture_region;
   protected int layer = 0;
@@ -28,10 +28,12 @@ public class Renderable extends Entity {
     this(name, texture_file, layer, new int[] {1, 1}, null);
   }
 
+  // --------------------------------------------------------------- //
   Renderable(String name, String texture_file, int layer, int[] repeat_xy) {
     this(name, texture_file, layer, repeat_xy, null);
   }
 
+  // --------------------------------------------------------------- //
   Renderable(String name, String texture_file, int layer, int[] repeat_xy,
       int[] render_resolution) {
     // --- set the attributes
@@ -39,20 +41,40 @@ public class Renderable extends Entity {
     this.texture_file = texture_file;
     this.layer = layer;
     this.repeat_xy = Arrays.copyOf(repeat_xy, 2);
-    // --- load the texture
+    // --- init graphics
+    loadTexture();
+    computeResolution();
+    initTextureRegion();
+    if (render_resolution != null)
+      computeScale(render_resolution);
+  }
+
+  // --------------------------------------------------------------- //
+  private void loadTexture() {
     texture = new Texture(Gdx.files.internal(texture_file));
     Texture.TextureWrap wrap_method = Texture.TextureWrap.MirroredRepeat;
     texture.setWrap(wrap_method, wrap_method);
-    // --- compute the resolution
+  }
+
+  // --------------------------------------------------------------- //
+  private void computeResolution() {
     int width = texture.getWidth() * repeat_xy[0];
     int height = texture.getHeight() * repeat_xy[1];
     resolution = new int[] {width, height};
-    // --- convert the texture into a texture region
+  }
+
+  // --------------------------------------------------------------- //
+  private void initTextureRegion() {
+    int width = resolution[0];
+    int height = resolution[1];
     texture_region = new TextureRegion(texture);
     texture_region.setRegion(0, 0, width, height);
-    // --- adjust the scaling if necessary
-    if (render_resolution == null)
-      return;
+  }
+
+  // --------------------------------------------------------------- //
+  private void computeScale(int[] render_resolution) {
+    int width = resolution[0];
+    int height = resolution[1];
     scale[0] = (float) render_resolution[0] / width;
     scale[1] = (float) render_resolution[1] / height;
   }
