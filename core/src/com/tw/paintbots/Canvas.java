@@ -13,12 +13,11 @@ public class Canvas extends Renderable {
   private byte[] picture = null;
   private long[] paint_count = {0, 0, 0, 0};
   private Pixmap pixmap = null;
-  private int[] dimension = new int[2];
 
   // --------------------------------------------------------------- //
   Canvas(int width, int height) {
     super("canvas", 2);
-    dimension = new int[] {width, height};
+    super.resolution = new int[] {width, height};
     // ---
     picture = new byte[width * height];
     for (int i = 0; i < width * height; ++i)
@@ -26,11 +25,12 @@ public class Canvas extends Renderable {
     // ---
     createPixmap();
     texture = new Texture(pixmap);
+    initTextureRegion();
   }
 
   // --------------------------------------------------------------- //
   private void createPixmap() {
-    pixmap = new Pixmap(dimension[0], dimension[0], Format.RGBA8888);
+    pixmap = new Pixmap(resolution[0], resolution[1], Format.RGBA8888);
     pixmap.setColor(1.0f, 1.0f, 1.0f, 0.0f);
     pixmap.fill();
     pixmap.setBlending(Blending.None);
@@ -41,8 +41,8 @@ public class Canvas extends Renderable {
     pixmap.setColor(color.getColor());
     int ctr_x = (int) position.x;
     int ctr_y = (int) position.y;
-    int width = dimension[0];
-    int height = dimension[1];
+    int width = resolution[0];
+    int height = resolution[1];
 
     for (int i = -radius; i < radius; ++i)
       for (int j = -radius; j < radius; ++j) {
@@ -51,7 +51,7 @@ public class Canvas extends Renderable {
           continue;
         // --- check if we leave the board
         int paint_x = ctr_x + i;
-        int paint_y = dimension[1] - ctr_y + j;
+        int paint_y = height - ctr_y + j;
         if (paint_x < 0 || paint_x >= width || paint_y < 0 || paint_y >= height)
           continue;
         // ---
@@ -71,7 +71,7 @@ public class Canvas extends Renderable {
    * the canvas belong to which color.
    */
   private void updatePaintCount(int x, int y, PaintColor color) {
-    int width = dimension[0];
+    int width = resolution[0];
     int idx = x + y * width;
     int color_id = color.getColorID();
     // --- canvas is blank increase count for current player
