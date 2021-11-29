@@ -12,7 +12,7 @@ public class Renderable extends Entity {
   protected final String texture_file;
   protected TextureRegion texture_region;
   protected int layer = 0;
-  protected int[] position = {0, 0};
+  protected int[] render_position = {0, 0};
   protected int[] repeat_xy = {1, 1};
   protected int[] resolution = null;
   protected float[] scale = {1.0f, 1.0f};
@@ -82,19 +82,19 @@ public class Renderable extends Entity {
   // --------------------------------------------------------------- //
   //@formatter:off
   public int   getLayer()    { return layer; }
-  public int[] getPosition() { return position; }
+  public int[] getRenderPosition() { return render_position; }
   //@formatter:on
 
   // --------------------------------------------------------------- //
-  public void setPosition(int[] position) {
-    this.position[0] = position[0];
-    this.position[1] = position[1];
+  public void setRenderPosition(int[] position) {
+    this.render_position[0] = position[0];
+    this.render_position[1] = position[1];
   }
 
   // --------------------------------------------------------------- //
   public void render(SpriteBatch batch) {
-    int x = position[0];
-    int y = position[1];
+    int x = render_position[0];
+    int y = render_position[1];
     int width = resolution[0];
     int height = resolution[1];
     batch.draw(texture_region, 0, 0, x, y, width, height, scale[0], scale[1],

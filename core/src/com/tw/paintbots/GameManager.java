@@ -76,7 +76,7 @@ public class GameManager {
     String floor_texture = map_settings.floor_texture;
     floor = new Renderable("floor", floor_texture, 1);
     int[] pos = map_settings.board_border;
-    floor.setPosition(pos);
+    floor.setRenderPosition(pos);
     addRenderableToLayer(floor, floor.getLayer());
     entities.add(floor);
   }
@@ -93,24 +93,24 @@ public class GameManager {
 
   // --------------------------------------------------------------- //
   private void createPlayers() throws GameMangerException {
-    // --- create players
-    int count = map_settings.player_types.length;
-    players = new Player[count];
-    player_states = new PlayerState[count];
-    // ---
-    for (int i = 0; i < count; ++i) {
-      if (map_settings.player_types[i] == PlayerType.AI)
-        throw new GameMangerException("No AI players implemented.");
-      try {
-        players[i] = new HumanPlayer("Player" + i);
-        entities.add(players[i]);
-        addRenderableToLayer(players[i], players[i].getRenderLayer());
-        initPlayer(i);
-        savePlayerState(i);
-      } catch (Exception e) {
-        System.out.println(e.getMessage());
-      }
-    }
+    // // --- create players
+    // int count = map_settings.player_types.length;
+    // players = new Player[count];
+    // player_states = new PlayerState[count];
+    // // ---
+    // for (int i = 0; i < count; ++i) {
+    // if (map_settings.player_types[i] == PlayerType.AI)
+    // throw new GameMangerException("No AI players implemented.");
+    // try {
+    // players[i] = new HumanPlayer("Player" + i);
+    // entities.add(players[i]);
+    // addRenderableToLayer(players[i], players[i].getRenderLayer());
+    // initPlayer(i);
+    // savePlayerState(i);
+    // } catch (Exception e) {
+    // System.out.println(e.getMessage());
+    // }
+    // }
   }
 
   // --------------------------------------------------------------- //
@@ -119,14 +119,14 @@ public class GameManager {
    * given index .
    */
   private void initPlayer(int idx) throws PlayerException {
-    Player player = players[idx];
-    Vector2 pos = map_settings.start_positions[idx];
-    Vector2 dir = map_settings.start_directions[idx];
-    int[] offset = map_settings.board_border;
+    // Player player = players[idx];
+    // Vector2 pos = map_settings.start_positions[idx];
+    // Vector2 dir = map_settings.start_directions[idx];
+    // int[] offset = map_settings.board_border;
 
-    player.setPosition(pos);
-    player.setDirection(dir);
-    player.setRenderOffset(offset);
+    // player.setPosition(pos);
+    // player.setDirection(dir);
+    // player.setRenderOffset(offset);
   }
 
   // --------------------------------------------------------------- //
@@ -141,13 +141,13 @@ public class GameManager {
 
   // --------------------------------------------------------------- //
   private void createCanvas() {
-    int width = map_settings.board_dimensions[0];
-    int height = map_settings.board_dimensions[1];
-    int[] offset = map_settings.board_border;
-    canvas_ = new Canvas(width, height);
-    canvas_.setRenderOffset(offset);
-    addRenderableToLayer(canvas_, canvas_.getRenderLayer());
-    entities.add(canvas_);
+    // int width = map_settings.board_dimensions[0];
+    // int height = map_settings.board_dimensions[1];
+    // int[] offset = map_settings.board_border;
+    // canvas_ = new Canvas(width, height);
+    // canvas_.setRenderOffset(offset);
+    // addRenderableToLayer(canvas_, canvas_.getRenderLayer());
+    // entities.add(canvas_);
   }
 
   // --------------------------------------------------------------- //
@@ -163,15 +163,15 @@ public class GameManager {
 
   // --------------------------------------------------------------- //
   private void preUpdate() {
-    for (int idx = 0; idx < players.length; ++idx)
-      savePlayerState(idx);
+    // for (int idx = 0; idx < players.length; ++idx)
+    // savePlayerState(idx);
   }
 
   // --------------------------------------------------------------- //
   /** Calls 'movePlayer(int idx)' for each player */
   private void moveAllPlayers() {
-    for (int idx = 0; idx < players.length; ++idx)
-      movePlayer(idx);
+    // for (int idx = 0; idx < players.length; ++idx)
+    // movePlayer(idx);
   }
 
   // --------------------------------------------------------------- //
@@ -181,16 +181,16 @@ public class GameManager {
    * the borders of the board.
    */
   private void movePlayer(int idx) {
-    Vector2 old_pos = player_states[idx].old_pos;
-    Player player = players[idx];
-    Vector2 move_dir = player.getDirection();
-    // ---
-    Vector2 new_pos = old_pos.cpy();
-    new_pos.add(move_dir.scl(200.0f * Gdx.graphics.getDeltaTime()));
-    clampPositionToBoard(new_pos);
-    // ---
-    player.setPosition(new_pos);
-    player_states[idx].new_pos = new_pos;
+    // Vector2 old_pos = player_states[idx].old_pos;
+    // Player player = players[idx];
+    // Vector2 move_dir = player.getDirection();
+    // // ---
+    // Vector2 new_pos = old_pos.cpy();
+    // new_pos.add(move_dir.scl(200.0f * Gdx.graphics.getDeltaTime()));
+    // clampPositionToBoard(new_pos);
+    // // ---
+    // player.setPosition(new_pos);
+    // player_states[idx].new_pos = new_pos;
   }
 
   // --------------------------------------------------------------- //
@@ -199,28 +199,28 @@ public class GameManager {
    * the corresponding coordinates to be insider.
    */
   private void clampPositionToBoard(Vector2 pos, double offset) {
-    int board_width = map_settings.board_dimensions[0];
-    int board_height = map_settings.board_dimensions[1];
-    pos.x = Math.max(pos.x, 0);
-    pos.x = Math.min(pos.x, board_width - (float) offset);
-    pos.y = Math.max(pos.y, 0);
-    pos.y = Math.min(pos.y, board_height - (float) offset);
+    // int board_width = map_settings.board_dimensions[0];
+    // int board_height = map_settings.board_dimensions[1];
+    // pos.x = Math.max(pos.x, 0);
+    // pos.x = Math.min(pos.x, board_width - (float) offset);
+    // pos.y = Math.max(pos.y, 0);
+    // pos.y = Math.min(pos.y, board_height - (float) offset);
   }
 
   // --------------------------------------------------------------- //
   /** calls 'clampPosition(pos, 0.0f);' */
   private void clampPositionToBoard(Vector2 pos) {
-    clampPositionToBoard(pos, 0.0);
+    // clampPositionToBoard(pos, 0.0);
   }
 
   // --------------------------------------------------------------- //
   private void paintOnCanvas() {
-    for (int idx = 0; idx < players.length; ++idx) {
-      Player player = players[idx];
-      Vector2 position = player_states[idx].new_pos;
-      canvas_.paint(position, player.getPainColor(), 40);
-    }
-    canvas_.sendPixmapToTexture();
+    // for (int idx = 0; idx < players.length; ++idx) {
+    // Player player = players[idx];
+    // Vector2 position = player_states[idx].new_pos;
+    // canvas_.paint(position, player.getPainColor(), 40);
+    // }
+    // canvas_.sendPixmapToTexture();
   }
 
   // --------------------------------------------------------------- //
