@@ -8,23 +8,21 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
 /** Canvas is the represents the area that gets painted. */
-public class Canvas extends Entity implements Renderable {
+public class Canvas extends Renderable {
   /** Contains the painting information. */
-  private byte[] canvas = null;
+  private byte[] picture = null;
   private long[] paint_count = {0, 0, 0, 0};
   private Pixmap pixmap = null;
-  private Texture texture = null;
   private int[] dimension = new int[2];
-  private int[] render_offset = {0, 0};
 
   // --------------------------------------------------------------- //
   Canvas(int width, int height) {
-    super("canvas");
+    super("canvas", 2);
     dimension = new int[] {width, height};
     // ---
-    canvas = new byte[width * height];
+    picture = new byte[width * height];
     for (int i = 0; i < width * height; ++i)
-      canvas[i] = -1;
+      picture[i] = -1;
     // ---
     createPixmap();
     texture = new Texture(pixmap);
@@ -48,7 +46,7 @@ public class Canvas extends Entity implements Renderable {
 
     for (int i = -radius; i < radius; ++i)
       for (int j = -radius; j < radius; ++j) {
-        // --- paint circle inside
+        // --- paint only the inside of the circle
         if ((i * i + j * j) >= (radius * radius))
           continue;
         // --- check if we leave the board
@@ -77,61 +75,20 @@ public class Canvas extends Entity implements Renderable {
     int idx = x + y * width;
     int color_id = color.getColorID();
     // --- canvas is blank increase count for current player
-    if (canvas[idx] == -1) {
-      canvas[idx] = (byte) color_id;
+    if (picture[idx] == -1) {
+      picture[idx] = (byte) color_id;
       ++paint_count[color_id];
       return;
     }
     // --- canvas is not blank switch ownership of pixel
-    short old_color_id = canvas[idx];
-    canvas[idx] = (byte) color_id;
+    short old_color_id = picture[idx];
+    picture[idx] = (byte) color_id;
     ++paint_count[color_id];
     --paint_count[old_color_id];
   }
 
   // --------------------------------------------------------------- //
-  @Override
-  public void update() {}
-
-  // --------------------------------------------------------------- //
   public void sendPixmapToTexture() {
     texture.draw(pixmap, 0, 0);
   }
-
-  // --------------------------------------------------------------- //
-  @Override
-  public void render(SpriteBatch batch) {
-    render(batch, render_offset);
-  }
-
-  // --------------------------------------------------------------- //
-  @Override
-  public void render(SpriteBatch batch, int[] position) {
-    batch.draw(texture, position[0], position[1]);
-  }
-
-  // --------------------------------------------------------------- //
-  @Override
-  public int getRenderLayer() {
-    return 2;
-  }
-
-  // --------------------------------------------------------------- //
-  @Override
-  public void setRenderOffset(int[] offset) {
-    render_offset = offset;
-  }
-
-  // --------------------------------------------------------------- //
-  @Override
-  public int[] getRenderOffset() {
-    return render_offset;
-  }
-
-  // --------------------------------------------------------------- //
-  @Override
-  public void destroy() {
-    texture.dispose();
-  }
-
 }
