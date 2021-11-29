@@ -11,7 +11,7 @@ public class GameManager {
   private GameSettings map_settings = null;
   private Player[] players = null;
   private PlayerState[] player_states = null;
-  private Floor floor_ = null;
+  private Renderable floor = null;
   private Canvas canvas_ = null;
   private PlankBackground plank_background = null;
   private int[] cam_resolution = {0, 0};
@@ -122,13 +122,11 @@ public class GameManager {
   // --------------------------------------------------------------- //
   private void createFloor() {
     String floor_texture = map_settings.floor_texture;
-    int width = map_settings.board_dimensions[0];
-    int height = map_settings.board_dimensions[1];
-    int[] offset = map_settings.board_border;
-    floor_ = new Floor(floor_texture, width, height);
-    floor_.setRenderOffset(offset);
-    addRenderableToLayer(floor_, floor_.getRenderLayer());
-    entities.add(floor_);
+    floor = new Renderable("floor", floor_texture, 1);
+    int[] pos = map_settings.board_border;
+    floor.setPosition(pos);
+    addRenderableToLayer(floor, floor.getLayer());
+    entities.add(floor);
   }
 
   // --------------------------------------------------------------- //
