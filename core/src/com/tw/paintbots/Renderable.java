@@ -57,21 +57,21 @@ public class Renderable extends Entity {
   }
 
   // --------------------------------------------------------------- //
-  private void loadTexture() {
+  protected void loadTexture() {
     texture = new Texture(Gdx.files.internal(texture_file));
     Texture.TextureWrap wrap_method = Texture.TextureWrap.MirroredRepeat;
     texture.setWrap(wrap_method, wrap_method);
   }
 
   // --------------------------------------------------------------- //
-  private void computeResolution() {
+  protected void computeResolution() {
     int width = texture.getWidth() * repeat_xy[0];
     int height = texture.getHeight() * repeat_xy[1];
     resolution = new int[] {width, height};
   }
 
   // --------------------------------------------------------------- //
-  private void initTextureRegion() {
+  protected void initTextureRegion() {
     int width = resolution[0];
     int height = resolution[1];
     texture_region = new TextureRegion(texture);
@@ -79,7 +79,7 @@ public class Renderable extends Entity {
   }
 
   // --------------------------------------------------------------- //
-  private void computeScale(int[] render_resolution) {
+  protected void computeScale(int[] render_resolution) {
     int width = resolution[0];
     int height = resolution[1];
     scale[0] = (float) render_resolution[0] / width;
@@ -104,7 +104,7 @@ public class Renderable extends Entity {
     int y = render_position[1];
     int width = resolution[0];
     int height = resolution[1];
-    batch.draw(texture_region, 0, 0, x, y, width, height, scale[0], scale[1],
+    batch.draw(texture_region, x, y, 0, 0, width, height, scale[0], scale[1],
         0.0f);
   }
 }
