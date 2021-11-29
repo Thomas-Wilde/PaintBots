@@ -12,6 +12,7 @@ public class GameSettings {
       {new Vector2(-1.0f, 0.0f), new Vector2(1.0f, 0.0f),
           new Vector2(0.0f, 1.0f), new Vector2(0.0f, -1.0f),};
 
+  public String back_texture = "plank_background.png";
   public String floor_texture = "floor_stone_medium.png";
   public int[] board_dimensions = {1000, 1000};
   public int[] board_border = {100, 100};

@@ -11,9 +11,9 @@ public class GameManager {
   private GameSettings map_settings = null;
   private Player[] players = null;
   private PlayerState[] player_states = null;
+  private Renderable background = null;
   private Renderable floor = null;
   private Canvas canvas_ = null;
-  private PlankBackground plank_background = null;
   private int[] cam_resolution = {0, 0};
 
   private ArrayList<Entity> entities = new ArrayList<>();
@@ -35,10 +35,10 @@ public class GameManager {
   public void loadMap(GameSettings settings) throws GameMangerException {
     map_settings = settings;
     sanityCheckPlayerSettings(); // throws an exception if something is wrong
-    createPlayers();
+    createBackground();
     createFloor();
+    createPlayers();
     createCanvas();
-    createPlankBackground();
   }
 
   // --------------------------------------------------------------- //
@@ -59,6 +59,36 @@ public class GameManager {
     // ---
     if (map_settings.start_directions.length != player_count)
       throw new GameMangerException("mismatch: player count and directions");
+  }
+
+  // --------------------------------------------------------------- //
+  private void createBackground() {
+    String background_texture = map_settings.back_texture;
+    int[] repeat_xy = {6, 6};
+    background = new Renderable("background", background_texture, 0, repeat_xy,
+        cam_resolution);
+    addRenderableToLayer(background, background.getLayer());
+    entities.add(background);
+  }
+
+  // --------------------------------------------------------------- //
+  private void createFloor() {
+    String floor_texture = map_settings.floor_texture;
+    floor = new Renderable("floor", floor_texture, 1);
+    int[] pos = map_settings.board_border;
+    floor.setPosition(pos);
+    addRenderableToLayer(floor, floor.getLayer());
+    entities.add(floor);
+  }
+
+  // --------------------------------------------------------------- //
+  /**
+   * Add a renderable item to the render layers. Layers with a lower index are
+   * rendered before layers with a higher index.
+   */
+  private void addRenderableToLayer(Renderable item, int layer_idx) {
+    List layer = render_layers_.get(layer_idx);
+    layer.add(item);
   }
 
   // --------------------------------------------------------------- //
@@ -110,26 +140,6 @@ public class GameManager {
   }
 
   // --------------------------------------------------------------- //
-  /**
-   * Add a renderable item to the render layers. Layers with a lower index are
-   * rendered before layers with a higher index.
-   */
-  private void addRenderableToLayer(Renderable item, int layer_idx) {
-    List layer = render_layers_.get(layer_idx);
-    layer.add(item);
-  }
-
-  // --------------------------------------------------------------- //
-  private void createFloor() {
-    String floor_texture = map_settings.floor_texture;
-    floor = new Renderable("floor", floor_texture, 1);
-    int[] pos = map_settings.board_border;
-    floor.setPosition(pos);
-    addRenderableToLayer(floor, floor.getLayer());
-    entities.add(floor);
-  }
-
-  // --------------------------------------------------------------- //
   private void createCanvas() {
     int width = map_settings.board_dimensions[0];
     int height = map_settings.board_dimensions[1];
@@ -138,13 +148,6 @@ public class GameManager {
     canvas_.setRenderOffset(offset);
     addRenderableToLayer(canvas_, canvas_.getRenderLayer());
     entities.add(canvas_);
-  }
-
-  // --------------------------------------------------------------- //
-  private void createPlankBackground() {
-    plank_background = new PlankBackground(cam_resolution);
-    addRenderableToLayer(plank_background, plank_background.getRenderLayer());
-    entities.add(plank_background);
   }
 
   // --------------------------------------------------------------- //
