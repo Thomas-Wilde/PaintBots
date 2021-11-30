@@ -3,41 +3,45 @@ package com.tw.paintbots;
 import com.badlogic.gdx.graphics.Color;
 
 public enum PaintColor {
-  GREEN(0), PURPLE(1), BLUE(2), ORANGE(3);
+  GREEN(0), PURPLE(1), BLUE(2), ORANGE(3), BLACK(4);
 
-  private final int color_id_;
-  private final Color color_;
+  private final int color_id;
+  private final Color color;
 
   // --------------------------------------------------------------- //
-  PaintColor(int color_id_) {
-    this.color_id_ = color_id_;
-    switch (color_id_) {
+  PaintColor(int color_id) {
+    this.color_id = color_id;
+    switch (color_id) {
       // ---
       case 0: // green
-        color_ = new Color(0.36f, 0.56f, 0.28f, 0.75f);
+        color = new Color(0.360f, 0.560f, 0.280f, 0.750f); // [92, 143. 71]
         break;
       // ---
       case 1: // purple
-        color_ = new Color(0.56f, 0.45f, 0.69f, 0.75f);
+        color = new Color(0.560f, 0.450f, 0.690f, 0.750f); // [143, 115, 176]
         break;
       // ---
       case 2: // blue
-        color_ = new Color(0.40f, 0.60f, 0.81f, 0.75f);
+        color = new Color(0.400f, 0.600f, 0.810f, 0.750f); // [102, 153, 207]
         break;
       // ---
-      default:
-        color_ = new Color(0.83f, 0.44f, 0.37f, 0.75f);
+      case 3: // orange
+        color = new Color(0.830f, 0.440f, 0.370f, 0.750f); // [212, 112, 94]
+        break;
+      // ---
+      default: // black
+        color = new Color(0.078f, 0.059f, 0.043f, 0.750f); // [20, 15, 11]
         break;
     }
   }
 
   // --------------------------------------------------------------- //
   public int getColorID() {
-    return color_id_;
+    return color_id;
   }
 
   // --------------------------------------------------------------- //
   public Color getColor() {
-    return color_;
+    return color;
   }
 }
