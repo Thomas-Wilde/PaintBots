@@ -13,6 +13,8 @@ public class GameManager {
   private PlayerState[] player_states = null;
   private Canvas canvas_ = null;
   private int[] cam_resolution = {0, 0};
+  private UIDigit time = null;
+  private double elapsed_time = 0.0;
 
   private ArrayList<Entity> entities = new ArrayList<>();
   private List<List<Renderable>> render_layers_ = null;
@@ -37,6 +39,7 @@ public class GameManager {
     createFloor();
     createPlayers();
     createCanvas();
+    createUIClock();
   }
 
   // --------------------------------------------------------------- //
@@ -149,11 +152,22 @@ public class GameManager {
   }
 
   // --------------------------------------------------------------- //
+  private void createUIClock() {
+    time = new UIDigit();
+    addRenderableToLayer(time, time.getLayer());
+    entities.add(time);
+  }
+
+  // --------------------------------------------------------------- //
   public void update() {
     preUpdate();
     // update all entities
     for (Entity entity : entities)
       entity.update();
+    // ---
+    elapsed_time += Gdx.graphics.getDeltaTime();
+    time.setDigitValue(((int) (elapsed_time)) % 10);
+
     // ---
     moveAllPlayers();
     paintOnCanvas();
