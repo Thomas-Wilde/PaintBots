@@ -31,8 +31,9 @@ public class UIDigit extends Renderable {
     if (!initialized)
       loadDigitsGrid(rows, columns);
     // ---
-    resolution[0] = texture.getWidth() / columns;
-    resolution[1] = texture.getHeight() / rows;
+    resolution = new int[] {0, 0};
+    resolution[0] = digit_texture.getWidth() / columns;
+    resolution[1] = digit_texture.getHeight() / rows;
     texture_region = digits_grid[0][0];
   }
 
