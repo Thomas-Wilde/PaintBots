@@ -11,8 +11,6 @@ public class GameManager {
   private GameSettings map_settings = null;
   private Player[] players = null;
   private PlayerState[] player_states = null;
-  private Renderable background = null;
-  private Renderable floor = null;
   private Canvas canvas_ = null;
   private int[] cam_resolution = {0, 0};
 
@@ -65,8 +63,8 @@ public class GameManager {
   private void createBackground() {
     String background_texture = map_settings.back_texture;
     int[] repeat_xy = {6, 6};
-    background = new Renderable("background", background_texture, 0, repeat_xy,
-        cam_resolution);
+    Renderable background = new Renderable("background", background_texture, 0,
+        repeat_xy, cam_resolution);
     addRenderableToLayer(background, background.getLayer());
     entities.add(background);
   }
@@ -74,7 +72,7 @@ public class GameManager {
   // --------------------------------------------------------------- //
   private void createFloor() {
     String floor_texture = map_settings.floor_texture;
-    floor = new Renderable("floor", floor_texture, 1);
+    Renderable floor = new Renderable("floor", floor_texture, 1);
     int[] pos = map_settings.board_border;
     floor.setRenderPosition(pos);
     addRenderableToLayer(floor, floor.getLayer());
