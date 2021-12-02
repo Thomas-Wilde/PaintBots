@@ -11,7 +11,7 @@ public class GameManager {
   private GameSettings map_settings = null;
   private Player[] players = null;
   private PlayerState[] player_states = null;
-  private Canvas canvas_ = null;
+  private Canvas canvas = null;
   private int[] cam_resolution = {0, 0};
   private UIDigit time = null;
   private double elapsed_time = 0.0;
@@ -145,10 +145,10 @@ public class GameManager {
     int width = map_settings.board_dimensions[0];
     int height = map_settings.board_dimensions[1];
     int[] pos = map_settings.board_border;
-    canvas_ = new Canvas(width, height);
-    canvas_.setRenderPosition(pos);
-    addRenderableToLayer(canvas_, canvas_.getLayer());
-    entities.add(canvas_);
+    canvas = new Canvas(width, height);
+    canvas.setRenderPosition(pos);
+    addRenderableToLayer(canvas, canvas.getLayer());
+    entities.add(canvas);
   }
 
   // --------------------------------------------------------------- //
@@ -230,9 +230,9 @@ public class GameManager {
     for (int idx = 0; idx < players.length; ++idx) {
       Player player = players[idx];
       Vector2 position = player_states[idx].new_pos;
-      canvas_.paint(position, player.getPaintColor(), 40);
+      canvas.paint(position, player.getPaintColor(), 40);
     }
-    canvas_.sendPixmapToTexture();
+    canvas.sendPixmapToTexture();
   }
 
   // --------------------------------------------------------------- //
