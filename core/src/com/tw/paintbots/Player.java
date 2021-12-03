@@ -86,11 +86,11 @@ public abstract class Player extends Renderable {
 
   // --------------------------------------------------------------- //
   /**
-   * Set the direction, in which the player will move in the next update-step.
-   * The direction vector needs to be normalized, i.e. it has an euclidean
-   * length of 1.0. Setting the direction vector is the main option to define
-   * the movement of your player. Throws an PlayerException if the 'dir' does
-   * not have lenght 1.0.
+   * Set the direction in which the player will move in the next update step.
+   * The direction vector needs to be normalized, i.e., it has a Euclidean
+   * length of 1.0. Setting the direction vector is the primary option to define
+   * the movement of your player. Throws a PlayerException if the 'dir' does not
+   * have length 1.0.
    */
   public void setDirection(Vector2 dir) throws PlayerException {
     if (Math.abs(dir.len() - 1.0) > 1.0e-5)
