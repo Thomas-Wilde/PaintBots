@@ -39,7 +39,7 @@ public class GameManager {
     createFloor();
     createPlayers();
     createCanvas();
-    createUIClock();
+    createUITimer();
   }
 
   // --------------------------------------------------------------- //
@@ -156,10 +156,19 @@ public class GameManager {
   }
 
   // --------------------------------------------------------------- //
-  private void createUIClock() {
-    time = new UIDigit();
-    addRenderableToLayer(time, time.getLayer());
-    entities.add(time);
+  private void createUITimer() {
+    timer = new UITimer(100);
+    // --- define position and size
+    int width = 300;
+    int offset = 50;
+    timer.setRenderWidth(width);
+    int height = timer.getRenderSize()[1];
+    int pos_x = offset;
+    int pos_y = cam_resolution[1] - height - offset;
+    timer.setRenderPosition(new int[] {pos_x, pos_y});
+    // ---
+    addRenderableToLayer(timer, timer.getLayer());
+    entities.add(timer);
   }
 
   // --------------------------------------------------------------- //
