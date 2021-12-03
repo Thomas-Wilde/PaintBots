@@ -11,7 +11,6 @@ public class PaintBotsGame extends ApplicationAdapter {
   private Music music;
   private SpriteBatch batch;
   private OrthographicCamera camera;
-  private final int ui_width = 300;
   private int cam_width = 0;
   private int cam_height = 0;
 
@@ -30,6 +29,8 @@ public class PaintBotsGame extends ApplicationAdapter {
     // --- create the camera and the SpriteBatch
     int[] border = settings.board_border;
     int[] board_dim = settings.board_dimensions;
+    int ui_width = settings.ui_width;
+
     cam_width = board_dim[0] + 2 * border[0] + ui_width;
     cam_height = board_dim[1] + 2 * border[1];
     camera = new OrthographicCamera();
