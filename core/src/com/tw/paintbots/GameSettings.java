@@ -16,4 +16,5 @@ public class GameSettings {
   public String floor_texture = "floor_stone_medium.png";
   public int[] board_dimensions = {1000, 1000};
   public int[] board_border = {100, 100};
+  public int ui_width = 300;
 }
