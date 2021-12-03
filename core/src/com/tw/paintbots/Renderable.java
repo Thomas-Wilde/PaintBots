@@ -100,6 +100,25 @@ public class Renderable extends Entity {
   }
 
   // --------------------------------------------------------------- //
+  /**
+   * Define the size of the rendered image in pixels. Depending on the
+   * resolution of the texture, the scale factor is adjusted to achieve the
+   * desired size.
+   *
+   * @param width in pixels
+   * @param height in pixels
+   */
+  public void setRenderSize(int width, int height) {
+    if (resolution == null)
+      return;
+    scale[0] = ((float) width / resolution[0]);
+    scale[1] = ((float) height / resolution[1]);
+
+    System.out.println(scale[0] + " " + scale[1]);
+
+  }
+
+  // --------------------------------------------------------------- //
   public void render(SpriteBatch batch) {
     int x = render_position[0];
     int y = render_position[1];
