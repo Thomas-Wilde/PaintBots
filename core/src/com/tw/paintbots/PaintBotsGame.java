@@ -14,7 +14,7 @@ public class PaintBotsGame extends ApplicationAdapter {
   private int cam_width = 0;
   private int cam_height = 0;
 
-  private GameManager game_mgr = new GameManager();
+  private GameManager game_mgr = GameManager.get();
 
   @Override
   public void create() {

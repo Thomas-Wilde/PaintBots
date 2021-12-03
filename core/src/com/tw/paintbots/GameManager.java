@@ -8,19 +8,28 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
 public class GameManager {
+  private static GameManager instance = null;
+
   private GameSettings map_settings = null;
   private Player[] players = null;
   private PlayerState[] player_states = null;
   private Canvas canvas = null;
   private int[] cam_resolution = {0, 0};
-  private UIDigit time = null;
+  private UITimer timer = null;
   private double elapsed_time = 0.0;
 
   private ArrayList<Entity> entities = new ArrayList<>();
   private List<List<Renderable>> render_layers_ = null;
 
   // --------------------------------------------------------------- //
-  public GameManager() {
+  public static GameManager get() {
+    if (instance == null)
+      instance = new GameManager();
+    return instance;
+  }
+
+  // --------------------------------------------------------------- //
+  private GameManager() {
     render_layers_ = new ArrayList<List<Renderable>>();
     for (int i = 0; i < 8; ++i)
       render_layers_.add(new ArrayList<Renderable>());
