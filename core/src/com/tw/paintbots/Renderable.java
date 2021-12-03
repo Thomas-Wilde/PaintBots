@@ -100,10 +100,15 @@ public class Renderable extends Entity {
   }
 
   // --------------------------------------------------------------- //
+  public void setScale(float[] scale) {
+    this.scale = scale.clone();
+  }
+
+  // --------------------------------------------------------------- //
   /**
    * Define the size of the rendered image in pixels. Depending on the
-   * resolution of the texture, the scale factor is adjusted to achieve the
-   * desired size.
+   * resolution of the texture, the scale factors in x- and y-direction are
+   * adjusted to achieve the desired size.
    *
    * @param width in pixels
    * @param height in pixels
@@ -113,9 +118,50 @@ public class Renderable extends Entity {
       return;
     scale[0] = ((float) width / resolution[0]);
     scale[1] = ((float) height / resolution[1]);
+  }
 
-    System.out.println(scale[0] + " " + scale[1]);
+  // --------------------------------------------------------------- //
+  /**
+   * Define the width of the rendered image in pixels. Depending on the
+   * resolution of the texture, the scale factor is adjusted uniformly to
+   * achieve the desired size.
+   *
+   * @param width in pixels
+   */
+  public void setRenderWidth(int width) {
+    if (resolution == null)
+      return;
+    scale[0] = ((float) width / resolution[0]);
+    scale[1] = scale[0];
+  }
 
+  // --------------------------------------------------------------- //
+  /**
+   * Define the height of the rendered image in pixels. Depending on the
+   * resolution of the texture, the scale factor is adjusted uniformly to
+   * achieve the desired size.
+   *
+   * @param height in pixels
+   */
+  public void setRenderHeight(int height) {
+    if (resolution == null)
+      return;
+    scale[1] = ((float) height / resolution[1]);
+    scale[0] = scale[1];
+  }
+
+  // --------------------------------------------------------------- //
+  /**
+   * Get the render size that is computed depending on the texture resolution,
+   * the repeat number, and the scale factor.
+   *
+   * @return An int[2] array with width and height in pixels.
+   */
+  public int[] getRenderSize() {
+    int[] rnd_size = new int[2];
+    rnd_size[0] = (int) (resolution[0] * scale[0]);
+    rnd_size[1] = (int) (resolution[1] * scale[1]);
+    return rnd_size;
   }
 
   // --------------------------------------------------------------- //
