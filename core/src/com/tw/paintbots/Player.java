@@ -131,7 +131,7 @@ public abstract class Player extends Renderable {
     int width = frame.getRegionWidth();
     int height = frame.getRegionHeight();
     float pos_x = pos_.x - width / 2.0f + render_position[0];
-    float pos_y = pos_.y - height / 2.0f + render_position[0];
+    float pos_y = pos_.y - height / 2.0f + render_position[1];
     // --- rotation
     float deg = dirVectorToRotDegree(getDirection());
     batch.draw(frame, pos_x, pos_y, width / 2.0f, height / 2.0f, width, height,
