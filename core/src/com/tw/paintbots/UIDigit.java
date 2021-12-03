@@ -13,7 +13,7 @@ public class UIDigit extends Renderable {
   private PaintColor color = PaintColor.BLACK;
   private int digit_value = 0;
 
-  // ======================== Entity methods ======================== //
+  // ======================== Entity methods ======================= //
   @Override
   public void destroy() {
     digit_texture.dispose();
