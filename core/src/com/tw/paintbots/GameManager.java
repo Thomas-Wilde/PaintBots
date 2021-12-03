@@ -76,7 +76,8 @@ public class GameManager {
   private void createFloor() {
     String floor_texture = map_settings.floor_texture;
     Renderable floor = new Renderable("floor", floor_texture, 1);
-    int[] pos = map_settings.board_border;
+    int[] pos = map_settings.board_border.clone();
+    pos[0] += map_settings.ui_width;
     floor.setRenderPosition(pos);
     addRenderableToLayer(floor, floor.getLayer());
     entities.add(floor);
@@ -123,11 +124,12 @@ public class GameManager {
     Player player = players[idx];
     Vector2 pos = map_settings.start_positions[idx];
     Vector2 dir = map_settings.start_directions[idx];
-    int[] offset = map_settings.board_border;
+    int[] render_pos = map_settings.board_border.clone();
+    render_pos[0] += map_settings.ui_width;
 
     player.setPosition(pos);
     player.setDirection(dir);
-    player.setRenderPosition(offset);
+    player.setRenderPosition(render_pos);
   }
 
   // --------------------------------------------------------------- //
@@ -144,7 +146,9 @@ public class GameManager {
   private void createCanvas() {
     int width = map_settings.board_dimensions[0];
     int height = map_settings.board_dimensions[1];
-    int[] pos = map_settings.board_border;
+    int[] pos = map_settings.board_border.clone();
+    pos[0] += map_settings.ui_width;
+
     canvas = new Canvas(width, height);
     canvas.setRenderPosition(pos);
     addRenderableToLayer(canvas, canvas.getLayer());
