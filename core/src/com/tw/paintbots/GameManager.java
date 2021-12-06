@@ -15,7 +15,6 @@ public class GameManager {
   private PlayerState[] player_states = null;
   private Canvas canvas = null;
   private int[] cam_resolution = {0, 0};
-  private UITimer timer = null;
   private double elapsed_time = 0.0;
 
   private ArrayList<Entity> entities = new ArrayList<>();
@@ -166,7 +165,7 @@ public class GameManager {
 
   // --------------------------------------------------------------- //
   private void createUITimer() {
-    timer = new UITimer(100);
+    UITimer timer = new UITimer(180);
     // --- define position and size
     int width = 300;
     int offset = 50;
