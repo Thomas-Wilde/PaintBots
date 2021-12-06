@@ -28,6 +28,11 @@ public class GameManager {
   }
 
   // --------------------------------------------------------------- //
+  public double getElapsedTime() {
+    return elapsed_time;
+  }
+
+  // --------------------------------------------------------------- //
   private GameManager() {
     render_layers_ = new ArrayList<List<Renderable>>();
     for (int i = 0; i < 8; ++i)
@@ -181,14 +186,12 @@ public class GameManager {
 
   // --------------------------------------------------------------- //
   public void update() {
+    elapsed_time += Gdx.graphics.getDeltaTime();
+    // ---
     preUpdate();
-    // update all entities
+    // --- update all entities
     for (Entity entity : entities)
       entity.update();
-    // ---
-    elapsed_time += Gdx.graphics.getDeltaTime();
-    time.setDigitValue(((int) (elapsed_time)) % 10);
-
     // ---
     moveAllPlayers();
     paintOnCanvas();
