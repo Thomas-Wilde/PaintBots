@@ -132,7 +132,7 @@ public class GameManager {
   private void initPlayer(int idx) throws PlayerException {
     Player player = players[idx];
     Vector2 pos = map_settings.start_positions[idx];
-    Vector2 dir = map_settings.start_directions[idx];
+    Vector2 dir = map_settings.start_directions[idx].setLength(1.0f);
     int[] render_pos = map_settings.board_border.clone();
     render_pos[0] += map_settings.ui_width;
 
