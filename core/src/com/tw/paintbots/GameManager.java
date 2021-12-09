@@ -17,6 +17,8 @@ public class GameManager {
   private int[] cam_resolution = {0, 0};
   private double elapsed_time = 0.0;
 
+  private UITimer timer = null;
+
   private ArrayList<Entity> entities = new ArrayList<>();
   private List<List<Renderable>> render_layers_ = null;
 
@@ -50,9 +52,9 @@ public class GameManager {
     sanityCheckPlayerSettings(); // throws an exception if something is wrong
     createBackground();
     createFloor();
+    createUITimer();
     createPlayers();
     createCanvas();
-    createUITimer();
   }
 
   // --------------------------------------------------------------- //
