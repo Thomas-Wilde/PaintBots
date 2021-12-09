@@ -1,5 +1,8 @@
 package com.tw.paintbots;
 
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+
 // =============================================================== //
 public class UIDigit extends TextureGrid {
   // --------------------------------------------------------------- //
@@ -29,4 +32,14 @@ public class UIDigit extends TextureGrid {
     digit_value = Math.min(10, digit_value);
     setTextureIndex(digit_value, color.getColorID());
   }
+
+  // ===================== TextureGrid methods ===================== //
+  //@formatter:off
+  private static boolean is_initialized = false;
+  private static int grid_index = -1;
+  @Override protected void setInitialized() { is_initialized = true; }
+  @Override protected boolean isInitialized() { return is_initialized; }
+  @Override protected void setGridIndex(int index) { UIDigit.grid_index = index; }
+  @Override protected int getGridIndex() { return grid_index; }
+  //@formatter:on
 }

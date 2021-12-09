@@ -1,43 +1,57 @@
 package com.tw.paintbots;
 
+import java.util.ArrayList;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 // =============================================================== //
-public class TextureGrid extends Renderable {
+public abstract class TextureGrid extends Renderable {
   // --------------------------------------------------------------- //
-  private static Texture texture;
-  private static TextureRegion[][] texture_grid = null;
-  private static boolean initialized = false;
-  private static int column_count;
-  private static int row_count;
+  private static int index_counter = 0;
+  private static ArrayList<Texture> loaded_textures = new ArrayList<>();
+  private static ArrayList<TextureRegion[][]> loaded_grids = new ArrayList<>();
+
+  private int columns = 0;
+  private int rows = 0;
   private int column_idx = 0;
   private int row_idx = 0;
+
+  //@formatter:off
+  protected abstract void setInitialized();
+  protected abstract boolean isInitialized();
+  protected abstract void setGridIndex(int index);
+  protected abstract int getGridIndex();
+  //@formatter:on
 
   // ===================== TextureGrid methods ===================== //
   public TextureGrid(String filename, int layer, int columns, int rows) {
     super("UITextureGrid", layer);
     super.resolution = new int[] {0, 0};
     // ---
-    TextureGrid.column_count = columns;
-    TextureGrid.row_count = rows;
+    this.columns = columns;
+    this.rows = rows;
     // ---
-    if (!initialized)
+    if (!isInitialized()) {
+      setGridIndex(index_counter++);
+      setInitialized();
       loadGrid(filename);
+    }
     // ---
     computeResolution();
   }
 
   // --------------------------------------------------------------- //
-  private static void loadGrid(String filename) {
-    texture = new Texture(Gdx.files.internal(filename));
-    int region_width = texture.getWidth() / column_count;
-    int region_height = texture.getHeight() / row_count;
-    TextureGrid.texture_grid =
+  private void loadGrid(String filename) {
+    Texture texture = new Texture(Gdx.files.internal(filename));
+    int region_width = texture.getWidth() / columns;
+    int region_height = texture.getHeight() / rows;
+    TextureRegion[][] texture_grid =
         TextureRegion.split(texture, region_width, region_height);
-    TextureGrid.initialized = true;
-
+    // ---
+    loaded_textures.add(texture);
+    loaded_grids.add(texture_grid);
   }
 
   // --------------------------------------------------------------- //
@@ -49,14 +63,16 @@ public class TextureGrid extends Renderable {
 
   // --------------------------------------------------------------- //
   private void updateTextureRegion() {
-    texture_region = texture_grid[row_idx][column_idx];
+    int idx = getGridIndex();
+    texture_region = loaded_grids.get(idx)[row_idx][column_idx];
   }
 
   // ====================== Renderable methods ====================== //
   @Override
   protected void computeResolution() {
-    int region_width = texture.getWidth() / column_count;
-    int region_height = texture.getHeight() / row_count;
+    int idx = getGridIndex();
+    int region_width = loaded_textures.get(idx).getWidth() / columns;
+    int region_height = loaded_textures.get(idx).getHeight() / rows;
     resolution[0] = region_width;
     resolution[1] = region_height;
   }
@@ -64,7 +80,8 @@ public class TextureGrid extends Renderable {
   // ======================== Entity methods ======================= //
   @Override
   public void destroy() {
-    texture.dispose();
+    for (Texture tex : loaded_textures)
+      tex.dispose();
     super.destroy();
   }
 }
