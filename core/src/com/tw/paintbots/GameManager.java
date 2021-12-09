@@ -89,9 +89,15 @@ public class GameManager {
   private void createFloor() {
     String floor_texture = map_settings.floor_texture;
     Renderable floor = new Renderable("floor", floor_texture, 1);
+    // --- position
     int[] pos = map_settings.board_border.clone();
     pos[0] += map_settings.ui_width;
     floor.setRenderPosition(pos);
+    // --- size
+    int width = map_settings.board_dimensions[0];
+    int height = map_settings.board_dimensions[1];
+    floor.setRenderSize(width, height);
+    // ---
     addRenderableToLayer(floor, floor.getLayer());
     entities.add(floor);
   }
