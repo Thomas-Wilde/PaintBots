@@ -130,6 +130,7 @@ public class GameManager {
         addRenderableToLayer(players[i], players[i].getLayer());
         initPlayer(i);
         savePlayerState(i);
+        createPlayerUI(players[i]);
       } catch (Exception e) {
         System.out.println(e.getMessage());
       }
@@ -191,6 +192,26 @@ public class GameManager {
     // ---
     addRenderableToLayer(timer, timer.getLayer());
     entities.add(timer);
+  }
+
+  // --------------------------------------------------------------- //
+  private void createPlayerUI(Player player) {
+    UIPlayerBoard board = new UIPlayerBoard(player);
+    int player_id = player.getPaintColor().getColorID();
+    // --- define position and size
+    int[] anker = timer.getRenderPosition();
+    int ui_width = map_settings.ui_width;
+    int width = (int) (ui_width * 0.45);
+    board.setRenderWidth(width);
+    int height = board.getRenderSize()[1];
+    int offset_x = (int) (ui_width * 0.1 / 3);
+    int offset_y = height + (int) (ui_width * 0.05);
+    int pos_x = (player_id % 2 == 1) ? offset_x : width + 2 * offset_x;
+    int pos_y = (player_id > 1) ? anker[1] - offset_y : anker[1] - 2 * offset_y;
+    board.setRenderPosition(new int[] {pos_x, pos_y});
+    // ---
+    addRenderableToLayer(board, board.getLayer());
+    entities.add(board);
   }
 
   // --------------------------------------------------------------- //
