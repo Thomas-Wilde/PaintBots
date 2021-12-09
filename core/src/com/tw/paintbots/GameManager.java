@@ -170,12 +170,13 @@ public class GameManager {
 
   // --------------------------------------------------------------- //
   private void createUITimer() {
-    UITimer timer = new UITimer(180);
+    timer = new UITimer(180);
     // --- define position and size
-    int width = 300;
-    int offset = 50;
+    int ui_width = map_settings.ui_width;
+    int width = (int) (ui_width * 0.75);
     timer.setRenderWidth(width);
     int height = timer.getRenderSize()[1];
+    int offset = (int) (ui_width * 0.125);
     int pos_x = offset;
     int pos_y = cam_resolution[1] - height - offset;
     timer.setRenderPosition(new int[] {pos_x, pos_y});
