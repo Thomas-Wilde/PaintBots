@@ -20,7 +20,6 @@ public abstract class Player extends Renderable {
   private PlayerAnimation animation_ = null;
   private AnimatedObject dir_indicator_ = null;
   private float anim_time_ = 0.0f;
-  private int[] render_offset = {0, 0};
 
   // --------------------------------------------------------------- //
   Player(String name) throws PlayerException {
