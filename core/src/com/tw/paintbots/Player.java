@@ -60,8 +60,9 @@ public abstract class Player extends Renderable {
 
   // --------------------------------------------------------------- //
   /**
-   * Get the current position of the player. \return A copy of the position
-   * vector.
+   * Get the current position of the player.
+   *
+   * @return A copy of the position vector.
    */
   public Vector2 getPosition() {
     return pos_.cpy();
