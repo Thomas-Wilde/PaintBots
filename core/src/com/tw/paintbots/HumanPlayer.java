@@ -1,5 +1,7 @@
 package com.tw.paintbots;
 
+import java.util.Objects;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
@@ -16,29 +18,31 @@ public class HumanPlayer extends Player {
 
   /** Defines the rotation/direction in which the player moves. */
   private float rot_degree_ = 0.0f;
+  private Vector2 dir = new Vector2(0.0f, 0.0f);
 
   /**
-   * We distinguish 720 different move directions, that are defined by sine and
-   * cosine values. We precompute a lookUp table for the directions.
+   * For the human controlled player we distinguish between 720 different move
+   * directions, that are defined by sine and cosine values. We precompute a
+   * lookUp table for the direction vectors.
    */
-  private static double[][] dir_look_up_ = null;
-  /** Number of different move directions we distinguish. */
-  private static final int dir_look_up_count_ = 720;
-  private static final double delta_dir_ = dir_look_up_count_ / 360.0;
+  private static final int dir_count_ = 720;
+  private static final double[][] dir_look_up_ = new double[dir_count_][2];
+  private static final double delta_dir_ = dir_count_ / 360.0;
+  private static boolean is_initialized = false;
 
   // --------------------------------------------------------------- //
   public HumanPlayer(String name) throws PlayerException {
     super(name);
     // ---
-    if (dir_look_up_ == null)
+    if (!is_initialized)
       initDirectionArray();
   }
 
   // --------------------------------------------------------------- //
   /** Precompute the possible move directions. */
   private static void initDirectionArray() {
-    dir_look_up_ = new double[dir_look_up_count_][2];
-    for (int i = 0; i < dir_look_up_count_; ++i) {
+    is_initialized = true;
+    for (int i = 0; i < dir_count_; ++i) {
       double rad = Math.toRadians((double) i * delta_dir_);
       dir_look_up_[i][0] = Math.cos(rad);
       dir_look_up_[i][1] = Math.sin(rad);
@@ -51,11 +55,24 @@ public class HumanPlayer extends Player {
   }
 
   // --------------------------------------------------------------- //
-  /** Map the direction to the current rotation. */
   @Override
-  public void setDirection(Vector2 dir) throws PlayerException {
-    super.setDirection(dir);
+  public void setDirection(Vector2 dir, GameManager.SecretKey key) {
+    Objects.requireNonNull(key);
+    setDirection(dir);
+  }
+
+  // --------------------------------------------------------------- //
+  /** Map the direction to the current rotation. */
+  private void setDirection(Vector2 dir) {
+    dir.setLength(1.0f);
+    this.dir = dir;
     rot_degree_ = dirVectorToRotDegree(dir);
+  }
+
+  // --------------------------------------------------------------- //
+  @Override
+  public Vector2 getDirection() {
+    return dir.cpy();
   }
 
   // --------------------------------------------------------------- //
@@ -64,9 +81,9 @@ public class HumanPlayer extends Player {
   public void update() {
     mapKeyToRotation();
     // ---
-    Vector2 dir = mapRotationToDirectionVector();
+    Vector2 dir_tmp = mapRotationToDirectionVector();
     try {
-      super.setDirection(dir);
+      setDirection(dir_tmp);
     } catch (Exception e) {
       System.out.print(e.getMessage());
     }
@@ -88,11 +105,11 @@ public class HumanPlayer extends Player {
 
   // --------------------------------------------------------------- //
   /**
-   * Map the continuous rotation value to a discrete direction value from the
+   * Map the continuous rotation value to a discrete direction vector from the
    * look up table.
    */
   private Vector2 mapRotationToDirectionVector() {
-    int dir_id = (int) (rot_degree_ / delta_dir_) % dir_look_up_count_;
+    int dir_id = (int) (rot_degree_ / delta_dir_) % dir_count_;
     float x = (float) dir_look_up_[dir_id][0];
     float y = (float) dir_look_up_[dir_id][1];
     return new Vector2(x, y);
