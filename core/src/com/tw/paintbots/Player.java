@@ -1,9 +1,13 @@
 package com.tw.paintbots;
 
+import java.util.Objects;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+
+import com.tw.paintbots.GameManager.SecretKey;
 
 public abstract class Player extends Renderable {
   /** Maximum number of allowed players. */
@@ -14,12 +18,13 @@ public abstract class Player extends Renderable {
       {PaintColor.GREEN, PaintColor.PURPLE, PaintColor.BLUE, PaintColor.ORANGE};
 
   private Vector2 pos_ = new Vector2(0.0f, 0.0f);
-  private Vector2 dir_ = new Vector2(1.0f, 0.0f);
+  // private Vector2 dir_ = new Vector2(1.0f, 0.0f);
   private int character_width_ = 64;
   private final Mesh mesh_;
   private PlayerAnimation animation_ = null;
   private AnimatedObject dir_indicator_ = null;
   private float anim_time_ = 0.0f;
+  private float color_amount = 1.0f;
 
   // --------------------------------------------------------------- //
   Player(String name) throws PlayerException {
@@ -53,8 +58,9 @@ public abstract class Player extends Renderable {
   public PlayerState getState() {
     PlayerState state = new PlayerState();
     state.old_pos = this.pos_.cpy();
-    state.dir = this.dir_.cpy();
     state.type = this.getType();
+    state.dir = this.getDirection();
+    state.dir.setLength(1.0f);
     return state;
   }
 
@@ -69,34 +75,32 @@ public abstract class Player extends Renderable {
   }
 
   // --------------------------------------------------------------- //
-  public void setPosition(Vector2 position) {
+  /** Set the position of the player. Only GameManager can call this method. */
+  public void setPosition(Vector2 position, SecretKey key) {
+    Objects.requireNonNull(key);
     pos_ = position.cpy();
   }
 
   // --------------------------------------------------------------- //
   /**
    * Get the current direction, in which the player will move in the next
-   * update-step.
+   * update-step. The direction vector needs to be normalized, i.e., it has a
+   * Euclidean length of 1.0. If it has not length 1.0, it will be normalized
+   * anyway but this maybe modify the intented direction.
    *
-   * @return A copy to the direction vector.
+   * @return A copy to the (normalized) direction vector.
    */
-  public Vector2 getDirection() {
-    return dir_.cpy();
-  }
+  abstract public Vector2 getDirection();
 
   // --------------------------------------------------------------- //
   /**
    * Set the direction in which the player will move in the next update step.
-   * The direction vector needs to be normalized, i.e., it has a Euclidean
-   * length of 1.0. Setting the direction vector is the primary option to define
-   * the movement of your player. Throws a PlayerException if the 'dir' does not
-   * have length 1.0.
+   * The GameManager is the only guy, that can access this method. This
+   * restriction is made to avoid cheating, i.e. if someone tries to modify the
+   * behavior of other players. This method is usually only used once at the
+   * start of the battle to set the initial move direction.
    */
-  public void setDirection(Vector2 dir) throws PlayerException {
-    if (Math.abs(dir.len() - 1.0) > 1.0e-5)
-      throw (new PlayerException("Length of direction vector must be 1.0."));
-    dir_ = dir;
-  }
+  abstract public void setDirection(Vector2 dir, SecretKey key);
 
   // --------------------------------------------------------------- //
   /** Get the mesh of the Player object, that is used for collision. */
@@ -114,10 +118,11 @@ public abstract class Player extends Renderable {
 
   // --------------------------------------------------------------- //
   private void renderCharacter(SpriteBatch batch) {
-    // get different animation frame for each player
+    // get different animation frames for each player
     float anim_shift = anim_time_ / 4 * player_id;
-    TextureRegion frame =
-        animation_.getFrame(getDirection(), anim_time_ + anim_shift);
+    Vector2 dir_tmp = getDirection();
+    dir_tmp.setLength(1.0f);
+    TextureRegion frame = animation_.getFrame(dir_tmp, anim_time_ + anim_shift);
     int offset = frame.getRegionWidth() / 2;
     float pos_x = pos_.x - offset + render_position[0];
     float pos_y = pos_.y - offset + render_position[1];
@@ -133,7 +138,9 @@ public abstract class Player extends Renderable {
     float pos_x = pos_.x - width / 2.0f + render_position[0];
     float pos_y = pos_.y - height / 2.0f + render_position[1];
     // --- rotation
-    float deg = dirVectorToRotDegree(getDirection());
+    Vector2 dir_tmp = getDirection();
+    dir_tmp.setLength(1.0f);
+    float deg = dirVectorToRotDegree(dir_tmp);
     batch.draw(frame, pos_x, pos_y, width / 2.0f, height / 2.0f, width, height,
         1.0f, 1.0f, deg);
   }
