@@ -8,6 +8,14 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
 public class GameManager {
+  //@formatter:off
+  // mimic a friend class behavior → every method that should be
+  // accessed only by the GameManager has to deliver a secret key
+  public static final class SecretKey { private SecretKey() {} }
+  private static final SecretKey secret_key = new SecretKey();
+  //@formatter:on
+
+  // GameManager uses SingletonPattern
   private static GameManager instance = null;
 
   private GameSettings map_settings = null;
@@ -149,8 +157,8 @@ public class GameManager {
     int[] render_pos = map_settings.board_border.clone();
     render_pos[0] += map_settings.ui_width;
 
-    player.setPosition(pos);
-    player.setDirection(dir);
+    player.setPosition(pos, new SecretKey());
+    player.setDirection(dir, new SecretKey());
     player.setRenderPosition(render_pos);
   }
 
@@ -255,7 +263,7 @@ public class GameManager {
     new_pos.add(move_dir.scl(200.0f * Gdx.graphics.getDeltaTime()));
     clampPositionToBoard(new_pos);
     // ---
-    player.setPosition(new_pos);
+    player.setPosition(new_pos, secret_key);
     player_states[idx].new_pos = new_pos;
   }
 
