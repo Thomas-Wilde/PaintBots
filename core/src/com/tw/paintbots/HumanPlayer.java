@@ -6,10 +6,15 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.math.Vector2;
 
 public class HumanPlayer extends Player {
+  //@formatter:off
   /** The key_map_ maps the keyboard controls to the player ID. */
-  private int[][] key_map_ = {{Keys.LEFT, Keys.RIGHT}, {Keys.A, Keys.D},
-      {Keys.N, Keys.M}, {Keys.NUMPAD_4, Keys.NUMPAD_6}};
-  /** Defines the rotation in which the player moves. */
+  private int[][] key_map_ = {{Keys.LEFT,     Keys.RIGHT},      // player 0
+                              {Keys.A,        Keys.D},          // player 1
+                              {Keys.N,        Keys.M},          // player 2
+                              {Keys.NUMPAD_4, Keys.NUMPAD_6}};  // player 3
+  //@formatter:on
+
+  /** Defines the rotation/direction in which the player moves. */
   private float rot_degree_ = 0.0f;
 
   /**
