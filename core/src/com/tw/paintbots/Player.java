@@ -10,7 +10,7 @@ public abstract class Player extends Renderable {
   public static final int MAX_COUNT = 4;
   private static int id_counter = 0;
   private int player_id = -1;
-  private PaintColor paint_colors[] =
+  private PaintColor[] paint_colors =
       {PaintColor.GREEN, PaintColor.PURPLE, PaintColor.BLUE, PaintColor.ORANGE};
 
   private Vector2 pos_ = new Vector2(0.0f, 0.0f);
