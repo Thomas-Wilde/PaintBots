@@ -83,8 +83,9 @@ public class Renderable extends Entity {
   protected void computeScale(int[] render_resolution) {
     int width = resolution[0];
     int height = resolution[1];
-    scale[0] = (float) render_resolution[0] / width;
-    scale[1] = (float) render_resolution[1] / height;
+    float sx = (float) render_resolution[0] / width;
+    float sy = (float) render_resolution[1] / height;
+    setScale(new float[] {sx, sy});
   }
 
   // --------------------------------------------------------------- //
@@ -116,8 +117,9 @@ public class Renderable extends Entity {
   public void setRenderSize(int width, int height) {
     if (resolution == null)
       return;
-    scale[0] = ((float) width / resolution[0]);
-    scale[1] = ((float) height / resolution[1]);
+    float sx = ((float) width / resolution[0]);
+    float sy = ((float) height / resolution[1]);
+    setScale(new float[] {sx, sy});
   }
 
   // --------------------------------------------------------------- //
@@ -131,8 +133,8 @@ public class Renderable extends Entity {
   public void setRenderWidth(int width) {
     if (resolution == null)
       return;
-    scale[0] = ((float) width / resolution[0]);
-    scale[1] = scale[0];
+    float s = ((float) width / resolution[0]);
+    setScale(new float[] {s, s});
   }
 
   // --------------------------------------------------------------- //
@@ -146,8 +148,8 @@ public class Renderable extends Entity {
   public void setRenderHeight(int height) {
     if (resolution == null)
       return;
-    scale[1] = ((float) height / resolution[1]);
-    scale[0] = scale[1];
+    float s = ((float) height / resolution[1]);
+    setScale(new float[] {s, s});
   }
 
   // --------------------------------------------------------------- //
