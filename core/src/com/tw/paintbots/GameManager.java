@@ -232,6 +232,7 @@ public class GameManager {
       entity.update();
     // ---
     moveAllPlayers();
+    adjustPaintAmounts();
     paintOnCanvas();
   }
 
@@ -288,9 +289,26 @@ public class GameManager {
   }
 
   // --------------------------------------------------------------- //
+  private void adjustPaintAmounts() {
+    for (int player_idx = 0; player_idx < players.length; ++player_idx)
+      adjustPaintAmount(player_idx);
+  }
+
+  // --------------------------------------------------------------- //
+  private void adjustPaintAmount(int player_idx) {
+    Vector2 old_pos = player_states[player_idx].old_pos;
+    Vector2 new_pos = player_states[player_idx].new_pos;
+    float move_dist = new_pos.dst(old_pos) / 4000.0f;
+    Player player = players[player_idx];
+    player.decreasePaintAmount(move_dist, secret_key);
+  }
+
+  // --------------------------------------------------------------- //
   private void paintOnCanvas() {
     for (int idx = 0; idx < players.length; ++idx) {
       Player player = players[idx];
+      if ((player.getPaintAmount() <= 0.0))
+        continue;
       Vector2 position = player_states[idx].new_pos;
       canvas.paint(position, player.getPaintColor(), 40);
     }

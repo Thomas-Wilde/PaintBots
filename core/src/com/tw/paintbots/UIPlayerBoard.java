@@ -59,6 +59,13 @@ public class UIPlayerBoard extends Renderable {
 
   // ======================== Entity methods ======================= //
   @Override
+  public void update() {
+    super.update();
+    paintbar.setAmount(player.getPaintAmount());
+  }
+
+  // --------------------------------------------------------------- //
+  @Override
   public void destroy() {
     super.destroy();
     paintbar.destroy();

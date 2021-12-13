@@ -49,7 +49,7 @@ public abstract class Player extends Renderable {
   }
 
   // --------------------------------------------------------------- //
-  /** Access the unique painting color of the current player. */
+  /** Access the unique painting color of the player. */
   public PaintColor getPaintColor() {
     return paint_colors[player_id];
   }
@@ -106,6 +106,30 @@ public abstract class Player extends Renderable {
   /** Get the mesh of the Player object, that is used for collision. */
   public Mesh getMesh() {
     return mesh_;
+  }
+
+  // --------------------------------------------------------------- //
+  public void setPaintAmount(float amount, SecretKey key) {
+    Objects.requireNonNull(key);
+    paint_amount = Math.max(0.0f, amount);
+    paint_amount = Math.min(amount, 1.0f);
+  }
+
+  // --------------------------------------------------------------- //
+  public float getPaintAmount() {
+    return paint_amount;
+  }
+
+  // --------------------------------------------------------------- //
+  public void increasePaintAmount(float plus, SecretKey key) {
+    Objects.requireNonNull(key);
+    setPaintAmount(paint_amount + plus, key);
+  }
+
+  // --------------------------------------------------------------- //
+  public void decreasePaintAmount(float minus, SecretKey key) {
+    Objects.requireNonNull(key);
+    setPaintAmount(paint_amount - minus, key);
   }
 
   // --------------------------------------------------------------- //
