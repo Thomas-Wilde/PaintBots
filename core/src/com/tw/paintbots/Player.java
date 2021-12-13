@@ -13,18 +13,18 @@ public abstract class Player extends Renderable {
   /** Maximum number of allowed players. */
   public static final int MAX_COUNT = 4;
   private static int id_counter = 0;
+  //@formatter:off
+  private static PaintColor[] paint_colors = {PaintColor.GREEN, PaintColor.PURPLE,
+                                              PaintColor.BLUE, PaintColor.ORANGE};
+  //@formatter:on
   private int player_id = -1;
-  private PaintColor[] paint_colors =
-      {PaintColor.GREEN, PaintColor.PURPLE, PaintColor.BLUE, PaintColor.ORANGE};
-
   private Vector2 pos_ = new Vector2(0.0f, 0.0f);
-  // private Vector2 dir_ = new Vector2(1.0f, 0.0f);
   private int character_width_ = 64;
   private final Mesh mesh_;
   private PlayerAnimation animation_ = null;
   private AnimatedObject dir_indicator_ = null;
   private float anim_time_ = 0.0f;
-  private float color_amount = 1.0f;
+  private float paint_amount = 1.0f;
 
   // --------------------------------------------------------------- //
   Player(String name) throws PlayerException {
@@ -90,7 +90,7 @@ public abstract class Player extends Renderable {
    *
    * @return A copy to the (normalized) direction vector.
    */
-  abstract public Vector2 getDirection();
+  public abstract Vector2 getDirection();
 
   // --------------------------------------------------------------- //
   /**
@@ -100,7 +100,7 @@ public abstract class Player extends Renderable {
    * behavior of other players. This method is usually only used once at the
    * start of the battle to set the initial move direction.
    */
-  abstract public void setDirection(Vector2 dir, SecretKey key);
+  public abstract void setDirection(Vector2 dir, SecretKey key);
 
   // --------------------------------------------------------------- //
   /** Get the mesh of the Player object, that is used for collision. */

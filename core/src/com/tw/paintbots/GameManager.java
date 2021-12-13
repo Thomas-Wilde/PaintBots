@@ -244,8 +244,8 @@ public class GameManager {
   // --------------------------------------------------------------- //
   /** Calls 'movePlayer(int idx)' for each player */
   private void moveAllPlayers() {
-    for (int idx = 0; idx < players.length; ++idx)
-      movePlayer(idx);
+    for (int player_idx = 0; player_idx < players.length; ++player_idx)
+      movePlayer(player_idx);
   }
 
   // --------------------------------------------------------------- //
@@ -254,9 +254,9 @@ public class GameManager {
    * translation vector depends on the move speed. The movement is clamped at
    * the borders of the board.
    */
-  private void movePlayer(int idx) {
-    Vector2 old_pos = player_states[idx].old_pos;
-    Player player = players[idx];
+  private void movePlayer(int player_idx) {
+    Vector2 old_pos = player_states[player_idx].old_pos;
+    Player player = players[player_idx];
     Vector2 move_dir = player.getDirection();
     // ---
     Vector2 new_pos = old_pos.cpy();
@@ -264,7 +264,7 @@ public class GameManager {
     clampPositionToBoard(new_pos);
     // ---
     player.setPosition(new_pos, secret_key);
-    player_states[idx].new_pos = new_pos;
+    player_states[player_idx].new_pos = new_pos;
   }
 
   // --------------------------------------------------------------- //
