@@ -23,6 +23,6 @@ public enum PaintColor {
 
   // --------------------------------------------------------------- //
   public int   getColorID() { return color_id; }
-  public Color getColor()   { return color; }
+  public Color getColor()   { return color.cpy(); }
   //@formatter:on
 }
