@@ -29,6 +29,7 @@ public class GameManager {
 
   private ArrayList<Entity> entities = new ArrayList<>();
   private List<List<Renderable>> render_layers_ = null;
+  private final int layers_count = 10;
 
   // --------------------------------------------------------------- //
   public static GameManager get() {
@@ -45,7 +46,7 @@ public class GameManager {
   // --------------------------------------------------------------- //
   private GameManager() {
     render_layers_ = new ArrayList<List<Renderable>>();
-    for (int i = 0; i < 8; ++i)
+    for (int i = 0; i < layers_count; ++i)
       render_layers_.add(new ArrayList<Renderable>());
   }
 
@@ -91,7 +92,7 @@ public class GameManager {
     int[] repeat_xy = {6, 6};
     Renderable background = new Renderable("background", background_texture, 0,
         repeat_xy, cam_resolution);
-    addRenderableToLayer(background, background.getLayer());
+    addRenderable(background);
     entities.add(background);
   }
 
@@ -108,7 +109,7 @@ public class GameManager {
     int height = map_settings.board_dimensions[1];
     floor.setRenderSize(width, height);
     // ---
-    addRenderableToLayer(floor, floor.getLayer());
+    addRenderable(floor);
     entities.add(floor);
   }
 
@@ -117,9 +118,11 @@ public class GameManager {
    * Add a renderable item to the render layers. Layers with a lower index are
    * rendered before layers with a higher index.
    */
-  private void addRenderableToLayer(Renderable item, int layer_idx) {
-    List layer = render_layers_.get(layer_idx);
-    layer.add(item);
+  private void addRenderable(Renderable item) {
+    for (int layer_idx : item.getLayers()) {
+      List<Renderable> layer = render_layers_.get(layer_idx);
+      layer.add(item);
+    }
   }
 
   // --------------------------------------------------------------- //
@@ -135,7 +138,7 @@ public class GameManager {
       try {
         players[i] = new HumanPlayer("Player" + i);
         entities.add(players[i]);
-        addRenderableToLayer(players[i], players[i].getLayer());
+        addRenderable(players[i]);
         initPlayer(i);
         savePlayerState(i);
         createPlayerUI(players[i]);
@@ -181,7 +184,7 @@ public class GameManager {
 
     canvas = new Canvas(width, height);
     canvas.setRenderPosition(pos);
-    addRenderableToLayer(canvas, canvas.getLayer());
+    addRenderable(canvas);
     entities.add(canvas);
   }
 
@@ -198,7 +201,7 @@ public class GameManager {
     int pos_y = cam_resolution[1] - height - offset;
     timer.setRenderPosition(new int[] {pos_x, pos_y});
     // ---
-    addRenderableToLayer(timer, timer.getLayer());
+    addRenderable(timer);
     entities.add(timer);
   }
 
@@ -218,7 +221,7 @@ public class GameManager {
     int pos_y = (player_id > 1) ? anker[1] - offset_y : anker[1] - 2 * offset_y;
     board.setRenderPosition(new int[] {pos_x, pos_y});
     // ---
-    addRenderableToLayer(board, board.getLayer());
+    addRenderable(board);
     entities.add(board);
   }
 
@@ -318,8 +321,11 @@ public class GameManager {
   // --------------------------------------------------------------- //
   public void render(SpriteBatch batch) {
     // --- render all layers
-    for (List<Renderable> layer_items : render_layers_)
+    int layer_idx = 0;
+    for (List<Renderable> layer_items : render_layers_) {
       for (Renderable renderable : layer_items)
-        renderable.render(batch);
+        renderable.render(batch, layer_idx);
+      ++layer_idx;
+    }
   }
 }

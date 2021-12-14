@@ -12,23 +12,17 @@ public class Renderable extends Entity {
   protected final String texture_file;
   protected Texture texture;
   protected TextureRegion texture_region;
-  protected int layer = 0;
+  protected int[] layers = {0};
   protected int[] render_position = {0, 0};
   protected int[] repeat_xy = {1, 1};
   protected int[] resolution = null;
   protected float[] scale = {1.0f, 1.0f};
 
-  // ======================== Entity methods ======================== //
-  //@formatter:off
-  @Override public void destroy() { texture.dispose(); }
-  @Override public void update()  { /* implemented by sub-class */ }
-  //@formatter:on
-
   // ====================== Renderable methods ====================== //
   Renderable(String name, int layer) {
     super(name);
     texture_file = "";
-    this.layer = layer;
+    this.layers = new int[] {layer};
   }
 
   // --------------------------------------------------------------- //
@@ -47,7 +41,7 @@ public class Renderable extends Entity {
     // --- set the attributes
     super(name);
     this.texture_file = texture_file;
-    this.layer = layer;
+    this.layers = new int[] {layer};
     this.repeat_xy = Arrays.copyOf(repeat_xy, 2);
     // --- init graphics
     loadTexture();
@@ -90,7 +84,7 @@ public class Renderable extends Entity {
 
   // --------------------------------------------------------------- //
   //@formatter:off
-  public int   getLayer()    { return layer; }
+  public int[] getLayers()         { return layers; }
   public int[] getRenderPosition() { return render_position; }
   //@formatter:on
 
@@ -175,4 +169,20 @@ public class Renderable extends Entity {
     batch.draw(texture_region, x, y, 0, 0, width, height, scale[0], scale[1],
         0.0f);
   }
+
+  // --------------------------------------------------------------- //
+  /*
+   * Special behavior for Renderables with more than one layer is implemented in
+   * sub-classes if necessary.
+   */
+  @SuppressWarnings("unused")
+  public void render(SpriteBatch batch, int layer) {
+    render(batch);
+  }
+
+  // ======================== Entity methods ======================== //
+  //@formatter:off
+  @Override public void destroy() { texture.dispose(); }
+  @Override public void update()  { /* implemented by sub-class */ }
+  //@formatter:on
 }
