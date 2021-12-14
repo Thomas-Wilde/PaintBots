@@ -6,15 +6,17 @@ import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 
+// =============================================================== //
 /** Canvas is the represents the area that gets painted. */
 public class Canvas extends Renderable {
+  // --------------------------------------------------------------- //
   /** Contains the painting information. */
   private byte[] picture = null;
   private long[] paint_count = {0, 0, 0, 0};
   private Pixmap pixmap = null;
 
-  // --------------------------------------------------------------- //
-  Canvas(int width, int height) {
+  // ======================= Canvas methods ======================== //
+  public Canvas(int width, int height) {
     super("canvas", 2);
     super.resolution = new int[] {width, height};
     // ---
