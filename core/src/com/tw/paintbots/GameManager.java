@@ -235,8 +235,9 @@ public class GameManager {
       entity.update();
     // ---
     moveAllPlayers();
-    adjustPaintAmounts();
     paintOnCanvas();
+    adjustPaintAmounts();
+    adjustScores();
   }
 
   // --------------------------------------------------------------- //
@@ -313,9 +314,23 @@ public class GameManager {
       if ((player.getPaintAmount() <= 0.0))
         continue;
       Vector2 position = player_states[idx].new_pos;
-      canvas.paint(position, player.getPaintColor(), 40);
+      canvas.paint(position, player.getPaintColor(), 40, secret_key);
     }
     canvas.sendPixmapToTexture();
+  }
+
+  // --------------------------------------------------------------- //
+  private void adjustScores() {
+    for (int player_idx = 0; player_idx < players.length; ++player_idx)
+      adjustScore(player_idx);
+  }
+
+  // --------------------------------------------------------------- //
+  private void adjustScore(int player_idx) {
+    Player player = players[player_idx];
+    long pixels = canvas.getPaintCount()[player_idx];
+    long score = pixels * 100 / canvas.getTotalArea();
+    player.setScore((int) score, secret_key);
   }
 
   // --------------------------------------------------------------- //
