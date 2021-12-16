@@ -84,8 +84,8 @@ public class Renderable extends Entity {
 
   // --------------------------------------------------------------- //
   //@formatter:off
-  public int[] getLayers()         { return layers; }
-  public int[] getRenderPosition() { return render_position; }
+  public int[] getLayers()         { return layers.clone(); }
+  public int[] getRenderPosition() { return render_position.clone(); }
   //@formatter:on
 
   // --------------------------------------------------------------- //
