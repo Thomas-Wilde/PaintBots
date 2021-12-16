@@ -17,7 +17,7 @@ public class Canvas extends Renderable {
 
   // ======================= Canvas methods ======================== //
   public Canvas(int width, int height) {
-    super("canvas", 2);
+    super("canvas", Array.of(2));
     super.resolution = new int[] {width, height};
     // ---
     picture = new byte[width * height];

@@ -19,29 +19,29 @@ public class Renderable extends Entity {
   protected float[] scale = {1.0f, 1.0f};
 
   // ====================== Renderable methods ====================== //
-  Renderable(String name, int layer) {
+  Renderable(String name, int[] layers) {
     super(name);
     texture_file = "";
-    this.layers = new int[] {layer};
+    this.layers = layers.clone();
   }
 
   // --------------------------------------------------------------- //
-  Renderable(String name, String texture_file, int layer) {
-    this(name, texture_file, layer, new int[] {1, 1}, null);
+  Renderable(String name, String texture_file, int[] layers) {
+    this(name, texture_file, layers, Array.of(1, 1), null);
   }
 
   // --------------------------------------------------------------- //
-  Renderable(String name, String texture_file, int layer, int[] repeat_xy) {
-    this(name, texture_file, layer, repeat_xy, null);
+  Renderable(String name, String texture_file, int[] layers, int[] repeat_xy) {
+    this(name, texture_file, layers, repeat_xy, null);
   }
 
   // --------------------------------------------------------------- //
-  Renderable(String name, String texture_file, int layer, int[] repeat_xy,
+  Renderable(String name, String texture_file, int[] layers, int[] repeat_xy,
       int[] render_resolution) {
     // --- set the attributes
     super(name);
     this.texture_file = texture_file;
-    this.layers = new int[] {layer};
+    this.layers = layers.clone();
     this.repeat_xy = Arrays.copyOf(repeat_xy, 2);
     // --- init graphics
     loadTexture();

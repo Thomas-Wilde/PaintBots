@@ -26,8 +26,8 @@ public abstract class TextureGrid extends Renderable {
   //@formatter:on
 
   // ===================== TextureGrid methods ===================== //
-  public TextureGrid(String filename, int layer, int columns, int rows) {
-    super("UITextureGrid", layer);
+  public TextureGrid(String filename, int[] layers, int columns, int rows) {
+    super("UITextureGrid", layers);
     super.resolution = new int[] {0, 0};
     // ---
     this.columns = columns;

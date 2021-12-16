@@ -38,7 +38,7 @@ public class PaintBotsGame extends ApplicationAdapter {
     batch = new SpriteBatch();
 
     // --- load the map
-    game_mgr.setCameraResolution(new int[] {cam_width, cam_height});
+    game_mgr.setCameraResolution(Array.of(cam_width, cam_height));
     try {
       game_mgr.loadMap(settings);
     } catch (Exception e) {

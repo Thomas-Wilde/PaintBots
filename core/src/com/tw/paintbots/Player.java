@@ -28,7 +28,7 @@ public abstract class Player extends Renderable {
 
   // --------------------------------------------------------------- //
   Player(String name) throws PlayerException {
-    super(name, 5);
+    super(name, Array.of(5));
     // ---
     player_id = id_counter++;
     if (player_id >= MAX_COUNT)

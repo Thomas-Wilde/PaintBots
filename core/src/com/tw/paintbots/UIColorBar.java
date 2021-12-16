@@ -12,7 +12,7 @@ public class UIColorBar extends TextureGrid {
 
   // ====================== UIColorBar methods ===================== //
   public UIColorBar() {
-    super("color_bars.png", 6, 1, 5);
+    super("color_bars.png", Array.of(6), 1, 5);
   }
 
   // --------------------------------------------------------------- //

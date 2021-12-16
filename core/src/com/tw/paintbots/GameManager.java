@@ -90,8 +90,8 @@ public class GameManager {
   private void createBackground() {
     String background_texture = map_settings.back_texture;
     int[] repeat_xy = {6, 6};
-    Renderable background = new Renderable("background", background_texture, 0,
-        repeat_xy, cam_resolution);
+    Renderable background = new Renderable("background", background_texture,
+        Array.of(0), repeat_xy, cam_resolution);
     addRenderable(background);
     entities.add(background);
   }
@@ -99,7 +99,7 @@ public class GameManager {
   // --------------------------------------------------------------- //
   private void createFloor() {
     String floor_texture = map_settings.floor_texture;
-    Renderable floor = new Renderable("floor", floor_texture, 1);
+    Renderable floor = new Renderable("floor", floor_texture, Array.of(1));
     // --- position
     int[] pos = map_settings.board_border.clone();
     pos[0] += map_settings.ui_width;
@@ -199,7 +199,7 @@ public class GameManager {
     int offset = (int) (ui_width * 0.125);
     int pos_x = offset;
     int pos_y = cam_resolution[1] - height - offset;
-    timer.setRenderPosition(new int[] {pos_x, pos_y});
+    timer.setRenderPosition(Array.of(pos_x, pos_y));
     // ---
     addRenderable(timer);
     entities.add(timer);
@@ -219,7 +219,7 @@ public class GameManager {
     int offset_y = height + (int) (ui_width * 0.05);
     int pos_x = (player_id % 2 == 1) ? offset_x : width + 2 * offset_x;
     int pos_y = (player_id > 1) ? anker[1] - offset_y : anker[1] - 2 * offset_y;
-    board.setRenderPosition(new int[] {pos_x, pos_y});
+    board.setRenderPosition(Array.of(pos_x, pos_y));
     // ---
     addRenderable(board);
     entities.add(board);

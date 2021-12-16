@@ -11,7 +11,7 @@ public class UIPlayerBoard extends Renderable {
 
   // ==================== UIPlayerBoard methods ==================== //
   public UIPlayerBoard(Player player) {
-    super("UIPlayerBoard", "player_board.png", 2);
+    super("UIPlayerBoard", "player_board.png", Array.of(2));
     this.player = player;
     createPaintbar();
   }
@@ -31,7 +31,7 @@ public class UIPlayerBoard extends Renderable {
     int[] pos0 = getRenderPosition();
     int pos_x = (int) (pos0[0] + size[0] * 0.239); // value depends on texture
     int pos_y = (int) (pos0[1] + size[1] * 0.236 - h);
-    paintbar.setRenderPosition(new int[] {pos_x, pos_y});
+    paintbar.setRenderPosition(Array.of(pos_x, pos_y));
   }
 
   // ====================== Renderable methods ====================== //

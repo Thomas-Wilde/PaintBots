@@ -19,7 +19,7 @@ public class UITimer extends Renderable {
 
   // ===================== UITimer constructor ===================== //
   public UITimer(int seconds) {
-    super("Timer", "plank_15.png", 2);
+    super("Timer", "plank_15.png", Array.of(2));
     for (int i = 0; i < digits.length; ++i)
       digits[i] = new UIDigit();
     countdown = seconds;
@@ -89,7 +89,7 @@ public class UITimer extends Renderable {
     for (int i = digits.length - 1; i >= 0; --i) {
       int pos_x = position[0] + offset_x + i * digit_width;
       int pos_y = position[1] + offset_y;
-      digits[i].setRenderPosition(new int[] {pos_x, pos_y});
+      digits[i].setRenderPosition(Array.of(pos_x, pos_y));
     }
   }
 

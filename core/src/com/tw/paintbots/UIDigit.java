@@ -11,7 +11,7 @@ public class UIDigit extends TextureGrid {
 
   // ======================= UIDigit methods ======================= //
   public UIDigit() {
-    super("ui_numbers.png", 6, 11, 5);
+    super("ui_numbers.png", Array.of(6), 11, 5);
   }
 
   // --------------------------------------------------------------- //
