@@ -13,8 +13,8 @@ public abstract class TextureGrid extends Renderable {
   private static ArrayList<Texture> loaded_textures = new ArrayList<>();
   private static ArrayList<TextureRegion[][]> loaded_grids = new ArrayList<>();
 
-  private int columns = 0;
-  private int rows = 0;
+  protected int columns = 0;
+  protected int rows = 0;
   private int column_idx = 0;
   private int row_idx = 0;
 
