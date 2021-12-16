@@ -28,7 +28,7 @@ public class MultiLayerRenderable extends Renderable {
     textures = new Texture[num];
     // ---
     for (int i = 0; i < num; ++i)
-      textures[i] = new Texture(Gdx.files.internal(texture_file));
+      textures[i] = new Texture(Gdx.files.internal(texture_files[i]));
     texture = textures[0];
   }
 
