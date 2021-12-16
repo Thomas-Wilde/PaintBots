@@ -64,6 +64,7 @@ public class GameManager {
     createUITimer();
     createPlayers();
     createCanvas();
+    createPaintBooth();
   }
 
   // --------------------------------------------------------------- //
@@ -186,6 +187,19 @@ public class GameManager {
     canvas.setRenderPosition(pos);
     addRenderable(canvas);
     entities.add(canvas);
+  }
+
+  // --------------------------------------------------------------- //
+  private void createPaintBooth() {
+    PaintBooth booth = new PaintBooth();
+    int[] pos = canvas.getRenderPosition();
+    pos[0] += 300;
+    pos[1] += 300;
+    booth.setRenderPosition(pos);
+    booth.setScale(Array.of(0.57f, 0.57f));
+    // ---
+    addRenderable(booth);
+    entities.add(booth);
   }
 
   // --------------------------------------------------------------- //
