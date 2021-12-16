@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import com.tw.paintbots.GameManager.SecretKey;
 
+// =============================================================== //
 public abstract class Player extends Renderable {
   /** Maximum number of allowed players. */
   public static final int MAX_COUNT = 4;
@@ -25,6 +26,7 @@ public abstract class Player extends Renderable {
   private AnimatedObject dir_indicator_ = null;
   private float anim_time_ = 0.0f;
   private float paint_amount = 1.0f;
+  private int score = 0;
 
   // --------------------------------------------------------------- //
   Player(String name) throws PlayerException {
@@ -133,6 +135,18 @@ public abstract class Player extends Renderable {
   }
 
   // --------------------------------------------------------------- //
+  public void setScore(int points, SecretKey key) {
+    Objects.requireNonNull(key);
+    score = Math.max(0, points);
+    score = Math.min(points, 100);
+  }
+
+  // --------------------------------------------------------------- //
+  public int getScore() {
+    return score;
+  }
+
+  // ====================== Renderable methods ====================== //
   @Override
   public void render(SpriteBatch batch) {
     anim_time_ += Gdx.graphics.getDeltaTime();
