@@ -1,10 +1,14 @@
 package com.tw.paintbots;
 
+import java.util.Objects;
+
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Blending;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
+
+import com.tw.paintbots.GameManager.SecretKey;
 
 // =============================================================== //
 /** Canvas is the represents the area that gets painted. */
@@ -38,7 +42,11 @@ public class Canvas extends Renderable {
   }
 
   // --------------------------------------------------------------- //
-  public void paint(Vector2 position, PaintColor color, int radius) {
+  public void paint(Vector2 position, PaintColor color, int radius,
+      SecretKey key) {
+    // ---
+    Objects.requireNonNull(key);
+    // ---
     pixmap.setColor(color.getColor());
     int ctr_x = (int) position.x;
     int ctr_y = (int) position.y;
@@ -91,5 +99,17 @@ public class Canvas extends Renderable {
   // --------------------------------------------------------------- //
   public void sendPixmapToTexture() {
     texture.draw(pixmap, 0, 0);
+  }
+
+  // --------------------------------------------------------------- //
+  /** @return An array with the areas/pixels each player has painted. */
+  public long[] getPaintCount() {
+    return paint_count.clone();
+  }
+
+  // --------------------------------------------------------------- //
+  /** @return Return the total number of pixels that the canvas contains. */
+  public int getTotalArea() {
+    return resolution[0] * resolution[1];
   }
 }
