@@ -1,10 +1,14 @@
 package com.tw.paintbots;
 
 import java.util.Arrays;
+import java.util.Objects;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+
+import com.tw.paintbots.GameManager.SecretKey;
 
 // =============================================================== //
 public class Renderable extends Entity {
@@ -181,8 +185,17 @@ public class Renderable extends Entity {
   }
 
   // ======================== Entity methods ======================== //
+  /**
+   * Free the memory for the texture. Only the GameManager can call this method.
+   */
+  @Override
+  public void destroy(SecretKey key) {
+    Objects.requireNonNull(key);
+    texture.dispose();
+  }
+
+  // --------------------------------------------------------------- //
   //@formatter:off
-  @Override public void destroy() { texture.dispose(); }
-  @Override public void update()  { /* implemented by sub-class */ }
+  @Override public void update(SecretKey key)  { /* implemented by sub-class */ }
   //@formatter:on
 }
