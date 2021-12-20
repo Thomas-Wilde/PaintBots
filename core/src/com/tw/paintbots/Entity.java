@@ -1,6 +1,7 @@
 package com.tw.paintbots;
 
 import java.util.Objects;
+import com.badlogic.gdx.math.Vector2;
 import com.tw.paintbots.GameManager.SecretKey;
 
 /**
@@ -11,16 +12,16 @@ import com.tw.paintbots.GameManager.SecretKey;
 public abstract class Entity {
   // --------------------------------------------------------------- //
   private static int id_counter = 0;
+  private static int[] board_dimensions = null;
   private int id = -1;
   private String name = "entity";
-  private int[] position = {-1, -1};
-  private static int[] board_dimension = {1000, 1000};
+  private Vector2 position = new Vector2(-1.0f, -1.0f);
 
   // ======================== Getter/Setter ======================== //
   //@formatter:off
   /** Get the descriptive name of the Entity. */
   public String getName() { return name; }
-  /** Get the ID of the Entity, which us unique. */
+  /** Get the unique ID of the Entity. */
   public int getID() { return id; }
   //@formatter:on
 
@@ -34,7 +35,7 @@ public abstract class Entity {
   /** Create an Entity with a unique ID and the given name. */
   protected Entity(String name) {
     id = id_counter++;
-    name = id + "_" + name;
+    this.name = id + "_" + name;
   }
 
   // --------------------------------------------------------------- //
@@ -46,14 +47,18 @@ public abstract class Entity {
    *
    * @return false if the position is outside of the board, true otherwise.
    */
-  public boolean setPosition(int[] position, SecretKey key) {
-    Objects.requireNonNull(key);
+  public boolean setPosition(Vector2 position, SecretKey key) {
     // ---
-    if ((position[0] < 0 || position[0] >= board_dimension[0])
-        || (position[1] < 0 || position[1] >= board_dimension[1]))
+    Objects.requireNonNull(key);
+    if (board_dimensions == null)
+      System.out.println("board dimensions not set in Entity");
+    Objects.requireNonNull(board_dimensions);
+    // ---
+    if ((position.x < 0.0f || position.x >= board_dimensions[0])
+        || (position.y < 0.0f || position.y >= board_dimensions[1]))
       return false;
     // ---
-    this.position = position.clone();
+    this.position = position.cpy();
     return true;
   }
 
@@ -65,18 +70,18 @@ public abstract class Entity {
    */
   public static void setBoardDimensions(int[] dimensions, SecretKey key) {
     Objects.requireNonNull(key);
-    board_dimension = dimensions.clone();
+    board_dimensions = dimensions.clone();
   }
 
   // --------------------------------------------------------------- //
   /**
    * Returns the position of the Entity related to the origin (0,0). If the
-   * position was not set [-1, -1] is returned.
+   * position was not set (-1.0f, -1.0f) is returned.
    *
-   * @return Copy of the int[] array that contains the current position.
+   * @return Copy of the Vector2 that contains the current position.
    */
-  public int[] getPosition() {
-    return position.clone();
+  public Vector2 getPosition() {
+    return position.cpy();
   }
 
   // --------------------------------------------------------------- //
@@ -86,7 +91,13 @@ public abstract class Entity {
    */
   public void removeFromBoard(SecretKey key) {
     Objects.requireNonNull(key);
-    position = Array.of(-1, -1);
+    position = new Vector2(-1.0f, -1.0f);
+  }
+
+  // ======================= Object methods ======================= //
+  @Override
+  public String toString() {
+    return name;
   }
 
   // ====================== abstract methods ====================== //
