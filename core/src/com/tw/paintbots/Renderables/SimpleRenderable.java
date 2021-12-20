@@ -16,8 +16,6 @@ public class SimpleRenderable extends Renderable {
   // --------------------------------------------------------------- //
   private final String texture_file;
   private Texture texture;
-  private TextureRegion texture_region;
-  protected int[] resolution = null;
 
   // ================== SimpleRenderable methods ================== //
   public SimpleRenderable(String name, int layer, String texture_file) {
@@ -39,6 +37,7 @@ public class SimpleRenderable extends Renderable {
   }
 
   // --------------------------------------------------------------- //
+  @Override
   protected void initResolution() {
     int width = texture.getWidth();
     int height = texture.getHeight();
@@ -46,6 +45,7 @@ public class SimpleRenderable extends Renderable {
   }
 
   // --------------------------------------------------------------- //
+  @Override
   protected void initTextureRegion() {
     int width = resolution[0];
     int height = resolution[1];
@@ -118,16 +118,7 @@ public class SimpleRenderable extends Renderable {
     // --- SimpleRenderable belongs to only one layer
     if (layer != getLayers()[0])
       return;
-    // ---
-    int[] rnd_pos = getRenderPosition();
-    int x = rnd_pos[0];
-    int y = rnd_pos[1];
-    float[] scale = getScale();
-    float sx = scale[0];
-    float sy = scale[1];
-    int width = resolution[0];
-    int height = resolution[1];
-    batch.draw(texture_region, x, y, 0, 0, width, height, sx, sy, 0.0f);
+    super.render(batch, layer);
   }
 
   // ======================== Entity methods ======================== //
@@ -138,8 +129,6 @@ public class SimpleRenderable extends Renderable {
   public void destroy(SecretKey key) {
     Objects.requireNonNull(key);
     texture.dispose();
-    System.out.print("Clean up ");
-    System.out.print(this);
   }
 
   // --------------------------------------------------------------- //
