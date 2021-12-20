@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
 import com.tw.paintbots.Renderables.Renderable;
+import com.tw.paintbots.Renderables.SimpleRenderable;
 import com.tw.paintbots.Renderables.RepeatedRenderable;
 
 /**
@@ -35,6 +36,9 @@ public class GameManager {
   private HashMap<Integer, List<Renderable>> render_layers = new HashMap<>();
   private ArrayList<Entity> entities = new ArrayList<>();
   private GameSettings map_settings = null;
+
+  // --- List of Entities needed to create other ones
+  SimpleRenderable floor = null;
   // private Player[] players = null;
   // private PlayerState[] player_states = null;
   // private Canvas canvas = null;
@@ -126,7 +130,7 @@ public class GameManager {
     map_settings = settings;
     // sanityCheckPlayerSettings(); // throws an exception if something is wrong
     createBackground();
-    // createFloor();
+    createFloor();
     // createUITimer();
     // createPlayers();
     // createCanvas();
@@ -137,9 +141,26 @@ public class GameManager {
   private void createBackground() {
     String tex_file = map_settings.back_texture;
     int[] repeat_xy = {6, 6};
-    RepeatedRenderable background =
+    Renderable background =
         new RepeatedRenderable("background", 0, tex_file, repeat_xy);
     addRenderable(background);
     addEntity(background);
+  }
+
+  // --------------------------------------------------------------- //
+  private void createFloor() {
+    String floor_texture = map_settings.floor_texture;
+    floor = new SimpleRenderable("floor", 1, floor_texture);
+    // --- position
+    int[] pos = map_settings.board_border.clone();
+    pos[0] += map_settings.ui_width;
+    floor.setRenderPosition(pos);
+    // --- size
+    int width = map_settings.board_dimensions[0];
+    int height = map_settings.board_dimensions[1];
+    floor.setRenderSize(width, height);
+    // ---
+    addRenderable(floor);
+    addEntity(floor);
   }
 }
