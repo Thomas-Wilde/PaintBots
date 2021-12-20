@@ -1,15 +1,11 @@
 package com.tw.paintbots.Renderables;
 
-import java.util.Arrays;
 import java.util.Objects;
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.tw.paintbots.Array;
-import com.tw.paintbots.Entity;
-import com.tw.paintbots.GameManager;
+
 import com.tw.paintbots.GameManager.SecretKey;
 
 /**
