@@ -1,4 +1,4 @@
-package com.tw.paintbots;
+package com.tw.paintbots.Renderables;
 
 import java.util.Objects;
 
@@ -6,9 +6,11 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Blending;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
 import com.tw.paintbots.GameManager.SecretKey;
+import com.tw.paintbots.PaintColor;
 
 // =============================================================== //
 /** Canvas is the represents the area that gets painted. */
@@ -18,19 +20,29 @@ public class Canvas extends Renderable {
   private byte[] picture = null;
   private long[] paint_count = {0, 0, 0, 0};
   private Pixmap pixmap = null;
+  private Texture texture = null;
+  private final int width;
+  private final int height;
 
   // ======================= Canvas methods ======================== //
   public Canvas(int width, int height) {
-    super("canvas", Array.of(2));
-    super.resolution = new int[] {width, height};
+    super("canvas", 2);
+    this.width = width;
+    this.height = height;
+
     // ---
-    picture = new byte[width * height];
-    for (int i = 0; i < width * height; ++i)
-      picture[i] = -1;
-    // ---
+    initResolution();
+    initPicture();
     createPixmap();
     texture = new Texture(pixmap);
     initTextureRegion();
+  }
+
+  // --------------------------------------------------------------- //
+  private void initPicture() {
+    picture = new byte[width * height];
+    for (int i = 0; i < width * height; ++i)
+      picture[i] = -1;
   }
 
   // --------------------------------------------------------------- //
@@ -50,8 +62,6 @@ public class Canvas extends Renderable {
     pixmap.setColor(color.getColor());
     int ctr_x = (int) position.x;
     int ctr_y = (int) position.y;
-    int width = resolution[0];
-    int height = resolution[1];
 
     for (int i = -radius; i < radius; ++i)
       for (int j = -radius; j < radius; ++j) {
@@ -80,7 +90,6 @@ public class Canvas extends Renderable {
    * the canvas belong to which color.
    */
   private void updatePaintCount(int x, int y, PaintColor color) {
-    int width = resolution[0];
     int idx = x + y * width;
     int color_id = color.getColorID();
     // --- canvas is blank increase count for current player
@@ -111,5 +120,35 @@ public class Canvas extends Renderable {
   /** @return Return the total number of pixels that the canvas contains. */
   public int getTotalArea() {
     return resolution[0] * resolution[1];
+  }
+
+  // ===================== Renderable methods ===================== //
+  @Override
+  protected void initResolution() {
+    resolution = new int[] {width, height};
+  }
+
+  // --------------------------------------------------------------- //
+  @Override
+  protected void initTextureRegion() {
+    texture_region = new TextureRegion(texture);
+    texture_region.setRegion(0, 0, width, height);
+  }
+
+  // ======================== Entity methods ======================== //
+  /**
+   * Free the memory for the texture. Only the GameManager can call this method.
+   */
+  @Override
+  public void destroy(SecretKey key) {
+    Objects.requireNonNull(key);
+    texture.dispose();
+  }
+
+  // --------------------------------------------------------------- //
+  /** The Canvas does nothing special in the update method. */
+  @Override
+  public void update(SecretKey key) {
+    Objects.requireNonNull(key);
   }
 }

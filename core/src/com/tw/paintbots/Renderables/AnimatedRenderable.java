@@ -1,45 +1,60 @@
-package com.tw.paintbots;
+package com.tw.paintbots.Renderables;
+
+import java.util.Objects;
 
 import java.util.List;
 import java.util.ArrayList;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
-public class AnimatedObject {
+/**
+ * ToDo: explain SimpleRenderable
+ */
+// =============================================================== //
+public class AnimatedRenderable extends SimpleRenderable {
   // --------------------------------------------------------------- //
-  private final String texture_file;
   private final int rows;
-  private final int cols;
+  private final int columns;
   private final float duration;
-  private Texture texture;
+  private float time = 0.0f;
+  private int animation_id = 0;
 
   protected List<Animation<TextureRegion>> animation = new ArrayList<>();
   protected List<TextureRegion[]> frames = new ArrayList<>();
 
-  // =============================================================== //
-  public AnimatedObject(String texture_file, int rows, int cols,
-      float duration) {
+  // ======================== Getter/Setter ======================== //
+  //@formatter:off
+  public void setAnimationID(int id) { animation_id = id; }
+  public int getAnimationID() { return animation_id; }
+  public void setAnimationTime(float time) { this.time = time; }
+  public float getAnimationTime() { return time; }
+
+  //@formatter:on
+
+  // ================== AnimatedRenderable methods ================== //
+  public AnimatedRenderable(String name, int layer, String texture_file,
+      int rows, int cols, float duration) {
+    super(name, layer, texture_file);
     // --- load attributes
-    this.texture_file = texture_file;
     this.rows = rows;
-    this.cols = cols;
+    this.columns = cols;
     this.duration = duration;
     // ---
-    loadAnimatedTexture();
+    adjustResolution();
+    initAnimations();
+    updateFrameTexture();
   }
 
   // --------------------------------------------------------------- //
-  public void destroy() {
-    texture.dispose();
+  private void adjustResolution() {
+    resolution[0] = resolution[0] / columns;
+    resolution[1] = resolution[1] / rows;
   }
 
   // --------------------------------------------------------------- //
   /** Load the texture file that contains the animation. */
-  private void loadAnimatedTexture() {
-    texture = new Texture(Gdx.files.internal(texture_file));
+  private void initAnimations() {
     TextureRegion[][] frame_grid = loadFrameGrid();
     extractAnimationsFromFrameGrid(frame_grid);
   }
@@ -49,8 +64,8 @@ public class AnimatedObject {
    * Extract the individual animation frames from the image grid to a 2D array.
    */
   private TextureRegion[][] loadFrameGrid() {
-    int tile_width = texture.getWidth() / cols;
-    int tile_height = texture.getHeight() / rows;
+    int tile_width = resolution[0];
+    int tile_height = resolution[1];
     TextureRegion[][] frame_grid =
         TextureRegion.split(texture, tile_width, tile_height);
     return frame_grid;
@@ -72,15 +87,12 @@ public class AnimatedObject {
    * Extract the correct frame from the animation with the given id and the
    * given time.
    */
-  public TextureRegion getFrame(int animation_id, float time) {
+  protected TextureRegion getFrame(int animation_id, float time) {
     return animation.get(animation_id).getKeyFrame(time, true);
   }
 
   // --------------------------------------------------------------- //
-  /**
-   * Same as getFrame(0, time)
-   */
-  public TextureRegion getFrame(float time) {
-    return animation.get(0).getKeyFrame(time, true);
+  public void updateFrameTexture() {
+    texture_region = getFrame(animation_id, time);
   }
 }

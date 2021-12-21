@@ -1,6 +1,6 @@
 package com.tw.paintbots;
 
-// Utility class
+/** This is a utility class that helps to create arrays. */
 public class Array {
   // --------------------------------------------------------------- //
   public static int[] of(int... elements) {

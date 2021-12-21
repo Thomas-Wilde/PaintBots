@@ -1,4 +1,6 @@
-package com.tw.paintbots;
+package com.tw.paintbots.Renderables;
+
+import com.tw.paintbots.PaintColor;
 
 // =============================================================== //
 public class UIDigit extends TextureGrid {
@@ -6,16 +8,16 @@ public class UIDigit extends TextureGrid {
   private PaintColor color = PaintColor.BLACK;
   private int digit_value = 0;
 
-  // ======================= UIDigit methods ======================= //
-  public UIDigit() {
-    super("ui_numbers.png", Array.of(6), 12, 5);
-  }
-
-  // --------------------------------------------------------------- //
+  // ======================== Getter/Setter ======================== //
   //@formatter:off
   public PaintColor getColor() { return color; }
   public int getDigitValue() { return digit_value; }
   //@formatter:on
+
+  // ======================= UIDigit methods ======================= //
+  public UIDigit(int layer) {
+    super("ui_numbers.png", layer, 12, 5);
+  }
 
   // --------------------------------------------------------------- //
   public void setColor(PaintColor color) {

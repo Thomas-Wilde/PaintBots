@@ -8,58 +8,57 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import com.tw.paintbots.GameManager.SecretKey;
+import com.tw.paintbots.Renderables.DirectionIndicator;
+import com.tw.paintbots.Renderables.PlayerAnimation;
+import com.tw.paintbots.Renderables.Renderable;
 
 // =============================================================== //
-public abstract class Player extends Renderable {
+public abstract class Player extends Entity {
   /** Maximum number of allowed players. */
   public static final int MAX_COUNT = 4;
   private static int id_counter = 0;
   //@formatter:off
   private static PaintColor[] paint_colors = {PaintColor.GREEN, PaintColor.PURPLE,
-                                              PaintColor.BLUE, PaintColor.ORANGE};
+                                              PaintColor.BLUE,  PaintColor.ORANGE};
   //@formatter:on
   private int player_id = -1;
-  private Vector2 pos_ = new Vector2(0.0f, 0.0f);
-  private int character_width_ = 64;
-  private final Mesh mesh_;
-  private PlayerAnimation animation_ = null;
-  private AnimatedObject dir_indicator_ = null;
-  private float anim_time_ = 0.0f;
+  private PlayerAnimation animation = null;
+  private DirectionIndicator dir_indicator = null;
   private float paint_amount = 1.0f;
   private int score = 0;
 
-  // --------------------------------------------------------------- //
+  // ======================== Getter/Setter ======================== //
+  //@formatter:off
+  /** Get the Renderable that draws the character. */
+  public PlayerAnimation getAnimation() { return animation; }
+  /** Get the Renderable that draws the direction indicator around the character. */
+  public DirectionIndicator getIndicator() { return dir_indicator; }
+  /** Get the ID of the player. It is an element in [0,3], i.e. we allow at most
+   *  4 players. The ID is set at the beginning of the game and it is immutable. */
+  public int getPlayerID() { return player_id; }
+  /** Access the unique painting color of the player. */
+  public PaintColor getPaintColor() { return paint_colors[player_id]; }
+  /** Get the current paint amount as an value in [0.0, 1.0]. */
+  public float getPaintAmount() { return paint_amount; }
+  /** Get the current score of the player. */
+  public int getScore() { return score; }
+  //@formatter:on
+
+  // ======================= Player methods ======================== //
   Player(String name) throws PlayerException {
-    super(name, Array.of(5));
-    // ---
     player_id = id_counter++;
     if (player_id >= MAX_COUNT)
       throw new PlayerException("Tried to create too many players.");
     // ---
-    mesh_ = new Mesh(character_width_);
-    animation_ = new PlayerAnimation("chief_walk.png");
-    dir_indicator_ = new AnimatedObject("dir_indicator.png", 1, 4, 0.5f);
-  }
-
-  // --------------------------------------------------------------- //
-  /**
-   * Get the ID of the player. It is an element in [0,3], i.e. we allow at most
-   * 4 players. The ID is set at the beginning of the game and it is immutable.
-   */
-  public int getPlayerID() {
-    return player_id;
-  }
-
-  // --------------------------------------------------------------- //
-  /** Access the unique painting color of the player. */
-  public PaintColor getPaintColor() {
-    return paint_colors[player_id];
+    animation = new PlayerAnimation("chief_walk.png");
+    dir_indicator = new DirectionIndicator();
+    dir_indicator.setAnker(animation);
   }
 
   // --------------------------------------------------------------- //
   public PlayerState getState() {
     PlayerState state = new PlayerState();
-    state.old_pos = this.pos_.cpy();
+    state.old_pos = this.getPosition();
     state.type = this.getType();
     state.dir = this.getDirection();
     state.dir.setLength(1.0f);
@@ -67,47 +66,10 @@ public abstract class Player extends Renderable {
   }
 
   // --------------------------------------------------------------- //
-  /**
-   * Get the current position of the player.
-   *
-   * @return A copy of the position vector.
-   */
-  public Vector2 getPosition() {
-    return pos_.cpy();
-  }
-
-  // --------------------------------------------------------------- //
-  /** Set the position of the player. Only GameManager can call this method. */
-  public void setPosition(Vector2 position, SecretKey key) {
+  /** Set the anker for the Renderable; this should be the floor. */
+  public void setAnker(Renderable anker, SecretKey key) {
     Objects.requireNonNull(key);
-    pos_ = position.cpy();
-  }
-
-  // --------------------------------------------------------------- //
-  /**
-   * Get the current direction, in which the player will move in the next
-   * update-step. The direction vector needs to be normalized, i.e., it has a
-   * Euclidean length of 1.0. If it has not length 1.0, it will be normalized
-   * anyway but this maybe modify the intented direction.
-   *
-   * @return A copy to the (normalized) direction vector.
-   */
-  public abstract Vector2 getDirection();
-
-  // --------------------------------------------------------------- //
-  /**
-   * Set the direction in which the player will move in the next update step.
-   * The GameManager is the only guy, that can access this method. This
-   * restriction is made to avoid cheating, i.e. if someone tries to modify the
-   * behavior of other players. This method is usually only used once at the
-   * start of the battle to set the initial move direction.
-   */
-  public abstract void setDirection(Vector2 dir, SecretKey key);
-
-  // --------------------------------------------------------------- //
-  /** Get the mesh of the Player object, that is used for collision. */
-  public Mesh getMesh() {
-    return mesh_;
+    animation.setAnker(anker);
   }
 
   // --------------------------------------------------------------- //
@@ -115,11 +77,6 @@ public abstract class Player extends Renderable {
     Objects.requireNonNull(key);
     paint_amount = Math.max(0.0f, amount);
     paint_amount = Math.min(amount, 1.0f);
-  }
-
-  // --------------------------------------------------------------- //
-  public float getPaintAmount() {
-    return paint_amount;
   }
 
   // --------------------------------------------------------------- //
@@ -142,55 +99,6 @@ public abstract class Player extends Renderable {
   }
 
   // --------------------------------------------------------------- //
-  public int getScore() {
-    return score;
-  }
-
-  // ====================== Renderable methods ====================== //
-  @Override
-  public void render(SpriteBatch batch) {
-    anim_time_ += Gdx.graphics.getDeltaTime();
-    renderDirectionIndicator(batch);
-    renderCharacter(batch);
-  }
-
-  // --------------------------------------------------------------- //
-  private void renderCharacter(SpriteBatch batch) {
-    // get different animation frames for each player
-    float anim_shift = anim_time_ / 4 * player_id;
-    Vector2 dir_tmp = getDirection();
-    dir_tmp.setLength(1.0f);
-    TextureRegion frame = animation_.getFrame(dir_tmp, anim_time_ + anim_shift);
-    int offset = frame.getRegionWidth() / 2;
-    float pos_x = pos_.x - offset + render_position[0];
-    float pos_y = pos_.y - offset + render_position[1];
-    batch.draw(frame, pos_x, pos_y);
-  }
-
-  // --------------------------------------------------------------- //
-  private void renderDirectionIndicator(SpriteBatch batch) {
-    TextureRegion frame = dir_indicator_.getFrame(anim_time_);
-    // --- position
-    int width = frame.getRegionWidth();
-    int height = frame.getRegionHeight();
-    float pos_x = pos_.x - width / 2.0f + render_position[0];
-    float pos_y = pos_.y - height / 2.0f + render_position[1];
-    // --- rotation
-    Vector2 dir_tmp = getDirection();
-    dir_tmp.setLength(1.0f);
-    float deg = dirVectorToRotDegree(dir_tmp);
-    batch.draw(frame, pos_x, pos_y, width / 2.0f, height / 2.0f, width, height,
-        1.0f, 1.0f, deg);
-  }
-
-  // --------------------------------------------------------------- //
-  @Override
-  public void destroy() {
-    animation_.destroy();
-    dir_indicator_.destroy();
-  }
-
-  // --------------------------------------------------------------- //
   /**
    * Map the direction vector to a rotation degree. The direction vector needs
    * to be normalized.
@@ -206,7 +114,59 @@ public abstract class Player extends Renderable {
     return tmp_deg;
   }
 
+  // ====================== Entity methods ====================== //
+  @Override
+  public void destroy(SecretKey key) {
+    Objects.requireNonNull(key);
+    // ---
+    animation.destroy(key);
+    dir_indicator.destroy(key);
+  }
+
   // --------------------------------------------------------------- //
+  @Override
+  public void update(SecretKey key) {
+    Objects.requireNonNull(key);
+    // ---
+    int offset = (int) (0.5 * animation.getRenderSize()[0]); // width of avatar
+    Vector2 pos = getPosition();
+    animation.setRenderPosition(
+        Array.of((int) pos.x - offset, (int) pos.y - offset));
+    // ---
+    float time = (float) GameManager.get().getElapsedTime() + 0.25f * player_id;
+    animation.setAnimationTime(time);
+    // ---
+    Vector2 move_dir = getDirection();
+    move_dir.setLength(1.0f);
+    animation.setMoveDirection(move_dir);
+    animation.updateFrameTexture();
+    // ---
+    float deg = dirVectorToRotDegree(move_dir);
+    dir_indicator.setRotation(deg);
+  }
+
+  // ====================== abstract methods ====================== //
   public abstract PlayerType getType();
+
+  // --------------------------------------------------------------- //
+  /**
+   * Get the current direction, in which the player will move in the next
+   * update-step. The direction vector needs to be normalized, i.e., it has a
+   * Euclidean length of 1.0. If it has not length 1.0, it will be normalized
+   * anyway but this maybe modify the intented direction.
+   *
+   * @return A copy to the (normalized) direction vector.
+   */
+  public abstract Vector2 getDirection();
+
+  // --------------------------------------------------------------- //
+  /**
+   * Set the direction in which the player will move in the next update step.
+   * The GameManager is the only guy, that can access this method. This
+   * restriction is made to avoid cheating, i.e. if someone tries to modify the
+   * behavior of other players. This method is usually only used once at the
+   * start of the battle to set the initial move direction.
+   */
+  public abstract void setDirection(Vector2 dir, SecretKey key);
 
 }

@@ -2,36 +2,66 @@ package com.tw.paintbots;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Set;
+
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
+import com.tw.paintbots.Renderables.Canvas;
+import com.tw.paintbots.Renderables.Renderable;
+import com.tw.paintbots.Renderables.SimpleRenderable;
+import com.tw.paintbots.Renderables.RepeatedRenderable;
+import com.tw.paintbots.Renderables.UITimer;
+import com.tw.paintbots.Renderables.UIPlayerBoard;
+
+import com.tw.paintbots.Items.PaintBooth;
+
+/**
+ * The GameManager is the core class of the game. It creates all Entities and
+ * manages their behavior. It also calls the update routine and is responsible
+ * for rendering. The GameManager implements the singleton pattern.
+ */
+// =============================================================== //
 public class GameManager {
+  // ======================= SecretKey class ======================= //
   //@formatter:off
-  // mimic a friend class behavior → every method that should be
-  // accessed only by the GameManager has to deliver a secret key
+  /** The GameManager mimics a friend class behavior, i.e. every method that
+   * should be accessed only by the GameManager asked for the SecretKey. Only
+   * the Game Manager can deliver this SecretKey */
   public static final class SecretKey { private SecretKey() {} }
   private static final SecretKey secret_key = new SecretKey();
   //@formatter:on
 
-  // GameManager uses SingletonPattern
+  // ====================== GameManager class ====================== //
+  // GameManager uses singleton pattern
   private static GameManager instance = null;
+  private double elapsed_time = 0.0;
 
-  private GameSettings map_settings = null;
+  private HashMap<Integer, List<Renderable>> render_layers = new HashMap<>();
+  private ArrayList<Entity> entities = new ArrayList<>();
+  private GameSettings game_settings = null;
+
+  // --- List of Entities needed to create other ones
+  private SimpleRenderable floor = null;
+  private UITimer timer = null;
   private Player[] players = null;
   private PlayerState[] player_states = null;
   private Canvas canvas = null;
-  private int[] cam_resolution = {0, 0};
-  private double elapsed_time = 0.0;
 
-  private UITimer timer = null;
+  // private List<List<Renderable>> render_layers_ = null;
+  // private final int layers_count = 10;
 
-  private ArrayList<Entity> entities = new ArrayList<>();
-  private List<List<Renderable>> render_layers_ = null;
-  private final int layers_count = 10;
+  // ======================== Getter/Setter ======================== //
+  //@formatter:off
+  /** Get the time that passed since the start of the round in milliseconds. */
+  public double getElapsedTime() { return elapsed_time; }
+  //@formatter:on
 
-  // --------------------------------------------------------------- //
+  // ===================== GameManager methods ===================== //
+  /** Access the single instance of the GameManager. */
   public static GameManager get() {
     if (instance == null)
       instance = new GameManager();
@@ -39,25 +69,76 @@ public class GameManager {
   }
 
   // --------------------------------------------------------------- //
-  public double getElapsedTime() {
-    return elapsed_time;
+  /**
+   * Constructor is private due to the sigleton pattern.
+   */
+  private GameManager() {}
+
+  // --------------------------------------------------------------- //
+  /** Dispose all entities. */
+  public void destroy() {
+    for (Entity entity : entities)
+      entity.destroy(secret_key);
+    entities.clear();
   }
 
   // --------------------------------------------------------------- //
-  private GameManager() {
-    render_layers_ = new ArrayList<List<Renderable>>();
-    for (int i = 0; i < layers_count; ++i)
-      render_layers_.add(new ArrayList<Renderable>());
+  public void update() {
+    elapsed_time += Gdx.graphics.getDeltaTime();
+    // ---
+    preUpdate();
+    // --- update all entities
+    for (Entity entity : entities)
+      entity.update(secret_key);
+    // ---
+    moveAllPlayers();
+    paintOnCanvas();
+    adjustPaintAmounts();
+    adjustScores();
   }
 
   // --------------------------------------------------------------- //
-  public void setCameraResolution(int[] resolution) {
-    cam_resolution = resolution;
+  private void preUpdate() {
+    for (int idx = 0; idx < players.length; ++idx)
+      savePlayerState(idx);
   }
 
-  // =============================================================== //
+  // --------------------------------------------------------------- //
+  /** Draw the Renderables of each layer. */
+  public void render(SpriteBatch batch) {
+    Set<Integer> layer_ids = render_layers.keySet();
+    for (Integer id : layer_ids) {
+      List<Renderable> renderables = render_layers.get(id);
+      for (Renderable item : renderables)
+        item.render(batch, id.intValue());
+    }
+  }
+
+  // --------------------------------------------------------------- //
+  /**
+   * Add the Renderable item to all render layers item demands. If a specific
+   * layer does not exist yet, it gets created.
+   */
+  private void addRenderable(Renderable item) {
+    int[] item_layers = item.getLayers();
+    for (int layer_idx : item_layers) {
+      // --- check if the layer exists
+      if (render_layers.get(layer_idx) == null)
+        render_layers.put(layer_idx, new ArrayList<Renderable>());
+      // --- access the layer
+      List<Renderable> layer = render_layers.get(layer_idx);
+      layer.add(item);
+    }
+  }
+
+  // --------------------------------------------------------------- //
+  private void addEntity(Entity item) {
+    entities.add(item);
+  }
+
+  // --------------------------------------------------------------- //
   public void loadMap(GameSettings settings) throws GameMangerException {
-    map_settings = settings;
+    game_settings = settings;
     sanityCheckPlayerSettings(); // throws an exception if something is wrong
     createBackground();
     createFloor();
@@ -76,73 +157,82 @@ public class GameManager {
    */
   private void sanityCheckPlayerSettings() throws GameMangerException {
     // --- sanity check
-    int player_count = map_settings.player_types.length;
+    int player_count = game_settings.player_types.length;
     if (player_count < 1 || player_count > 4)
       throw new GameMangerException("Too less/many players: " + player_count);
     // ---
-    if (map_settings.start_positions.length != player_count)
+    if (game_settings.start_positions.length != player_count)
       throw new GameMangerException("mismatch: player count and positions");
     // ---
-    if (map_settings.start_directions.length != player_count)
+    if (game_settings.start_directions.length != player_count)
       throw new GameMangerException("mismatch: player count and directions");
   }
 
   // --------------------------------------------------------------- //
   private void createBackground() {
-    String background_texture = map_settings.back_texture;
+    String tex_file = game_settings.back_texture;
     int[] repeat_xy = {6, 6};
-    Renderable background = new Renderable("background", background_texture,
-        Array.of(0), repeat_xy, cam_resolution);
+    Renderable background =
+        new RepeatedRenderable("background", 0, tex_file, repeat_xy);
     addRenderable(background);
-    entities.add(background);
+    addEntity(background);
   }
 
   // --------------------------------------------------------------- //
   private void createFloor() {
-    String floor_texture = map_settings.floor_texture;
-    Renderable floor = new Renderable("floor", floor_texture, Array.of(1));
+    String floor_texture = game_settings.floor_texture;
+    floor = new SimpleRenderable("floor", 1, floor_texture);
     // --- position
-    int[] pos = map_settings.board_border.clone();
-    pos[0] += map_settings.ui_width;
+    int[] pos = game_settings.board_border.clone();
+    pos[0] += game_settings.ui_width;
     floor.setRenderPosition(pos);
     // --- size
-    int width = map_settings.board_dimensions[0];
-    int height = map_settings.board_dimensions[1];
+    int width = game_settings.board_dimensions[0];
+    int height = game_settings.board_dimensions[1];
     floor.setRenderSize(width, height);
+    Entity.setBoardDimensions(Array.of(width, height), secret_key);
     // ---
     addRenderable(floor);
-    entities.add(floor);
+    addEntity(floor);
   }
 
   // --------------------------------------------------------------- //
-  /**
-   * Add a renderable item to the render layers. Layers with a lower index are
-   * rendered before layers with a higher index.
-   */
-  private void addRenderable(Renderable item) {
-    for (int layer_idx : item.getLayers()) {
-      List<Renderable> layer = render_layers_.get(layer_idx);
-      layer.add(item);
-    }
+  private void createUITimer() {
+    timer = new UITimer(180);
+    // --- define position and size
+    int ui_width = game_settings.ui_width;
+    int cam_res_y = game_settings.cam_resolution[1];
+    int width = (int) (ui_width * 0.75);
+    timer.setRenderWidth(width);
+    int height = timer.getRenderSize()[1];
+    int offset = (int) (ui_width * 0.125);
+    int pos_x = offset;
+    int pos_y = cam_res_y - height - offset;
+    timer.setRenderPosition(Array.of(pos_x, pos_y));
+    // ---
+    addRenderable(timer);
+    addEntity(timer);
   }
 
   // --------------------------------------------------------------- //
   private void createPlayers() throws GameMangerException {
     // --- create players
-    int count = map_settings.player_types.length;
+    int count = game_settings.player_types.length;
     players = new Player[count];
     player_states = new PlayerState[count];
     // ---
     for (int i = 0; i < count; ++i) {
-      if (map_settings.player_types[i] == PlayerType.AI)
+      if (game_settings.player_types[i] == PlayerType.AI)
         throw new GameMangerException("No AI players implemented.");
       try {
-        players[i] = new HumanPlayer("Player" + i);
-        entities.add(players[i]);
-        addRenderable(players[i]);
-        initPlayer(i);
+        Player player = new HumanPlayer("Player" + i);
+        initPlayer(player);
+        addRenderable(player.getAnimation());
+        addRenderable(player.getIndicator());
+        addEntity(player);
+        createPlayerUI(player);
+        players[i] = player;
         savePlayerState(i);
-        createPlayerUI(players[i]);
       } catch (Exception e) {
         System.out.println(e.getMessage());
       }
@@ -154,69 +244,13 @@ public class GameManager {
    * Transfer player properties from the game settings to the player with the
    * given index .
    */
-  private void initPlayer(int idx) throws PlayerException {
-    Player player = players[idx];
-    Vector2 pos = map_settings.start_positions[idx];
-    Vector2 dir = map_settings.start_directions[idx].setLength(1.0f);
-    int[] render_pos = map_settings.board_border.clone();
-    render_pos[0] += map_settings.ui_width;
-
-    player.setPosition(pos, new SecretKey());
-    player.setDirection(dir, new SecretKey());
-    player.setRenderPosition(render_pos);
-  }
-
-  // --------------------------------------------------------------- //
-  /**
-   * Write the current state of the player idx into the player_state array. This
-   * is done to prevent cheatinge attempts, i.e. only the GameManager can change
-   * the state of the player.
-   */
-  private void savePlayerState(int idx) {
-    player_states[idx] = players[idx].getState();
-  }
-
-  // --------------------------------------------------------------- //
-  private void createCanvas() {
-    int width = map_settings.board_dimensions[0];
-    int height = map_settings.board_dimensions[1];
-    int[] pos = map_settings.board_border.clone();
-    pos[0] += map_settings.ui_width;
-
-    canvas = new Canvas(width, height);
-    canvas.setRenderPosition(pos);
-    addRenderable(canvas);
-    entities.add(canvas);
-  }
-
-  // --------------------------------------------------------------- //
-  private void createPaintBooth() {
-    PaintBooth booth = new PaintBooth();
-    int[] pos = canvas.getRenderPosition();
-    pos[0] += 300;
-    pos[1] += 300;
-    booth.setRenderPosition(pos);
-    booth.setScale(Array.of(0.57f, 0.57f));
-    // ---
-    addRenderable(booth);
-    entities.add(booth);
-  }
-
-  // --------------------------------------------------------------- //
-  private void createUITimer() {
-    timer = new UITimer(180);
-    // --- define position and size
-    int ui_width = map_settings.ui_width;
-    int width = (int) (ui_width * 0.75);
-    timer.setRenderWidth(width);
-    int height = timer.getRenderSize()[1];
-    int offset = (int) (ui_width * 0.125);
-    int pos_x = offset;
-    int pos_y = cam_resolution[1] - height - offset;
-    timer.setRenderPosition(Array.of(pos_x, pos_y));
-    // ---
-    addRenderable(timer);
-    entities.add(timer);
+  private void initPlayer(Player player) throws PlayerException {
+    int idx = player.getPlayerID();
+    Vector2 pos = game_settings.start_positions[idx];
+    Vector2 dir = game_settings.start_directions[idx].setLength(1.0f);
+    player.setPosition(pos, secret_key);
+    player.setDirection(dir, secret_key);
+    player.setAnker(floor, secret_key);
   }
 
   // --------------------------------------------------------------- //
@@ -225,7 +259,7 @@ public class GameManager {
     int player_id = player.getPaintColor().getColorID();
     // --- define position and size
     int[] anker = timer.getRenderPosition();
-    int ui_width = map_settings.ui_width;
+    int ui_width = game_settings.ui_width;
     int width = (int) (ui_width * 0.45);
     board.setRenderWidth(width);
     int height = board.getRenderSize()[1];
@@ -240,24 +274,13 @@ public class GameManager {
   }
 
   // --------------------------------------------------------------- //
-  public void update() {
-    elapsed_time += Gdx.graphics.getDeltaTime();
-    // ---
-    preUpdate();
-    // --- update all entities
-    for (Entity entity : entities)
-      entity.update();
-    // ---
-    moveAllPlayers();
-    paintOnCanvas();
-    adjustPaintAmounts();
-    adjustScores();
-  }
-
-  // --------------------------------------------------------------- //
-  private void preUpdate() {
-    for (int idx = 0; idx < players.length; ++idx)
-      savePlayerState(idx);
+  /**
+   * Write the current state of the player idx into the player_state array. This
+   * is done to prevent cheatinge attempts, i.e. only the GameManager can change
+   * the state of the player.
+   */
+  private void savePlayerState(int idx) {
+    player_states[idx] = players[idx].getState();
   }
 
   // --------------------------------------------------------------- //
@@ -291,19 +314,41 @@ public class GameManager {
    * Checks if the given position is inside of the game board. If not, change
    * the corresponding coordinates to be insider.
    */
-  private void clampPositionToBoard(Vector2 pos, double offset) {
-    int board_width = map_settings.board_dimensions[0];
-    int board_height = map_settings.board_dimensions[1];
-    pos.x = Math.max(pos.x, 0);
-    pos.x = Math.min(pos.x, board_width - (float) offset);
-    pos.y = Math.max(pos.y, 0);
-    pos.y = Math.min(pos.y, board_height - (float) offset);
+  private void clampPositionToBoard(Vector2 pos, float offset) {
+    int board_width = game_settings.board_dimensions[0];
+    int board_height = game_settings.board_dimensions[1];
+    pos.x = Math.max(pos.x, offset);
+    pos.x = Math.min(pos.x, board_width - offset);
+    pos.y = Math.max(pos.y, offset);
+    pos.y = Math.min(pos.y, board_height - offset);
   }
 
   // --------------------------------------------------------------- //
   /** calls 'clampPosition(pos, 0.0f);' */
   private void clampPositionToBoard(Vector2 pos) {
-    clampPositionToBoard(pos, 0.0);
+    clampPositionToBoard(pos, 0.01f);
+  }
+
+  // --------------------------------------------------------------- //
+  private void createCanvas() {
+    int width = game_settings.board_dimensions[0];
+    int height = game_settings.board_dimensions[1];
+    canvas = new Canvas(width, height);
+    canvas.setAnker(floor);
+    addRenderable(canvas);
+    addEntity(canvas);
+  }
+
+  // --------------------------------------------------------------- //
+  private void paintOnCanvas() {
+    for (int idx = 0; idx < players.length; ++idx) {
+      Player player = players[idx];
+      if ((player.getPaintAmount() <= 0.0))
+        continue;
+      Vector2 position = player_states[idx].new_pos;
+      canvas.paint(position, player.getPaintColor(), 40, secret_key);
+    }
+    canvas.sendPixmapToTexture();
   }
 
   // --------------------------------------------------------------- //
@@ -322,18 +367,6 @@ public class GameManager {
   }
 
   // --------------------------------------------------------------- //
-  private void paintOnCanvas() {
-    for (int idx = 0; idx < players.length; ++idx) {
-      Player player = players[idx];
-      if ((player.getPaintAmount() <= 0.0))
-        continue;
-      Vector2 position = player_states[idx].new_pos;
-      canvas.paint(position, player.getPaintColor(), 40, secret_key);
-    }
-    canvas.sendPixmapToTexture();
-  }
-
-  // --------------------------------------------------------------- //
   private void adjustScores() {
     for (int player_idx = 0; player_idx < players.length; ++player_idx)
       adjustScore(player_idx);
@@ -348,13 +381,14 @@ public class GameManager {
   }
 
   // --------------------------------------------------------------- //
-  public void render(SpriteBatch batch) {
-    // --- render all layers
-    int layer_idx = 0;
-    for (List<Renderable> layer_items : render_layers_) {
-      for (Renderable renderable : layer_items)
-        renderable.render(batch, layer_idx);
-      ++layer_idx;
-    }
+  private void createPaintBooth() {
+    PaintBooth booth = new PaintBooth();
+    booth.setAnker(floor);
+    int[] pos = new int[] {300, 300};
+    booth.setRenderPosition(pos);
+    booth.setScale(Array.of(0.57f, 0.57f));
+    // ---
+    addRenderable(booth);
+    addEntity(booth);
   }
 }
