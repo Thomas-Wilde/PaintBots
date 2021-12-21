@@ -54,11 +54,17 @@ public class Canvas extends Renderable {
   }
 
   // --------------------------------------------------------------- //
-  public void paint(Vector2 position, PaintColor color, int radius,
+  /**
+   * Paint the canvas at the given position, if it is possible to paint there.
+   *
+   * @return The amount paint needed for the coloring.
+   */
+  public int paint(Vector2 position, PaintColor color, int radius,
       SecretKey key) {
     // ---
     Objects.requireNonNull(key);
     // ---
+    int paint = 0;
     pixmap.setColor(color.getColor());
     int ctr_x = (int) position.x;
     int ctr_y = (int) position.y;
@@ -75,8 +81,9 @@ public class Canvas extends Renderable {
           continue;
         // ---
         updatePixmap(paint_x, paint_y);
-        updatePaintCount(paint_x, paint_y, color);
+        paint += updatePaintCount(paint_x, paint_y, color);
       }
+    return paint;
   }
 
   // --------------------------------------------------------------- //
@@ -87,22 +94,33 @@ public class Canvas extends Renderable {
   // --------------------------------------------------------------- //
   /**
    * Paint the specified pixel with the given color and count how many cells of
-   * the canvas belong to which color.
+   * the canvas belong to which color. If the canvas is blank at this position
+   * we can simply paint the pixel. If there is another color from a different
+   * player, we have to use the double amount of color. If the cell already
+   * belongs to the Player, no color is needed.
+   *
+   * @return 0 if no coloring is needed, 1 if the cell gets colored for the
+   *         first time, 2 if the cell gets recolored.
    */
-  private void updatePaintCount(int x, int y, PaintColor color) {
+  private int updatePaintCount(int x, int y, PaintColor color) {
     int idx = x + y * width;
     int color_id = color.getColorID();
     // --- canvas is blank increase count for current player
     if (picture[idx] == -1) {
       picture[idx] = (byte) color_id;
       ++paint_count[color_id];
-      return;
+      return 1;
     }
-    // --- canvas is not blank switch ownership of pixel
+    // --- canvas is not blank
     short old_color_id = picture[idx];
     picture[idx] = (byte) color_id;
+    // --- do nothing if the cell belongs to the current player
+    if (color_id == old_color_id)
+      return 0;
+    // --- switch ownership of pixel
     ++paint_count[color_id];
     --paint_count[old_color_id];
+    return 2;
   }
 
   // --------------------------------------------------------------- //

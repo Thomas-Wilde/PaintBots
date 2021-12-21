@@ -24,8 +24,11 @@ public abstract class Player extends Entity {
   private int player_id = -1;
   private PlayerAnimation animation = null;
   private DirectionIndicator dir_indicator = null;
-  private float paint_amount = 1.0f;
+  private int paint_amount = 250000;
+  private int max_paint_amount = 250000;
   private int score = 0;
+  private int paint_radius = 40;
+  private int refill_speed = 50000;
 
   // ======================== Getter/Setter ======================== //
   //@formatter:off
@@ -38,10 +41,16 @@ public abstract class Player extends Entity {
   public int getPlayerID() { return player_id; }
   /** Access the unique painting color of the player. */
   public PaintColor getPaintColor() { return paint_colors[player_id]; }
-  /** Get the current paint amount as an value in [0.0, 1.0]. */
-  public float getPaintAmount() { return paint_amount; }
+  /** Get the current paint amount. It reflects the number of canvas pixels that still can get painted. */
+  public int getPaintAmount() { return paint_amount; }
+  /** The maximum paint the player can carry. */
+  public int getMaximumPaintAmount() { return max_paint_amount; }
   /** Get the current score of the player. */
   public int getScore() { return score; }
+  /** The radius of a single paint stroke/circle. */
+  public int getPaintRadius() { return paint_radius; }
+  /** The amount of paint that is refilled per second at a paint store. */
+   public int getRefillSpeed() { return refill_speed; }
   //@formatter:on
 
   // ======================= Player methods ======================== //
@@ -73,22 +82,40 @@ public abstract class Player extends Entity {
   }
 
   // --------------------------------------------------------------- //
-  public void setPaintAmount(float amount, SecretKey key) {
+  public void setMaximumPaintAmount(int amount, SecretKey key) {
     Objects.requireNonNull(key);
-    paint_amount = Math.max(0.0f, amount);
-    paint_amount = Math.min(amount, 1.0f);
+    max_paint_amount = Math.max(0, amount);
   }
 
   // --------------------------------------------------------------- //
-  public void increasePaintAmount(float plus, SecretKey key) {
+  public void setPaintAmount(int amount, SecretKey key) {
+    Objects.requireNonNull(key);
+    paint_amount = Math.max(0, amount);
+    paint_amount = Math.min(amount, max_paint_amount);
+  }
+
+  // --------------------------------------------------------------- //
+  public void increasePaintAmount(int plus, SecretKey key) {
     Objects.requireNonNull(key);
     setPaintAmount(paint_amount + plus, key);
   }
 
   // --------------------------------------------------------------- //
-  public void decreasePaintAmount(float minus, SecretKey key) {
+  public void decreasePaintAmount(int minus, SecretKey key) {
     Objects.requireNonNull(key);
     setPaintAmount(paint_amount - minus, key);
+  }
+
+  // --------------------------------------------------------------- //
+  public void setPaintRadius(int radius, SecretKey key) {
+    Objects.requireNonNull(key);
+    this.paint_radius = radius;
+  }
+
+  // --------------------------------------------------------------- //
+  public void setRefillSpeed(int paint_per_second, SecretKey key) {
+    Objects.requireNonNull(key);
+    this.refill_speed = paint_per_second;
   }
 
   // --------------------------------------------------------------- //
@@ -128,18 +155,18 @@ public abstract class Player extends Entity {
   public void update(SecretKey key) {
     Objects.requireNonNull(key);
     // ---
-    int offset = (int) (0.5 * animation.getRenderSize()[0]); // width of avatar
     Vector2 pos = getPosition();
-    animation.setRenderPosition(
-        Array.of((int) pos.x - offset, (int) pos.y - offset));
+    animation.setRenderPosition(Array.of((int) pos.x, (int) pos.y));
     // ---
     float time = (float) GameManager.get().getElapsedTime() + 0.25f * player_id;
     animation.setAnimationTime(time);
+    dir_indicator.setAnimationTime(time);
     // ---
     Vector2 move_dir = getDirection();
     move_dir.setLength(1.0f);
     animation.setMoveDirection(move_dir);
     animation.updateFrameTexture();
+    dir_indicator.updateFrameTexture();
     // ---
     float deg = dirVectorToRotDegree(move_dir);
     dir_indicator.setRotation(deg);

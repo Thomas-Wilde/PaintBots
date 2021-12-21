@@ -17,8 +17,12 @@ public class GameSettings {
   public int[] board_dimensions = {1000, 1000};
   public int[] board_border = {100, 100};
   public int ui_width = 600;
-
   public int[] cam_resolution =
       {(board_dimensions[0] + 2 * board_border[0] + ui_width),
           (board_dimensions[1] + 2 * board_border[1])};
+  public int game_length = 150;
+  public int max_paint_amount = 250000;
+  public int start_paint_amount = 250000;
+  public int paint_radius = 40;
+  public int refill_speed = 50000;
 }

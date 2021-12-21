@@ -1,8 +1,7 @@
 package com.tw.paintbots.Items;
 
-import com.badlogic.gdx.math.Vector2;
-
 import com.tw.paintbots.Renderables.MultiLayerRenderable;
+import com.tw.paintbots.GameManager.SecretKey;
 
 public abstract class Item extends MultiLayerRenderable {
   private ItemType type = ItemType.NONE;
@@ -16,13 +15,17 @@ public abstract class Item extends MultiLayerRenderable {
 
   // --------------------------------------------------------------- //
   //@formatter:off
-  public ItemType getType()              { return type; }
-  public void     setType(ItemType type) { this.type = type; }
+  public ItemType getType() { return type; }
   //@formatter:on
 
   // --------------------------------------------------------------- //
+  public void init() {
+    initItemArea();
+  }
+
+  // --------------------------------------------------------------- //
   //@formatter:off
-  public abstract ItemType[] getInteractionArea();
-  public abstract Vector2 getInteractionAreaOrigin();
+  public abstract ItemArea getItemArea(SecretKey key);
+  protected abstract void initItemArea();
   //@formatter:on
 }

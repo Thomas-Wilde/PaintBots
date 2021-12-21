@@ -24,6 +24,11 @@ public class UITimer extends SimpleRenderable {
   private int time = 0;
   private float border_offset = 0.15f; // down scaling for numbers
 
+  // ======================== Getter/Setter ======================== //
+  //@formatter:off
+  public int getTime() { return time; }
+  //@formatter:on
+
   // ===================== UITimer constructor ===================== //
   public UITimer(int seconds) {
     super("Timer", 1, "plank_15.png");

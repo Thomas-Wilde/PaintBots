@@ -16,8 +16,10 @@ import com.tw.paintbots.Renderables.SimpleRenderable;
 import com.tw.paintbots.Renderables.RepeatedRenderable;
 import com.tw.paintbots.Renderables.UITimer;
 import com.tw.paintbots.Renderables.UIPlayerBoard;
-
+import com.tw.paintbots.Items.Item;
 import com.tw.paintbots.Items.PaintBooth;
+import com.tw.paintbots.Items.ItemArea;
+import com.tw.paintbots.Items.ItemType;
 
 /**
  * The GameManager is the core class of the game. It creates all Entities and
@@ -39,6 +41,7 @@ public class GameManager {
   // GameManager uses singleton pattern
   private static GameManager instance = null;
   private double elapsed_time = 0.0;
+  private double delta_time = 0.0;
 
   private HashMap<Integer, List<Renderable>> render_layers = new HashMap<>();
   private ArrayList<Entity> entities = new ArrayList<>();
@@ -50,14 +53,15 @@ public class GameManager {
   private Player[] players = null;
   private PlayerState[] player_states = null;
   private Canvas canvas = null;
-
-  // private List<List<Renderable>> render_layers_ = null;
-  // private final int layers_count = 10;
+  private PaintBooth booth = null;
+  private Board board = null;
 
   // ======================== Getter/Setter ======================== //
   //@formatter:off
   /** Get the time that passed since the start of the round in milliseconds. */
   public double getElapsedTime() { return elapsed_time; }
+  /** Get the between the current and the last update step. */
+  public double getDeltaTime() { return delta_time; }
   //@formatter:on
 
   // ===================== GameManager methods ===================== //
@@ -84,7 +88,8 @@ public class GameManager {
 
   // --------------------------------------------------------------- //
   public void update() {
-    elapsed_time += Gdx.graphics.getDeltaTime();
+    delta_time = Gdx.graphics.getDeltaTime();
+    elapsed_time += delta_time;
     // ---
     preUpdate();
     // --- update all entities
@@ -92,9 +97,11 @@ public class GameManager {
       entity.update(secret_key);
     // ---
     moveAllPlayers();
-    paintOnCanvas();
-    adjustPaintAmounts();
+    if (timer.getTime() > 0)
+      paintOnCanvas();
     adjustScores();
+    // ---
+    interactWithBoard();
   }
 
   // --------------------------------------------------------------- //
@@ -119,21 +126,36 @@ public class GameManager {
    * Add the Renderable item to all render layers item demands. If a specific
    * layer does not exist yet, it gets created.
    */
-  private void addRenderable(Renderable item) {
-    int[] item_layers = item.getLayers();
-    for (int layer_idx : item_layers) {
+  private void addRenderable(Renderable renderable) {
+    int[] renderable_layers = renderable.getLayers();
+    for (int layer_idx : renderable_layers) {
       // --- check if the layer exists
       if (render_layers.get(layer_idx) == null)
         render_layers.put(layer_idx, new ArrayList<Renderable>());
       // --- access the layer
       List<Renderable> layer = render_layers.get(layer_idx);
-      layer.add(item);
+      layer.add(renderable);
     }
   }
 
   // --------------------------------------------------------------- //
-  private void addEntity(Entity item) {
-    entities.add(item);
+  private void addEntity(Entity entity) {
+    entities.add(entity);
+  }
+
+  // --------------------------------------------------------------- //
+  private void addItem(Item item) {
+    ItemArea area = item.getItemArea(secret_key);
+    int[] origin = area.getOrigin();
+    int width = area.getWidth();
+    int height = area.getHeight();
+    for (int x = 0; x < width; ++x)
+      for (int y = 0; y < height; ++y) {
+        int pos_x = origin[0] + x;
+        int pos_y = origin[1] + y;
+        ItemType type = area.getType(x, y);
+        board.setType(pos_x, pos_y, type, secret_key);
+      }
   }
 
   // --------------------------------------------------------------- //
@@ -145,6 +167,7 @@ public class GameManager {
     createUITimer();
     createPlayers();
     createCanvas();
+    createBoard();
     createPaintBooth();
   }
 
@@ -198,7 +221,8 @@ public class GameManager {
 
   // --------------------------------------------------------------- //
   private void createUITimer() {
-    timer = new UITimer(180);
+    int sec = game_settings.game_length;
+    timer = new UITimer(sec);
     // --- define position and size
     int ui_width = game_settings.ui_width;
     int cam_res_y = game_settings.cam_resolution[1];
@@ -248,9 +272,17 @@ public class GameManager {
     int idx = player.getPlayerID();
     Vector2 pos = game_settings.start_positions[idx];
     Vector2 dir = game_settings.start_directions[idx].setLength(1.0f);
+    int max_paint = game_settings.max_paint_amount;
+    int start_paint = game_settings.start_paint_amount;
+    int paint_radius = game_settings.paint_radius;
+    int refill_speed = game_settings.refill_speed;
     player.setPosition(pos, secret_key);
     player.setDirection(dir, secret_key);
     player.setAnker(floor, secret_key);
+    player.setMaximumPaintAmount(max_paint, secret_key);
+    player.setPaintAmount(start_paint, secret_key);
+    player.setPaintRadius(paint_radius, secret_key);
+    player.setRefillSpeed(refill_speed, secret_key);
   }
 
   // --------------------------------------------------------------- //
@@ -303,10 +335,39 @@ public class GameManager {
     // ---
     Vector2 new_pos = old_pos.cpy();
     new_pos.add(move_dir.scl(200.0f * Gdx.graphics.getDeltaTime()));
-    clampPositionToBoard(new_pos);
+    clampPositionToBorder(new_pos);
+    clampPositionToObstacles(new_pos, old_pos);
     // ---
     player.setPosition(new_pos, secret_key);
     player_states[player_idx].new_pos = new_pos;
+  }
+
+  // --------------------------------------------------------------- //
+  private void interactWithBoard() {
+    for (int player_idx = 0; player_idx < players.length; ++player_idx)
+      interactWithBoard(player_idx);
+  }
+
+  // --------------------------------------------------------------- //
+  private void interactWithBoard(int player_idx) {
+    Player player = players[player_idx];
+    Vector2 pos = player_states[player_idx].new_pos;
+    int x = (int) pos.x;
+    int y = (int) pos.y;
+    ItemType cell_type = board.getType(x, y);
+
+    // --- refill
+    if (cell_type == ItemType.REFILL) {
+      int refill_speed = player.getRefillSpeed();
+      int increase = (int) (refill_speed * delta_time);
+      player.increasePaintAmount(increase, secret_key);
+    }
+  }
+
+  // --------------------------------------------------------------- //
+  /** calls 'clampPosition(pos, 0.0f);' */
+  private void clampPositionToBorder(Vector2 pos) {
+    clampPositionToBorder(pos, 0.01f);
   }
 
   // --------------------------------------------------------------- //
@@ -314,7 +375,7 @@ public class GameManager {
    * Checks if the given position is inside of the game board. If not, change
    * the corresponding coordinates to be insider.
    */
-  private void clampPositionToBoard(Vector2 pos, float offset) {
+  private void clampPositionToBorder(Vector2 pos, float offset) {
     int board_width = game_settings.board_dimensions[0];
     int board_height = game_settings.board_dimensions[1];
     pos.x = Math.max(pos.x, offset);
@@ -324,9 +385,30 @@ public class GameManager {
   }
 
   // --------------------------------------------------------------- //
-  /** calls 'clampPosition(pos, 0.0f);' */
-  private void clampPositionToBoard(Vector2 pos) {
-    clampPositionToBoard(pos, 0.01f);
+  private void clampPositionToObstacles(Vector2 pos, Vector2 old_pos) {
+    int pos_x = (int) pos.x;
+    int pos_y = (int) pos.y;
+    if (board.getType(pos_x, pos_y) != ItemType.OBSTACLE)
+      return;
+    // --- clamp x-coordinate
+    int old_x = (int) old_pos.x;
+    if (board.getType(old_x, pos_y) != ItemType.OBSTACLE) {
+      pos.x = old_pos.x;
+      return;
+    }
+    // --- clamp y-coordinate
+    int old_y = (int) old_pos.y;
+    if (board.getType(pos_x, old_y) != ItemType.OBSTACLE) {
+      pos.y = old_pos.y;
+      return;
+    }
+    // --- clamp x- and y-cooridnates
+    if (board.getType(old_x, old_y) != ItemType.OBSTACLE)
+      pos = old_pos;
+
+    // If we reached this point an neither condition is true, we might have
+    // started in an obstacle. So just go on and give a hint.
+    System.out.println("ERROR: obstacle collision");
   }
 
   // --------------------------------------------------------------- //
@@ -346,24 +428,12 @@ public class GameManager {
       if ((player.getPaintAmount() <= 0.0))
         continue;
       Vector2 position = player_states[idx].new_pos;
-      canvas.paint(position, player.getPaintColor(), 40, secret_key);
+      int radius = player.getPaintRadius();
+      int used_paint =
+          canvas.paint(position, player.getPaintColor(), radius, secret_key);
+      player.decreasePaintAmount(used_paint, secret_key);
     }
     canvas.sendPixmapToTexture();
-  }
-
-  // --------------------------------------------------------------- //
-  private void adjustPaintAmounts() {
-    for (int player_idx = 0; player_idx < players.length; ++player_idx)
-      adjustPaintAmount(player_idx);
-  }
-
-  // --------------------------------------------------------------- //
-  private void adjustPaintAmount(int player_idx) {
-    Vector2 old_pos = player_states[player_idx].old_pos;
-    Vector2 new_pos = player_states[player_idx].new_pos;
-    float move_dist = new_pos.dst(old_pos) / 4000.0f;
-    Player player = players[player_idx];
-    player.decreasePaintAmount(move_dist, secret_key);
   }
 
   // --------------------------------------------------------------- //
@@ -382,13 +452,23 @@ public class GameManager {
 
   // --------------------------------------------------------------- //
   private void createPaintBooth() {
-    PaintBooth booth = new PaintBooth();
+    booth = new PaintBooth();
     booth.setAnker(floor);
-    int[] pos = new int[] {300, 300};
+    int[] pos = new int[] {500, 500};
+    booth.setPosition(new Vector2(pos[0], pos[1]), secret_key);
     booth.setRenderPosition(pos);
-    booth.setScale(Array.of(0.57f, 0.57f));
+    booth.init();
     // ---
     addRenderable(booth);
     addEntity(booth);
+    addItem(booth);
+  }
+
+  // --------------------------------------------------------------- //
+  private void createBoard() {
+    int width = game_settings.board_dimensions[0];
+    int height = game_settings.board_dimensions[1];
+    board = new Board(width, height);
+
   }
 }

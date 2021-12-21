@@ -2,6 +2,7 @@ package com.tw.paintbots.Renderables;
 
 import com.badlogic.gdx.math.Vector2;
 
+import com.tw.paintbots.Array;
 import com.tw.paintbots.CardinalDirection;
 
 // =============================================================== //
@@ -16,6 +17,9 @@ public class PlayerAnimation extends AnimatedRenderable {
   // =================== PlayerAnimation methods =================== //
   public PlayerAnimation(String texture_file) {
     super("PlayerAnimation", 5, texture_file, 8, 8, 1.0f);
+    // ---
+    int offset = -getRenderSize()[0] / 2;
+    setRenderOffset(Array.of(offset, offset / 2));
   }
 
   // --------------------------------------------------------------- //

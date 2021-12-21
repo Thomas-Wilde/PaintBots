@@ -12,6 +12,7 @@ import com.tw.paintbots.Entity;
 public abstract class Renderable extends Entity {
   // --------------------------------------------------------------- //
   private int[] render_position = {0, 0};
+  private int[] render_offset = {0, 0};
   private float[] scale = {1.0f, 1.0f};
   private int[] layers = null;
   protected Renderable anker = null;
@@ -28,6 +29,11 @@ public abstract class Renderable extends Entity {
   public void setScale(float[] scale) { this.scale = scale.clone(); }
   /** return A copy of the array that contains the scaling. */
   public float[] getScale() { return scale.clone(); }
+  /** Set the render offset in camera/pixel coordinates. */
+  public void setRenderOffset(int[] offset) { this.render_offset = offset.clone(); }
+  /** Get the render offset in camera/pixel coordinates. */
+  public int[] getRenderOffset() { return this.render_offset.clone(); }
+
   //@formatter:on
 
   // ====================== Renderable methods ====================== //
@@ -65,8 +71,8 @@ public abstract class Renderable extends Entity {
   public int[] getRenderPosition() {
     int[] rnd_pos = render_position.clone();
     if (anker != null) {
-      rnd_pos[0] += anker.getRenderPosition()[0];
-      rnd_pos[1] += anker.getRenderPosition()[1];
+      rnd_pos[0] += anker.getRenderPosition()[0] + render_offset[0] * scale[0];
+      rnd_pos[1] += anker.getRenderPosition()[1] + render_offset[1] * scale[1];
     }
     return rnd_pos;
   }

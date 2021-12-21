@@ -109,7 +109,9 @@ public class UIPlayerBoard extends SimpleRenderable {
     Objects.requireNonNull(key);
     // ---
     super.update(key);
-    paintbar.setAmount(player.getPaintAmount());
+    int paint = player.getPaintAmount();
+    int max_paint = player.getMaximumPaintAmount();
+    paintbar.setAmount((float) paint / max_paint);
     // ---
     int points = player.getScore();
     score[1].setDigitValue(points % 10);
