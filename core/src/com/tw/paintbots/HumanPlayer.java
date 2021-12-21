@@ -7,17 +7,20 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.math.Vector2;
 
+import com.tw.paintbots.GameManager.SecretKey;
+
+// =============================================================== //
 public class HumanPlayer extends Player {
   //@formatter:off
   /** The key_map_ maps the keyboard controls to the player ID. */
-  private int[][] key_map_ = {{Keys.LEFT,     Keys.RIGHT},      // player 0
-                              {Keys.A,        Keys.D},          // player 1
-                              {Keys.N,        Keys.M},          // player 2
-                              {Keys.NUMPAD_4, Keys.NUMPAD_6}};  // player 3
+  private int[][] key_map = {{Keys.LEFT,     Keys.RIGHT},      // player 0
+                             {Keys.A,        Keys.D},          // player 1
+                             {Keys.N,        Keys.M},          // player 2
+                             {Keys.NUMPAD_4, Keys.NUMPAD_6}};  // player 3
   //@formatter:on
 
   /** Defines the rotation/direction in which the player moves. */
-  private float rot_degree_ = 0.0f;
+  private float rot_degree = 0.0f;
   private Vector2 dir = new Vector2(0.0f, 0.0f);
 
   /**
@@ -25,12 +28,12 @@ public class HumanPlayer extends Player {
    * directions, that are defined by sine and cosine values. We precompute a
    * lookUp table for the direction vectors.
    */
-  private static final int dir_count_ = 720;
-  private static final double[][] dir_look_up_ = new double[dir_count_][2];
-  private static final double delta_dir_ = dir_count_ / 360.0;
+  private static final int dir_count = 720;
+  private static final double[][] dir_look_up = new double[dir_count][2];
+  private static final double delta_dir = dir_count / 360.0;
   private static boolean is_initialized = false;
 
-  // --------------------------------------------------------------- //
+  // ===================== HumanPlayer methods ===================== //
   public HumanPlayer(String name) throws PlayerException {
     super(name);
     // ---
@@ -42,14 +45,15 @@ public class HumanPlayer extends Player {
   /** Precompute the possible move directions. */
   private static void initDirectionArray() {
     is_initialized = true;
-    for (int i = 0; i < dir_count_; ++i) {
-      double rad = Math.toRadians((double) i * delta_dir_);
-      dir_look_up_[i][0] = Math.cos(rad);
-      dir_look_up_[i][1] = Math.sin(rad);
+    for (int i = 0; i < dir_count; ++i) {
+      double rad = Math.toRadians((double) i * delta_dir);
+      dir_look_up[i][0] = Math.cos(rad);
+      dir_look_up[i][1] = Math.sin(rad);
     }
   }
 
   // --------------------------------------------------------------- //
+  @Override
   public PlayerType getType() {
     return PlayerType.HUMAN;
   }
@@ -66,7 +70,7 @@ public class HumanPlayer extends Player {
   private void setDirection(Vector2 dir) {
     dir.setLength(1.0f);
     this.dir = dir;
-    rot_degree_ = dirVectorToRotDegree(dir);
+    rot_degree = dirVectorToRotDegree(dir);
   }
 
   // --------------------------------------------------------------- //
@@ -78,7 +82,9 @@ public class HumanPlayer extends Player {
   // --------------------------------------------------------------- //
   /** Read the keyboard input and adapt the move direction accordingly. */
   @Override
-  public void update() {
+  public void update(SecretKey secret) {
+    Objects.requireNonNull(secret);
+    // ---
     mapKeyToRotation();
     // ---
     Vector2 dir_tmp = mapRotationToDirectionVector();
@@ -87,20 +93,21 @@ public class HumanPlayer extends Player {
     } catch (Exception e) {
       System.out.print(e.getMessage());
     }
+    super.update(secret);
   }
 
   // --------------------------------------------------------------- //
   /** Maps a pressed key to the player rotation. */
   private void mapKeyToRotation() {
     int id = getPlayerID();
-    if (Gdx.input.isKeyPressed(key_map_[id][0]))
-      rot_degree_ += 5.0;
-    if (Gdx.input.isKeyPressed(key_map_[id][1]))
-      rot_degree_ -= 5.0;
+    if (Gdx.input.isKeyPressed(key_map[id][0]))
+      rot_degree += 5.0;
+    if (Gdx.input.isKeyPressed(key_map[id][1]))
+      rot_degree -= 5.0;
 
     // --- avoid negative values due to dirction look up id.
-    if (rot_degree_ < 0.0)
-      rot_degree_ += 360.0;
+    if (rot_degree < 0.0)
+      rot_degree += 360.0;
   }
 
   // --------------------------------------------------------------- //
@@ -109,9 +116,9 @@ public class HumanPlayer extends Player {
    * look up table.
    */
   private Vector2 mapRotationToDirectionVector() {
-    int dir_id = (int) (rot_degree_ / delta_dir_) % dir_count_;
-    float x = (float) dir_look_up_[dir_id][0];
-    float y = (float) dir_look_up_[dir_id][1];
+    int dir_id = (int) (rot_degree / delta_dir) % dir_count;
+    float x = (float) dir_look_up[dir_id][0];
+    float y = (float) dir_look_up[dir_id][1];
     return new Vector2(x, y);
   }
 }

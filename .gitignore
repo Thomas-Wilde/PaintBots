@@ -1,6 +1,7 @@
 ## Java
 
 core/assets/source/*
+core/assets_source/*
 
 *.class
 *.war

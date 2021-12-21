@@ -1,10 +1,10 @@
 package com.tw.paintbots.Renderables;
 
 import java.util.Objects;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import com.tw.paintbots.GameManager.SecretKey;
 
@@ -15,7 +15,7 @@ import com.tw.paintbots.GameManager.SecretKey;
 public class SimpleRenderable extends Renderable {
   // --------------------------------------------------------------- //
   private final String texture_file;
-  private Texture texture;
+  protected Texture texture;
 
   // ================== SimpleRenderable methods ================== //
   public SimpleRenderable(String name, int layer, String texture_file) {
@@ -34,23 +34,6 @@ public class SimpleRenderable extends Renderable {
     // ---
     Texture.TextureWrap wrap_method = Texture.TextureWrap.MirroredRepeat;
     texture.setWrap(wrap_method, wrap_method);
-  }
-
-  // --------------------------------------------------------------- //
-  @Override
-  protected void initResolution() {
-    int width = texture.getWidth();
-    int height = texture.getHeight();
-    resolution = new int[] {width, height};
-  }
-
-  // --------------------------------------------------------------- //
-  @Override
-  protected void initTextureRegion() {
-    int width = resolution[0];
-    int height = resolution[1];
-    texture_region = new TextureRegion(texture);
-    texture_region.setRegion(0, 0, width, height);
   }
 
   // --------------------------------------------------------------- //
@@ -94,31 +77,21 @@ public class SimpleRenderable extends Renderable {
     setScale(new float[] {s, s});
   }
 
-  // --------------------------------------------------------------- //
-  /**
-   * Get the render size that is computed depending on the texture resolution,
-   * and the scale factor.
-   *
-   * @return An int[2] array with width and height in pixels.
-   */
-  public int[] getRenderSize() {
-    float[] scale = getScale();
-    int[] rnd_size = new int[2];
-    rnd_size[0] = (int) (resolution[0] * scale[0]);
-    rnd_size[1] = (int) (resolution[1] * scale[1]);
-    return rnd_size;
+  // ===================== Renderable methods ===================== //
+  @Override
+  protected void initResolution() {
+    int width = texture.getWidth();
+    int height = texture.getHeight();
+    resolution = new int[] {width, height};
   }
 
   // --------------------------------------------------------------- //
-  /**
-   * Draw the SimpleRenderable to the current image layer.
-   */
   @Override
-  public void render(SpriteBatch batch, int layer) {
-    // --- SimpleRenderable belongs to only one layer
-    if (layer != getLayers()[0])
-      return;
-    super.render(batch, layer);
+  protected void initTextureRegion() {
+    int width = resolution[0];
+    int height = resolution[1];
+    texture_region = new TextureRegion(texture);
+    texture_region.setRegion(0, 0, width, height);
   }
 
   // ======================== Entity methods ======================== //

@@ -1,6 +1,8 @@
 package com.tw.paintbots.Renderables;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+
 import com.tw.paintbots.Entity;
 
 /**
@@ -9,10 +11,12 @@ import com.tw.paintbots.Entity;
 // =============================================================== //
 public abstract class Renderable extends Entity {
   // --------------------------------------------------------------- //
-  private int[] layers = null;
   private int[] render_position = {0, 0};
   private float[] scale = {1.0f, 1.0f};
-  private Renderable anker = null;
+  private int[] layers = null;
+  protected Renderable anker = null;
+  protected TextureRegion texture_region = null;
+  protected int[] resolution = null;
 
   // ======================== Getter/Setter ======================== //
   //@formatter:off
@@ -67,6 +71,37 @@ public abstract class Renderable extends Entity {
     return rnd_pos;
   }
 
+  // --------------------------------------------------------------- //
+  /**
+   * Get the render size that is computed depending on the texture resolution,
+   * and the scale factor.
+   *
+   * @return An int[2] array with width and height in pixels.
+   */
+  public int[] getRenderSize() {
+    int[] rnd_size = new int[2];
+    rnd_size[0] = (int) (resolution[0] * scale[0]);
+    rnd_size[1] = (int) (resolution[1] * scale[1]);
+    return rnd_size;
+  }
+
+  // --------------------------------------------------------------- //
+  /**
+   * Draw the Renderable at/with its current position/scale/resolution.
+   */
+  public void render(SpriteBatch batch, int layer) {
+    int[] rnd_pos = getRenderPosition();
+    int x = rnd_pos[0];
+    int y = rnd_pos[1];
+    float sx = scale[0];
+    float sy = scale[1];
+    int width = resolution[0];
+    int height = resolution[1];
+    batch.draw(texture_region, x, y, 0, 0, width, height, sx, sy, 0.0f);
+  }
+
   // ======================== abstract methods ======================== //
-  public abstract void render(SpriteBatch batch, int layer);
+  protected abstract void initTextureRegion();
+
+  protected abstract void initResolution();
 }

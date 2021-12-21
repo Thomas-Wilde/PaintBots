@@ -1,8 +1,14 @@
-package com.tw.paintbots;
+package com.tw.paintbots.Renderables;
+
+import java.util.Objects;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+
+import com.tw.paintbots.GameManager.SecretKey;
+
+import com.tw.paintbots.PaintColor;
 
 // =============================================================== //
 public class UIColorBar extends TextureGrid {
@@ -11,8 +17,8 @@ public class UIColorBar extends TextureGrid {
   private float amount = 1.0f;
 
   // ====================== UIColorBar methods ===================== //
-  public UIColorBar() {
-    super("color_bars.png", Array.of(6), 1, 5);
+  public UIColorBar(int layer) {
+    super("color_bars.png", layer, 1, 5);
   }
 
   // --------------------------------------------------------------- //
@@ -46,9 +52,11 @@ public class UIColorBar extends TextureGrid {
 
   // ====================== Renderable methods ===================== //
   @Override
-  public void render(SpriteBatch batch) {
-    int x = render_position[0];
-    int y = render_position[1];
+  public void render(SpriteBatch batch, int layer) {
+    int[] rnd_pos = getRenderPosition();
+    float[] scale = getScale();
+    int x = rnd_pos[0];
+    int y = rnd_pos[1];
     int width = resolution[0];
     int height = resolution[1];
     float scale_x = scale[0] * amount;

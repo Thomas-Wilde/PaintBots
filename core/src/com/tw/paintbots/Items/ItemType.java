@@ -1,4 +1,4 @@
-package com.tw.paintbots;
+package com.tw.paintbots.Items;
 
 public enum ItemType {
   NONE(0), OBSTACLE(1), REFILL(2);

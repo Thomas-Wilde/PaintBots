@@ -1,15 +1,18 @@
 package com.tw.paintbots;
 
+// =============================================================== //
 public enum CardinalDirection {
   E(0), NE(1), N(2), NW(3), W(4), SW(5), S(6), SE(7);
 
-  private final int id_;
+  private final int id;
 
+  // --------------------------------------------------------------- //
   CardinalDirection(int id) {
-    id_ = id;
+    this.id = id;
   }
 
-  public int get() {
-    return id_;
+  // --------------------------------------------------------------- //
+  public int getID() {
+    return id;
   }
 }
