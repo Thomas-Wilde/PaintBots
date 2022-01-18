@@ -15,6 +15,7 @@ public class UIPlayerBoard extends SimpleRenderable {
   private Player player = null;
   private UIColorBar paintbar = null;
   private UIDigit[] score = null;
+  private SimpleRenderable portrait = null;
 
   // ==================== UIPlayerBoard methods ==================== //
   public UIPlayerBoard(Player player) {
@@ -22,6 +23,7 @@ public class UIPlayerBoard extends SimpleRenderable {
     this.player = player;
     createPaintbar();
     createScoreDigits();
+    createPortrait();
   }
 
   // --------------------------------------------------------------- //
@@ -42,6 +44,23 @@ public class UIPlayerBoard extends SimpleRenderable {
       score[i].setAnker(this);
     }
     score[2].setDigitValue(12);
+  }
+
+  // --------------------------------------------------------------- //
+  void createPortrait() {
+    if (portrait != null)
+      return;
+    String portrait_file = "";
+    //@formatter:off
+    switch (player.getPlayerID()) {
+      case 0:  portrait_file = "portrait_green.png"; break;
+      case 1:  portrait_file = "portrait_purple.png"; break;
+      case 2:  portrait_file = "portrait_blue.png"; break;
+      default: portrait_file = "portrait_orange.png"; break;
+    }
+    //@formatter:on
+    portrait = new SimpleRenderable("portrait", 2, portrait_file);
+    portrait.setAnker(this);
   }
 
   // --------------------------------------------------------------- //
@@ -69,11 +88,22 @@ public class UIPlayerBoard extends SimpleRenderable {
     score[2].setRenderPosition(Array.of(pos_x2, pos_y));
   }
 
+  // --------------------------------------------------------------- //
+  private void updatePortraitPosition() {
+    // score position depends on the textures resolution
+    int w = portrait.getRenderSize()[0];
+    int[] size = getRenderSize();
+    int pos_x0 = (int) ((size[0] - w) * 0.5);
+    int pos_y = (int) (size[1] * 0.8);
+    portrait.setRenderPosition(Array.of(pos_x0, pos_y));
+  }
+
   // ====================== Renderable methods ====================== //
   @Override
   public void setRenderPosition(int[] position) {
     super.setRenderPosition(position);
     updatePaintbarPosition();
+    updatePortraitPosition();
     updateScoreDigitsPosition();
   }
 
@@ -84,6 +114,9 @@ public class UIPlayerBoard extends SimpleRenderable {
     // ---
     paintbar.setScale(scale);
     updatePaintbarPosition();
+    // ---
+    portrait.setScale(Array.of(scale[0] * 1.5f, scale[1] * 1.5f));
+    updatePortraitPosition();
     // ---
     float[] digit_scale = {scale[0] * 0.8f, scale[1] * 0.8f};
     for (UIDigit digit : score)
@@ -98,6 +131,8 @@ public class UIPlayerBoard extends SimpleRenderable {
     super.render(batch, layer);
     if (paintbar != null)
       paintbar.render(batch, layer);
+    if (portrait != null)
+      portrait.render(batch, layer);
     for (UIDigit digit : score) {
       digit.render(batch, layer);
     }
@@ -126,6 +161,7 @@ public class UIPlayerBoard extends SimpleRenderable {
     paintbar.destroy(key);
     for (UIDigit digit : score)
       digit.destroy(key);
+    portrait.destroy(key);
     super.destroy(key);
   }
 }
