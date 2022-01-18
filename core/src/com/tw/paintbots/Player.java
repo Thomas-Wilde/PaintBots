@@ -59,9 +59,23 @@ public abstract class Player extends Entity {
     if (player_id >= MAX_COUNT)
       throw new PlayerException("Tried to create too many players.");
     // ---
-    animation = new PlayerAnimation("chief_walk.png");
+    loadAnimation();
     dir_indicator = new DirectionIndicator();
     dir_indicator.setAnker(animation);
+  }
+
+  // --------------------------------------------------------------- //
+  private void loadAnimation() {
+    String animation_file = "";
+    //@formatter:off
+    switch (player_id) {
+      case 0:  animation_file = "walk_green.png"; break;
+      case 1:  animation_file = "walk_purple.png"; break;
+      case 2:  animation_file = "walk_blue.png"; break;
+      default: animation_file = "walk_orange.png"; break;
+    }
+    //@formatter:on
+    animation = new PlayerAnimation(animation_file);
   }
 
   // --------------------------------------------------------------- //
