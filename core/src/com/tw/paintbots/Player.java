@@ -187,6 +187,10 @@ public abstract class Player extends Entity {
   }
 
   // ====================== abstract methods ====================== //
+  /**
+   * Currently two types are supported: HUMAN and AI. A HUMAN player is
+   * controlled by the keyboard. The AI is controlled by your program.
+   */
   public abstract PlayerType getType();
 
   // --------------------------------------------------------------- //
@@ -207,6 +211,9 @@ public abstract class Player extends Entity {
    * restriction is made to avoid cheating, i.e. if someone tries to modify the
    * behavior of other players. This method is usually only used once at the
    * start of the battle to set the initial move direction.
+   *
+   * @param dir The (normalized) direction in which the player is oriented.
+   * @param key A secret key only the GameManager can access.
    */
   public abstract void setDirection(Vector2 dir, SecretKey key);
 
