@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
 import com.tw.paintbots.Renderables.Canvas;
+import com.tw.paintbots.Renderables.RenderDepthComparator;
 import com.tw.paintbots.Renderables.Renderable;
 import com.tw.paintbots.Renderables.SimpleRenderable;
 import com.tw.paintbots.Renderables.RepeatedRenderable;
@@ -43,7 +44,9 @@ public class GameManager {
   private double elapsed_time = 0.0;
   private double delta_time = 0.0;
 
+  // RenderLayer 20 is reserved for elements on the game board, e.g. objects.
   private HashMap<Integer, List<Renderable>> render_layers = new HashMap<>();
+  private List<Renderable> player_layer = new ArrayList<>();
   private ArrayList<Entity> entities = new ArrayList<>();
   private GameSettings game_settings = null;
 
@@ -115,9 +118,48 @@ public class GameManager {
   public void render(SpriteBatch batch) {
     Set<Integer> layer_ids = render_layers.keySet();
     for (Integer id : layer_ids) {
+      // ---
+      if (id == 20) {
+        renderItemLayer(batch);
+        continue;
+      }
+      // ---
       List<Renderable> renderables = render_layers.get(id);
       for (Renderable item : renderables)
         item.render(batch, id.intValue());
+    }
+  }
+
+  // --------------------------------------------------------------- //
+  public void renderItemLayer(SpriteBatch batch) {
+    // ---
+    List<Renderable> items = render_layers.get(20);
+    RenderDepthComparator comparator = new RenderDepthComparator();
+    player_layer.sort(comparator);
+    // ---
+    int idx_item = 0;
+    int idx_player = 0;
+    Renderable item = null;
+    Renderable player = null;
+    while (true) {
+      // ---
+      item = null;
+      player = null;
+      if (idx_item < items.size())
+        item = items.get(idx_item);
+      if (idx_player < player_layer.size())
+        player = player_layer.get(idx_player);
+      // ---
+      if (item == null && player == null)
+        return;
+      // ---
+      if (comparator.compare(item, player) < 0) {
+        item.render(batch, 20);
+        ++idx_item;
+      } else {
+        player.render(batch, 20);
+        ++idx_player;
+      }
     }
   }
 
@@ -169,6 +211,9 @@ public class GameManager {
     createCanvas();
     createBoard();
     createPaintBooth();
+    // ---
+    List<Renderable> items = render_layers.get(20);
+    items.sort(new RenderDepthComparator());
   }
 
   // --------------------------------------------------------------- //

@@ -16,10 +16,12 @@ public class PlayerAnimation extends AnimatedRenderable {
 
   // =================== PlayerAnimation methods =================== //
   public PlayerAnimation(String texture_file) {
-    super("PlayerAnimation", 5, texture_file, 8, 8, 1.0f);
+    super("PlayerAnimation", 20, texture_file, 8, 8, 1.0f);
     // ---
     int offset = -getRenderSize()[0] / 2;
+    // move the character a little bit to the left
     setRenderOffset(Array.of(offset, offset / 2));
+    setRenderDepth((int) (32 * getScale()[1]));
   }
 
   // --------------------------------------------------------------- //
