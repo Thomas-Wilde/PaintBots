@@ -296,7 +296,7 @@ public class GameManager {
       try {
         Player player = new HumanPlayer("Player" + i);
         initPlayer(player);
-        addRenderable(player.getAnimation());
+        player_layer.add(player.getAnimation());
         addRenderable(player.getIndicator());
         addEntity(player);
         createPlayerUI(player);
@@ -332,22 +332,22 @@ public class GameManager {
 
   // --------------------------------------------------------------- //
   private void createPlayerUI(Player player) {
-    UIPlayerBoard board = new UIPlayerBoard(player);
+    UIPlayerBoard info_board = new UIPlayerBoard(player);
     int player_id = player.getPaintColor().getColorID();
     // --- define position and size
     int[] anker = timer.getRenderPosition();
     int ui_width = game_settings.ui_width;
     int width = (int) (ui_width * 0.45);
-    board.setRenderWidth(width);
-    int height = board.getRenderSize()[1];
+    info_board.setRenderWidth(width);
+    int height = info_board.getRenderSize()[1];
     int offset_x = (int) (ui_width * 0.1 / 3);
     int offset_y = height + (int) (ui_width * 0.05);
     int pos_x = (player_id % 2 == 1) ? offset_x : width + 2 * offset_x;
     int pos_y = (player_id > 1) ? anker[1] - offset_y : anker[1] - 2 * offset_y;
-    board.setRenderPosition(Array.of(pos_x, pos_y));
+    info_board.setRenderPosition(Array.of(pos_x, pos_y));
     // ---
-    addRenderable(board);
-    entities.add(board);
+    addRenderable(info_board);
+    entities.add(info_board);
   }
 
   // --------------------------------------------------------------- //
