@@ -21,7 +21,7 @@ public class PlayerAnimation extends AnimatedRenderable {
     int offset = -getRenderSize()[0] / 2;
     // move the character a little bit to the left
     setRenderOffset(Array.of(offset, offset / 2));
-    setRenderDepth((int) (32 * getScale()[1]));
+    setOcclusionDepth((int) (32 * getScale()[1]));
   }
 
   // --------------------------------------------------------------- //

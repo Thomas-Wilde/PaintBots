@@ -13,8 +13,8 @@ public class RenderDepthComparator implements Comparator<Renderable> {
     if (r2 == null)
       return -1;
     // ---
-    int depth1 = r1.getRenderDepth() + r1.getRenderPosition()[1];
-    int depth2 = r2.getRenderDepth() + r2.getRenderPosition()[1];
+    int depth1 = r1.getOcclusionDepth() + r1.getRenderPosition()[1];
+    int depth2 = r2.getOcclusionDepth() + r2.getRenderPosition()[1];
     return depth2 - depth1;
   }
 }

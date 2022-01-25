@@ -13,7 +13,7 @@ public abstract class Renderable extends Entity {
   // --------------------------------------------------------------- //
   private int[] render_position = {0, 0};
   private int[] render_offset = {0, 0};
-  private int render_depth = -1;
+  private int occlusion_depth = -1;
   private float[] scale = {1.0f, 1.0f};
   private int[] layers = null;
   protected Renderable anker = null;
@@ -35,9 +35,9 @@ public abstract class Renderable extends Entity {
   /** Get the render offset in camera/pixel coordinates. */
   public int[] getRenderOffset() { return this.render_offset.clone(); }
   // ToDo: comment
-  public void setRenderDepth(int depth) { render_depth = depth; }
+  public void setOcclusionDepth(int depth) { occlusion_depth = depth; }
   // ToDo: comment
-  public int getRenderDepth() { return render_depth; }
+  public int getOcclusionDepth() { return occlusion_depth; }
   //@formatter:on
 
   // ====================== Renderable methods ====================== //
