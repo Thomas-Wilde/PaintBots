@@ -43,4 +43,17 @@ public class ItemArea {
   public void setType(int x, int y, ItemType type) {
     area[x + width * y] = type;
   }
+
+  // --------------------------------------------------------------- //
+  public void setType(int x, int y, int type_id) {
+    ItemType type = ItemType.NONE;
+    //@formatter:off
+    switch (type_id) {
+      case 1: type = ItemType.OBSTACLE; break;
+      case 2: type = ItemType.REFILL; break;
+      default: type = ItemType.NONE; break;
+    }
+    //@formatter:on
+    area[x + width * y] = type;
+  }
 }
