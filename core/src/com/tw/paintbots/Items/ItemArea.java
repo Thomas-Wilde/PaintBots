@@ -36,11 +36,15 @@ public class ItemArea {
 
   // --------------------------------------------------------------- //
   public ItemType getType(int x, int y) {
+    if (x < 0 || x >= width || y < 0 || y >= height)
+      return ItemType.NONE;
     return area[x + width * y];
   }
 
   // --------------------------------------------------------------- //
   public void setType(int x, int y, ItemType type) {
+    if (x < 0 || x >= width || y < 0 || y >= height)
+      return;
     area[x + width * y] = type;
   }
 
@@ -54,6 +58,6 @@ public class ItemArea {
       default: type = ItemType.NONE; break;
     }
     //@formatter:on
-    area[x + width * y] = type;
+    setType(x, y, type);
   }
 }
