@@ -19,8 +19,10 @@ import com.tw.paintbots.Renderables.UITimer;
 import com.tw.paintbots.Renderables.UIPlayerBoard;
 import com.tw.paintbots.Items.Item;
 import com.tw.paintbots.Items.PaintBooth;
+import com.tw.paintbots.Items.FenceH;
 import com.tw.paintbots.Items.ItemArea;
 import com.tw.paintbots.Items.ItemType;
+import com.tw.paintbots.Level;
 
 /**
  * The GameManager is the core class of the game. It creates all Entities and
@@ -210,10 +212,8 @@ public class GameManager {
     createPlayers();
     createCanvas();
     createBoard();
-    createPaintBooth();
     // ---
-    List<Renderable> items = render_layers.get(20);
-    items.sort(new RenderDepthComparator());
+    loadLevelContent();
   }
 
   // --------------------------------------------------------------- //
@@ -450,7 +450,6 @@ public class GameManager {
     // --- clamp x- and y-cooridnates
     if (board.getType(old_x, old_y) != ItemType.OBSTACLE)
       pos = old_pos;
-
     // If we reached this point an neither condition is true, we might have
     // started in an obstacle. So just go on and give a hint.
     System.out.println("ERROR: obstacle collision");
@@ -510,10 +509,56 @@ public class GameManager {
   }
 
   // --------------------------------------------------------------- //
+  private void createFence() {
+    // ---
+    FenceH fence_1 = new FenceH();
+    fence_1.setAnker(floor);
+    int[] pos = new int[] {200, 750};
+    fence_1.setPosition(new Vector2(pos[0], pos[1]), secret_key);
+    fence_1.setRenderPosition(pos);
+    fence_1.init();
+    // ---
+    addRenderable(fence_1);
+    addEntity(fence_1);
+    addItem(fence_1);
+    // ---
+    FenceH fence_2 = new FenceH();
+    fence_2.setAnker(floor);
+    pos = new int[] {800, 250};
+    fence_2.setPosition(new Vector2(pos[0], pos[1]), secret_key);
+    fence_2.setRenderPosition(pos);
+    fence_2.init();
+    // ---
+    addRenderable(fence_2);
+    addEntity(fence_2);
+    addItem(fence_2);
+  }
+
+  // --------------------------------------------------------------- //
   private void createBoard() {
     int width = game_settings.board_dimensions[0];
     int height = game_settings.board_dimensions[1];
     board = new Board(width, height);
+  }
 
+  // --------------------------------------------------------------- //
+  private void loadLevelContent() {
+    // --- make sure there is an item layer
+    if (render_layers.get(20) == null)
+      render_layers.put(20, new ArrayList<Renderable>());
+    // ---
+    List<Item> level_items = new ArrayList<>();
+    Level level = new Level("level1.lvl", secret_key);
+    level.loadLevel(level_items);
+    // ---
+    for (Item item : level_items) {
+      addEntity(item);
+      item.setAnker(floor);
+      addRenderable(item);
+      addItem(item);
+    }
+    // ---
+    List<Renderable> items_list = render_layers.get(20);
+    items_list.sort(new RenderDepthComparator());
   }
 }

@@ -1,0 +1,16 @@
+# comments start with a '#' and are ignored
+# To place objects, use the following syntax
+# T,x,y -
+# T -> item type
+# x,y -> coordinates in x and y direction in [0,1000]
+# possible Items
+# P - paintBooth
+# FH - fence horizontal
+# FV - fence vertical
+# FD1 - fence diagonal 45 degree
+# FD2 - fence diagonal -45 degree
+PB,500,500
+FH,200,750
+FH,800,250
+FV,50,0
+FV,850,900
