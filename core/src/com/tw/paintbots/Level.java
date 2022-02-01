@@ -12,6 +12,7 @@ import com.badlogic.gdx.math.Vector2;
 
 import com.tw.paintbots.Items.Item;
 import com.tw.paintbots.Items.PaintBooth;
+import com.tw.paintbots.Items.PaintGreen;
 import com.tw.paintbots.Items.FenceH;
 import com.tw.paintbots.Items.FenceV;
 import com.tw.paintbots.Items.TreeS;
@@ -64,6 +65,7 @@ public class Level {
     String token  = content[0];
     Item item = null;
     if (token.equals("PB")) item = new PaintBooth();
+    if (token.equals("PG")) item = new PaintGreen();
     if (token.equals("FH")) item = new FenceH();
     if (token.equals("FV")) item = new FenceV();
     if (token.equals("TS")) item = new TreeS();

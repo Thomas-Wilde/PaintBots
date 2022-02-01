@@ -401,11 +401,28 @@ public class GameManager {
     int y = (int) pos.y;
     ItemType cell_type = board.getType(x, y);
 
-    // --- refill
+    if (cell_type == ItemType.NONE)
+      return;
+
+    // --- refill all colors
     if (cell_type == ItemType.REFILL) {
       int refill_speed = player.getRefillSpeed();
       int increase = (int) (refill_speed * delta_time);
       player.increasePaintAmount(increase, secret_key);
+      return;
+    }
+
+    // --- refill green
+    //@formatter:off
+    if ((cell_type == ItemType.REFILL_GREEN  && player.getPaintColor() == PaintColor.GREEN) ||
+        (cell_type == ItemType.REFILL_PURPLE && player.getPaintColor() == PaintColor.PURPLE) ||
+        (cell_type == ItemType.REFILL_ORANGE && player.getPaintColor() == PaintColor.ORANGE) ||
+        (cell_type == ItemType.REFILL_BLUE   && player.getPaintColor() == PaintColor.BLUE)) {
+    //@formatter:on
+      int refill_speed = player.getRefillSpeed();
+      int increase = (int) (refill_speed * delta_time);
+      player.increasePaintAmount(increase, secret_key);
+      return;
     }
   }
 
