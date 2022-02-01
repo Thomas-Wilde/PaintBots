@@ -14,8 +14,10 @@ import com.tw.paintbots.Items.Item;
 import com.tw.paintbots.Items.PaintBooth;
 import com.tw.paintbots.Items.FenceH;
 import com.tw.paintbots.Items.FenceV;
-import com.tw.paintbots.Renderables.Renderable;
-import com.tw.paintbots.GameManager.SecretKey;;
+import com.tw.paintbots.Items.TreeS;
+import com.tw.paintbots.Items.TreeM;
+import com.tw.paintbots.Items.TreeL;
+import com.tw.paintbots.GameManager.SecretKey;
 
 // --------------------------------------------------------------- //
 public class Level {
@@ -64,6 +66,9 @@ public class Level {
     if (token.equals("PB")) item = new PaintBooth();
     if (token.equals("FH")) item = new FenceH();
     if (token.equals("FV")) item = new FenceV();
+    if (token.equals("TS")) item = new TreeS();
+    if (token.equals("TM")) item = new TreeM();
+    if (token.equals("TL")) item = new TreeL();
     //@formatter:on
     // ---
     if (item == null)

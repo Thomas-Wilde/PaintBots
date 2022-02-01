@@ -10,7 +10,10 @@
 # FD1 - fence diagonal 45 degree
 # FD2 - fence diagonal -45 degree
 PB,500,500
-FH,200,750
-FH,800,250
-FV,50,0
-FV,850,900
+#FH,200,750
+#FH,800,250
+#FV,50,0
+#FV,850,900
+TS,200,300
+TM,300,300
+TL,400,300
