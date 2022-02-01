@@ -448,11 +448,14 @@ public class GameManager {
       return;
     }
     // --- clamp x- and y-cooridnates
-    if (board.getType(old_x, old_y) != ItemType.OBSTACLE)
-      pos = old_pos;
+    if (board.getType(old_x, old_y) != ItemType.OBSTACLE) {
+      pos.x = old_pos.x;
+      pos.y = old_pos.y;
+      return;
+    }
     // If we reached this point an neither condition is true, we might have
     // started in an obstacle. So just go on and give a hint.
-    System.out.println("ERROR: obstacle collision");
+    System.out.println("ERROR: obstacle collision " + pos_x + " " + pos_y);
   }
 
   // --------------------------------------------------------------- //
