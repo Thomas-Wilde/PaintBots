@@ -52,9 +52,15 @@ public class Board {
   // --------------------------------------------------------------- //
   public void setType(int x, int y, ItemType type, SecretKey key) {
     Objects.requireNonNull(key);
+    // ---
+    if (type == ItemType.NONE)
+      return;
+    // ---
     if (x < 0 || x >= width || y < 0 || y >= height)
       return;
+    // ---
     int idx = x + width * y;
-    cells[idx] = type;
+    if (cells[idx] == ItemType.NONE) // do not overwrite earlier entries
+      cells[idx] = type;
   }
 }
