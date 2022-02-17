@@ -167,8 +167,8 @@ public class GameManager {
 
   // --------------------------------------------------------------- //
   /**
-   * Add the Renderable item to all render layers item demands. If a specific
-   * layer does not exist yet, it gets created.
+   * Add the Renderable item to all render layers the item demands. If a
+   * specific layer does not exist yet, it gets created.
    */
   private void addRenderable(Renderable renderable) {
     int[] renderable_layers = renderable.getLayers();
@@ -493,8 +493,8 @@ public class GameManager {
         continue;
       Vector2 position = player_states[idx].new_pos;
       int radius = player.getPaintRadius();
-      int used_paint =
-          canvas.paint(position, player.getPaintColor(), radius, secret_key);
+      int used_paint = canvas.paint(position, player.getPaintColor(), radius,
+          board, secret_key);
       player.decreasePaintAmount(used_paint, secret_key);
     }
     canvas.sendPixmapToTexture();
