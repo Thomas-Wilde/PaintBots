@@ -18,8 +18,6 @@ import com.tw.paintbots.Renderables.RepeatedRenderable;
 import com.tw.paintbots.Renderables.UITimer;
 import com.tw.paintbots.Renderables.UIPlayerBoard;
 import com.tw.paintbots.Items.Item;
-import com.tw.paintbots.Items.PaintBooth;
-import com.tw.paintbots.Items.FenceH;
 import com.tw.paintbots.Items.ItemArea;
 import com.tw.paintbots.Items.ItemType;
 import com.tw.paintbots.Level;
@@ -58,7 +56,6 @@ public class GameManager {
   private Player[] players = null;
   private PlayerState[] player_states = null;
   private Canvas canvas = null;
-  private PaintBooth booth = null;
   private Board board = null;
 
   // ======================== Getter/Setter ======================== //
@@ -512,46 +509,6 @@ public class GameManager {
     long pixels = canvas.getPaintCount()[player_idx];
     long score = pixels * 100 / canvas.getTotalArea();
     player.setScore((int) score, secret_key);
-  }
-
-  // --------------------------------------------------------------- //
-  private void createPaintBooth() {
-    booth = new PaintBooth();
-    booth.setAnker(floor);
-    int[] pos = new int[] {500, 500};
-    booth.setPosition(new Vector2(pos[0], pos[1]), secret_key);
-    booth.setRenderPosition(pos);
-    booth.init();
-    // ---
-    addRenderable(booth);
-    addEntity(booth);
-    addItem(booth);
-  }
-
-  // --------------------------------------------------------------- //
-  private void createFence() {
-    // ---
-    FenceH fence_1 = new FenceH();
-    fence_1.setAnker(floor);
-    int[] pos = new int[] {200, 750};
-    fence_1.setPosition(new Vector2(pos[0], pos[1]), secret_key);
-    fence_1.setRenderPosition(pos);
-    fence_1.init();
-    // ---
-    addRenderable(fence_1);
-    addEntity(fence_1);
-    addItem(fence_1);
-    // ---
-    FenceH fence_2 = new FenceH();
-    fence_2.setAnker(floor);
-    pos = new int[] {800, 250};
-    fence_2.setPosition(new Vector2(pos[0], pos[1]), secret_key);
-    fence_2.setRenderPosition(pos);
-    fence_2.init();
-    // ---
-    addRenderable(fence_2);
-    addEntity(fence_2);
-    addItem(fence_2);
   }
 
   // --------------------------------------------------------------- //
