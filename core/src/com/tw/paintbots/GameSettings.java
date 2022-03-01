@@ -24,5 +24,5 @@ public class GameSettings {
   public int max_paint_amount = 250000;
   public int start_paint_amount = 250000;
   public int paint_radius = 40;
-  public int refill_speed = 50000;
+  public int refill_speed = 100000;
 }
