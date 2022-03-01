@@ -539,3 +539,4 @@ public class GameManager {
     items_list.sort(new RenderDepthComparator());
   }
 }
+}
