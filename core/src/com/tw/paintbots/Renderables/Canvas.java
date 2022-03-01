@@ -10,10 +10,12 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
 import com.tw.paintbots.GameManager.SecretKey;
+import com.tw.paintbots.Items.ItemType;
 import com.tw.paintbots.PaintColor;
+import com.tw.paintbots.Board;
 
 // =============================================================== //
-/** Canvas is the represents the area that gets painted. */
+/** Canvas represents the area that gets painted. */
 public class Canvas extends Renderable {
   // --------------------------------------------------------------- //
   /** Contains the painting information. */
@@ -57,9 +59,9 @@ public class Canvas extends Renderable {
   /**
    * Paint the canvas at the given position, if it is possible to paint there.
    *
-   * @return The amount paint needed for the coloring.
+   * @return The amount of paint needed for the coloring.
    */
-  public int paint(Vector2 position, PaintColor color, int radius,
+  public int paint(Vector2 position, PaintColor color, int radius, Board board,
       SecretKey key) {
     // ---
     Objects.requireNonNull(key);
@@ -78,6 +80,11 @@ public class Canvas extends Renderable {
         int paint_x = ctr_x + i;
         int paint_y = height - ctr_y + j;
         if (paint_x < 0 || paint_x >= width || paint_y < 0 || paint_y >= height)
+          continue;
+        // --- paint only at places with no items
+        ItemType cell_type =
+            board.getType(paint_x, board.getHeight() - paint_y - 1);
+        if (!cell_type.isPaintable())
           continue;
         // ---
         updatePixmap(paint_x, paint_y);
