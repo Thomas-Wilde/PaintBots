@@ -1,25 +1,14 @@
 package com.tw.paintbots;
 
 import java.util.List;
-import java.util.ArrayList;
 import java.util.HashMap;
-
-import java.io.BufferedReader;
-import java.io.FileReader;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
 
 import com.tw.paintbots.Items.Item;
-import com.tw.paintbots.Items.RefillPlace;
 import com.tw.paintbots.Items.RefillPlaceBase;
-import com.tw.paintbots.Items.PaintBooth;
-import com.tw.paintbots.Items.FenceH;
-import com.tw.paintbots.Items.FenceV;
-import com.tw.paintbots.Items.TreeS;
-import com.tw.paintbots.Items.TreeM;
-import com.tw.paintbots.Items.TreeL;
 import com.tw.paintbots.GameManager.SecretKey;
 import com.tw.paintbots.Items.ItemProperties;
 
