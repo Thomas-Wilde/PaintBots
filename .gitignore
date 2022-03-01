@@ -2,6 +2,7 @@
 
 core/assets/source/*
 core/assets_source/*
+core/assets/old/*
 
 *.class
 *.war
