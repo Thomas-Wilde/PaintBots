@@ -54,11 +54,11 @@ public class ItemArea {
     //@formatter:off
     switch (type_id) {
       case 1: type = ItemType.OBSTACLE; break;
-      case 2: type = ItemType.REFILL; break;
-      case 3: type = ItemType.REFILL_GREEN; break;
-      case 4: type = ItemType.REFILL_PURPLE; break;
-      case 5: type = ItemType.REFILL_BLUE; break;
-      case 6: type = ItemType.REFILL_ORANGE; break;
+      case 10: type = ItemType.REFILL; break;
+      case 11: type = ItemType.REFILL_GREEN; break;
+      case 12: type = ItemType.REFILL_PURPLE; break;
+      case 13: type = ItemType.REFILL_BLUE; break;
+      case 14: type = ItemType.REFILL_ORANGE; break;
       default: type = ItemType.NONE; break;
     }
     //@formatter:on

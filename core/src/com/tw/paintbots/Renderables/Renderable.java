@@ -22,8 +22,12 @@ public abstract class Renderable extends Entity {
 
   // ======================== Getter/Setter ======================== //
   //@formatter:off
-  /** Get the layers in which this Renderable is rendered. */
-  public int[] getLayers() { return layers.clone(); }
+  /**
+   * Define the render layers to which the Renderable is added. Normally there
+   * is not need to call this method, because the render layer is set in the
+   * constructor.
+   */
+  protected void setLayers(int[] layers) { this.layers = layers.clone(); }
   /** Set the render position in camera/pixel coordinates - lower left corner. */
   public void setRenderPosition(int[] position) { this.render_position = position.clone(); }
   /** Set the scale factor that is used for rendering. */
@@ -32,6 +36,8 @@ public abstract class Renderable extends Entity {
   public float[] getScale() { return scale.clone(); }
   /** Set the render offset in camera/pixel coordinates. */
   public void setRenderOffset(int[] offset) { this.render_offset = offset.clone(); }
+  /** Get the layers in which this Renderable is rendered. */
+  public int[] getLayers() { return layers.clone(); }
   /** Get the render offset in camera/pixel coordinates. */
   public int[] getRenderOffset() { return this.render_offset.clone(); }
   // ToDo: comment

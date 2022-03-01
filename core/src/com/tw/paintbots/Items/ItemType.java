@@ -2,9 +2,8 @@ package com.tw.paintbots.Items;
 
 public enum ItemType {
   //@formatter:off
-  NONE(0), OBSTACLE(1),
-  REFILL(2),
-  REFILL_GREEN(3), REFILL_PURPLE(4), REFILL_BLUE(5), REFILL_ORANGE(6);
+  NONE(0), OBSTACLE(1), BLOCKED(2),
+  REFILL(10), REFILL_GREEN(11), REFILL_PURPLE(12), REFILL_BLUE(13), REFILL_ORANGE(14);
   //@formatter:on
   private final int type_id;
 

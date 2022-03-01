@@ -13,13 +13,13 @@ import com.tw.paintbots.GameManager.SecretKey;
 
 import com.tw.paintbots.Array;
 
-public abstract class Item extends SimpleRenderable {
-  String area_file = "";
+public class Item extends SimpleRenderable {
+  private String area_file = "";
   private ItemArea area;
 
   // ======================== Item methods ========================= //
   //@formatter:off
-  protected Item(String name,
+  public Item(String name,
                  String texture_file, String area_file,
                  float[] scale, int occlusion_depth) { //@formatter:on
     super(name, 20, texture_file);
@@ -52,7 +52,6 @@ public abstract class Item extends SimpleRenderable {
     area.setOrigin(origin);
     Pixmap area_data = loadItemAreaData();
     transferDataToArea(area_data);
-
   }
 
   // --------------------------------------------------------------- //
