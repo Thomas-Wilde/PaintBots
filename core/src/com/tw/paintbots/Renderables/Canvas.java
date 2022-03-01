@@ -142,7 +142,7 @@ public class Canvas extends Renderable {
   }
 
   // --------------------------------------------------------------- //
-  /** @return Return the total number of pixels that the canvas contains. */
+  /** @return The total number of pixels that the canvas contains. */
   public int getTotalArea() {
     return resolution[0] * resolution[1];
   }
