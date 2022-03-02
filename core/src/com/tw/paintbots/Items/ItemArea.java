@@ -53,7 +53,8 @@ public class ItemArea {
     ItemType type = ItemType.NONE;
     //@formatter:off
     switch (type_id) {
-      case 1: type = ItemType.OBSTACLE; break;
+      case 1:  type = ItemType.OBSTACLE; break;
+      case 2:  type = ItemType.BLOCKED; break;
       case 10: type = ItemType.REFILL; break;
       case 11: type = ItemType.REFILL_GREEN; break;
       case 12: type = ItemType.REFILL_PURPLE; break;
