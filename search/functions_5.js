@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['paint_0',['paint',['../classcom_1_1tw_1_1paintbots_1_1_renderables_1_1_canvas.html#a9d9e3b8ac6e40e7f26985844c70150a8',1,'com::tw::paintbots::Renderables::Canvas']]]
+  ['ispaintable_0',['isPaintable',['../enumcom_1_1tw_1_1paintbots_1_1_items_1_1_item_type.html#abf71d597bd80f7bab33e7448115a97b6',1,'com::tw::paintbots::Items::ItemType']]],
+  ['ispassable_1',['isPassable',['../enumcom_1_1tw_1_1paintbots_1_1_items_1_1_item_type.html#a51cb17d2d771a595028eace2678f867c',1,'com::tw::paintbots::Items::ItemType']]]
 ];
