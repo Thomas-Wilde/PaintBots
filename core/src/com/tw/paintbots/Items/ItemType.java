@@ -8,7 +8,12 @@ public enum ItemType {
   private final int type_id;
 
   // --------------------------------------------------------------- //
-  /** constructor (n.t.m.h.) */
+  /**
+   * constructor
+   *
+   * @param type_id The type defines what the user can do at the location of
+   *        this item
+   */
   private ItemType(int type_id) {
     this.type_id = type_id;
   }
