@@ -36,6 +36,7 @@ public enum ItemType {
     switch (this) {
       case NONE:     return true;
       case OBSTACLE: return true;
+      case REFILL:   return true;
       default:       return false;
     }
     //@formatter:on
