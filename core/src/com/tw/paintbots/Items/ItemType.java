@@ -25,12 +25,15 @@ public enum ItemType {
   }
 
   // --------------------------------------------------------------- //
+  //@formatter:off
   /**
    * Some items prevent the player from painting at a location. With this method
    * you can check if the location is paintable.
-   *
-   * @return true if the player can paint at this location, false otherwise.
+   * @return
+   * - true if the player can paint at this location
+   * - false otherwise
    */
+  //@formatter:on
   public boolean isPaintable() {
     //@formatter:off
     switch (this) {
@@ -43,12 +46,15 @@ public enum ItemType {
   }
 
   // --------------------------------------------------------------- //
+  //@formatter:off
   /**
    * Some items prevent the player from walking across this location. With this
    * method you can check if the location is passable.
-   *
-   * @return true if the player can walk across this location, false otherwise.
+   * @return
+   * - true if the player can walk at this location
+   * - false otherwise
    */
+  //@formatter:on
   public boolean isPassable() {
     //@formatter:off
     switch (this) {

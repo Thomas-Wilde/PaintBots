@@ -8,8 +8,9 @@ import com.tw.paintbots.Items.ItemType;
 /**
  * The Board represents the area on which the players move around, i.e. the game
  * board. It contains different areas and gives information, e.g. about
- * obstacles. The Board has the same dimensions as the Canvas. It is split into
- * different cells, e.g. the pixels that can be painted.
+ * obstacles, paintable areas, and possible interactions. The Board has the same
+ * dimensions as the Canvas. It is split into different cells, e.g. the pixels
+ * that can be painted.
  */
 // =============================================================== //
 public class Board {
@@ -21,13 +22,21 @@ public class Board {
 
   // ======================== Getter/Setter ======================== //
   //@formatter:off
-  /** Get the width of the board, i.e. the number of cells in x-direction. */
+  /** @return The width of the board, i.e. the number of cells in x-direction. */
   public int getWidth() { return width; }
-  /** Get the height of the board, i.e. the number of cells in y-direction. */
+  /** @return The height of the board, i.e. the number of cells in y-direction. */
   public int getHeight() { return height; }
   //@formatter:on
 
   // ======================= Board methods ======================== //
+  /**
+   * Constrcutor, that also initalizes the board. The game board consists of
+   * cells/pixels, that allow possible interactions at their location. The size
+   * of the game board is defined at the start of the game.
+   *
+   * @param width number of cells/pixels in x-direction
+   * @param height number of cells/pixels in y-direction
+   */
   public Board(int width, int height) {
     this.width = width;
     this.height = height;
@@ -35,6 +44,11 @@ public class Board {
   }
 
   // --------------------------------------------------------------- //
+  /**
+   * Initialzies an ItemType-array with correct size, that is filled with the
+   * information about possible interactions. The possible interaction types are
+   * set after the level is loaded.
+   */
   private void initBoard() {
     cells = new ItemType[width * height];
     // ---
@@ -44,7 +58,13 @@ public class Board {
   }
 
   // --------------------------------------------------------------- //
-  /** Access the type of the board cell with the given coordinate. */
+  /**
+   * Access the type of the board cell with the given coordinate.
+   *
+   * @param x coordinate of the location
+   * @param y coordinate of the location
+   * @return The type of interaction that can be performed at this location.
+   */
   public ItemType getType(int x, int y) {
     int idx = x + width * y;
     return cells[idx];
@@ -75,6 +95,18 @@ public class Board {
       for (int y = 0; y < getHeight(); ++y)
         paintable_area += getType(x, y).isPaintable() ? 1 : 0;
   }
+
+  // --------------------------------------------------------------- //
+  /**
+   * Set the interaction type of a specific location at the game board. The type
+   * defines which interactions can be performed at this location, e.g. refill
+   * paint, move across, paint the location.
+   *
+   * @param x coordinate of the location
+   * @param y coordinate of the location
+   * @param type which the cell should be
+   * @param key SecretKey only available to the GameManager
+   */
   public void setType(int x, int y, ItemType type, SecretKey key) {
     Objects.requireNonNull(key);
     // ---
