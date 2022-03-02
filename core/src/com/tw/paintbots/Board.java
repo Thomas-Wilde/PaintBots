@@ -17,6 +17,7 @@ public class Board {
   private ItemType[] cells = null;
   private final int width;
   private final int height;
+  private int paintable_area = -1;
 
   // ======================== Getter/Setter ======================== //
   //@formatter:off
@@ -50,6 +51,30 @@ public class Board {
   }
 
   // --------------------------------------------------------------- //
+  /**
+   * The paintable area depends on the items placed at the board. Some items
+   * prevent the player from painting at their location.
+   *
+   * @return The total number of pixels that can be painted.
+   */
+  public int getPaintableArea() {
+    // compute the value at the first call
+    if (paintable_area < 0)
+      computaPaintableArea();
+    return paintable_area;
+  }
+
+  // --------------------------------------------------------------- //
+  /**
+   * Compute the number of paintbale pixels the board contains. This method
+   * changes the value of 'paintable_area'.
+   */
+  private void computaPaintableArea() {
+    paintable_area = 0;
+    for (int x = 0; x < getWidth(); ++x)
+      for (int y = 0; y < getHeight(); ++y)
+        paintable_area += getType(x, y).isPaintable() ? 1 : 0;
+  }
   public void setType(int x, int y, ItemType type, SecretKey key) {
     Objects.requireNonNull(key);
     // ---

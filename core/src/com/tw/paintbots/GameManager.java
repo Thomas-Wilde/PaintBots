@@ -507,7 +507,7 @@ public class GameManager {
   private void adjustScore(int player_idx) {
     Player player = players[player_idx];
     long pixels = canvas.getPaintCount()[player_idx];
-    long score = pixels * 100 / canvas.getTotalArea();
+    long score = pixels * 100 / (board.getPaintableArea() + 1); // max 99%
     player.setScore((int) score, secret_key);
   }
 
