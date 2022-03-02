@@ -21,43 +21,12 @@ public class PaintBotsGame extends ApplicationAdapter {
   private OrthographicCamera camera;
   private GameManager game_mgr = GameManager.get();
 
-  // ==================== PaintBostGame methods ==================== //
-  private void loadAIBotClasses() {
-    List<String> files = readClassFilesFromRunDir();
-    for (String class_name : files) {
-      // String qualified_name = "com.tw.paintbots." + class_name;
-      String qualified_name = class_name;
-      loadBotFile(qualified_name);
-    }
-  }
-
-  // --------------------------------------------------------------- //
-  private List<String> readClassFilesFromRunDir() {
-    String run_dir = System.getProperty("user.dir");
-    File tmp = new File(run_dir);
-    String[] files = tmp.list();
-    List<String> class_files = new ArrayList<>();
-    // ---
-    for (String file : files) {
-      if (file.endsWith(".class")) {
-        int idx = file.lastIndexOf(".class");
-        class_files.add(file.substring(0, idx));
-      }
-    }
-    return class_files;
-  }
-
-  // --------------------------------------------------------------- //
-  private void loadBotFile(String fullyQualifiedClassName) {
+  // ==================== PaintBotGame methods ==================== //
+  public void initGameManager() {
+    GameSettings settings = new GameSettings();
     try {
-      String run_dir = System.getProperty("user.dir");
-      File tmp = new File(run_dir);
-      URL url = tmp.toURI().toURL();
-      URL[] urls = new URL[] {url};
-      ClassLoader cl = new URLClassLoader(urls);
-      Class cls = cl.loadClass(fullyQualifiedClassName);
+      game_mgr.loadMap(settings);
     } catch (Exception e) {
-      System.out.println("Could not load " + fullyQualifiedClassName);
       System.out.println(e.getMessage());
     }
   }
@@ -74,15 +43,10 @@ public class PaintBotsGame extends ApplicationAdapter {
     int[] resolution = settings.cam_resolution;
     camera.setToOrtho(false, resolution[0], resolution[1]);
     // ---
-    music = Gdx.audio.newMusic(Gdx.files.internal("look_around.mp3"));
-    music.setLooping(true);
-    music.play();
-
-    try {
-      game_mgr.loadMap(settings);
-    } catch (Exception e) {
-      System.out.println(e.getMessage());
-    }
+    // music = Gdx.audio.newMusic(Gdx.files.internal("look_around.mp3"));
+    // music.setLooping(true);
+    // music.play();
+    initGameManager();
   }
 
   @Override
@@ -105,7 +69,7 @@ public class PaintBotsGame extends ApplicationAdapter {
   @Override
   public void dispose() {
     // dispose of all the native resources
-    music.dispose();
+    // music.dispose();
     game_mgr.destroy();
     batch.dispose();
   }
