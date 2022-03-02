@@ -90,7 +90,8 @@ public class GameManager {
 
   // --------------------------------------------------------------- //
   public void update() {
-    delta_time = Gdx.graphics.getDeltaTime();
+    // delta_time = Gdx.graphics.getDeltaTime();
+    delta_time = 1.0 / 60.0;
     elapsed_time += delta_time;
     // ---
     preUpdate();
@@ -99,9 +100,10 @@ public class GameManager {
       entity.update(secret_key);
     // ---
     moveAllPlayers();
-    if (timer.getTime() > 0)
+    if (timer.getTime() > 0) {
       paintOnCanvas();
-    adjustScores();
+      adjustScores();
+    }
     // ---
     interactWithBoard();
   }
@@ -376,7 +378,7 @@ public class GameManager {
     Vector2 move_dir = player.getDirection();
     // ---
     Vector2 new_pos = old_pos.cpy();
-    new_pos.add(move_dir.scl(200.0f * Gdx.graphics.getDeltaTime()));
+    new_pos.add(move_dir.scl(200.0f * (float) delta_time)); // scale
     clampPositionToBorder(new_pos);
     clampPositionToObstacles(new_pos, old_pos);
     // ---

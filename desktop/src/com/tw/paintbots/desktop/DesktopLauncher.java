@@ -10,6 +10,7 @@ public class DesktopLauncher {
     config.title = "Paint Bots";
     config.height = 1000;
     config.width = 1500;
+    config.foregroundFPS = 60;
     new LwjglApplication(new PaintBotsGame(), config);
   }
 }
