@@ -64,7 +64,7 @@ public abstract class Entity {
 
   // --------------------------------------------------------------- //
   /**
-   * Set the bard dimensions. The board has the origin [0, 0], the dimensions
+   * Set the board dimensions. The board has the origin [0, 0], the dimensions
    * define the extent and therefore the maximum allowed coordinates of Entity
    * positions. Only the GameManager can set this value.
    */
