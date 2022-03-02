@@ -59,7 +59,8 @@ public class Canvas extends Renderable {
   /**
    * Paint the canvas at the given position, if it is possible to paint there.
    *
-   * @return The amount of paint needed for the coloring.
+   * @return The number of pixels that were painted. This number corresponds to
+   *         the amount of paint needed for the coloring.
    */
   public int paint(Vector2 position, PaintColor color, int radius, Board board,
       SecretKey key) {
@@ -99,6 +100,7 @@ public class Canvas extends Renderable {
   }
 
   // --------------------------------------------------------------- //
+  //@formatter:off
   /**
    * Paint the specified pixel with the given color and count how many cells of
    * the canvas belong to which color. If the canvas is blank at this position
@@ -106,9 +108,12 @@ public class Canvas extends Renderable {
    * player, we have to use the double amount of color. If the cell already
    * belongs to the Player, no color is needed.
    *
-   * @return 0 if no coloring is needed, 1 if the cell gets colored for the
-   *         first time, 2 if the cell gets recolored.
+   * @return
+   * - 0 if no coloring is needed, i.e. the pixel belongs the player already
+   * - 1 if the cell gets colored for the first time
+   * - 2 if the cell gets recolored.
    */
+  //@formatter:on
   private int updatePaintCount(int x, int y, PaintColor color) {
     int idx = x + y * width;
     int color_id = color.getColorID();
