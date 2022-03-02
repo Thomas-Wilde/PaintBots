@@ -447,22 +447,22 @@ public class GameManager {
   private void clampPositionToObstacles(Vector2 pos, Vector2 old_pos) {
     int pos_x = (int) pos.x;
     int pos_y = (int) pos.y;
-    if (board.getType(pos_x, pos_y) != ItemType.OBSTACLE)
+    if (board.getType(pos_x, pos_y).isPassable())
       return;
     // --- clamp x-coordinate
     int old_x = (int) old_pos.x;
-    if (board.getType(old_x, pos_y) != ItemType.OBSTACLE) {
+    if (board.getType(old_x, pos_y).isPassable()) {
       pos.x = old_pos.x;
       return;
     }
     // --- clamp y-coordinate
     int old_y = (int) old_pos.y;
-    if (board.getType(pos_x, old_y) != ItemType.OBSTACLE) {
+    if (board.getType(pos_x, old_y).isPassable()) {
       pos.y = old_pos.y;
       return;
     }
     // --- clamp x- and y-cooridnates
-    if (board.getType(old_x, old_y) != ItemType.OBSTACLE) {
+    if (board.getType(old_x, old_y).isPassable()) {
       pos.x = old_pos.x;
       pos.y = old_pos.y;
       return;
