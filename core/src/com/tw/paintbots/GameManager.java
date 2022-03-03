@@ -209,6 +209,7 @@ public class GameManager {
     createFloor();
     createUITimer();
     createPlayers();
+    initPlayerRenderables();
     createCanvas();
     createBoard();
     // ---
@@ -295,15 +296,23 @@ public class GameManager {
       try {
         Player player = new HumanPlayer("Player" + i);
         initPlayer(player);
-        player_layer.add(player.getAnimation());
-        addRenderable(player.getIndicator());
         addEntity(player);
-        createPlayerUI(player);
         players[i] = player;
         savePlayerState(i);
       } catch (Exception e) {
         System.out.println(e.getMessage());
       }
+    }
+  }
+
+  // --------------------------------------------------------------- //
+  private void initPlayerRenderables() {
+    for (Player player : players) {
+      player.initRenderables();
+      player.setAnker(floor, secret_key);
+      player_layer.add(player.getAnimation());
+      addRenderable(player.getIndicator());
+      createPlayerUI(player);
     }
   }
 
@@ -322,7 +331,6 @@ public class GameManager {
     int refill_speed = game_settings.refill_speed;
     player.setPosition(pos, secret_key);
     player.setDirection(dir, secret_key);
-    player.setAnker(floor, secret_key);
     player.setMaximumPaintAmount(max_paint, secret_key);
     player.setPaintAmount(start_paint, secret_key);
     player.setPaintRadius(paint_radius, secret_key);

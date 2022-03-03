@@ -58,7 +58,10 @@ public abstract class Player extends Entity {
     player_id = id_counter++;
     if (player_id >= MAX_COUNT)
       throw new PlayerException("Tried to create too many players.");
-    // ---
+  }
+
+  // --------------------------------------------------------------- //
+  public void initRenderables() {
     loadAnimation();
     dir_indicator = new DirectionIndicator();
     dir_indicator.setAnker(animation);
