@@ -211,6 +211,24 @@ public class GameManager {
     createPlayers();
     initPlayerRenderables();
     createCanvas();
+    initCanvasRenderables();
+    createBoard();
+    // ---
+    loadLevelContent();
+  }
+
+  // --------------------------------------------------------------- //
+  public void loadMapHeadless(GameSettings settings)
+      throws GameMangerException {
+    game_settings = settings;
+    int width = game_settings.board_dimensions[0];
+    int height = game_settings.board_dimensions[1];
+    // ---
+    Entity.setBoardDimensions(Array.of(width, height), secret_key);
+    sanityCheckPlayerSettings(); // throws an exception if something is wrong
+    createPlayers();
+    // ---
+    createCanvas();
     createBoard();
     // ---
     loadLevelContent();
@@ -487,9 +505,14 @@ public class GameManager {
     int width = game_settings.board_dimensions[0];
     int height = game_settings.board_dimensions[1];
     canvas = new Canvas(width, height);
+    addEntity(canvas);
+  }
+
+  // --------------------------------------------------------------- //
+  private void initCanvasRenderables() {
+    canvas.initCanvasRenderables();
     canvas.setAnker(floor);
     addRenderable(canvas);
-    addEntity(canvas);
   }
 
   // --------------------------------------------------------------- //

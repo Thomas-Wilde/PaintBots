@@ -35,9 +35,6 @@ public class Canvas extends Renderable {
     // ---
     initResolution();
     initPicture();
-    createPixmap();
-    texture = new Texture(pixmap);
-    initTextureRegion();
   }
 
   // --------------------------------------------------------------- //
@@ -53,6 +50,13 @@ public class Canvas extends Renderable {
     pixmap.setColor(1.0f, 1.0f, 1.0f, 0.0f);
     pixmap.fill();
     pixmap.setBlending(Blending.None);
+  }
+
+  // --------------------------------------------------------------- //
+  public void initCanvasRenderables() {
+    createPixmap();
+    texture = new Texture(pixmap);
+    initTextureRegion();
   }
 
   // --------------------------------------------------------------- //
