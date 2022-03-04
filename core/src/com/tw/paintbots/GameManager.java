@@ -56,8 +56,8 @@ public class GameManager {
   // --- List of Entities needed to create other ones
   private SimpleRenderable floor = null;
   private UITimer timer = null;
-  private Player[] players = null;
-  private PlayerState[] player_states = null;
+  private ArrayList<Player> players = new ArrayList<>();
+  private ArrayList<PlayerState> player_states = new ArrayList<>();
   private Canvas canvas = null;
   private Board board = null;
   private HashMap<String, Class> bots = null;
@@ -118,7 +118,7 @@ public class GameManager {
 
   // --------------------------------------------------------------- //
   private void preUpdate() {
-    for (int idx = 0; idx < players.length; ++idx)
+    for (int idx = 0; idx < players.size(); ++idx)
       savePlayerState(idx);
   }
 
@@ -313,8 +313,6 @@ public class GameManager {
   private void createPlayers() throws GameMangerException {
     // --- create players
     int count = game_settings.player_types.length;
-    players = new Player[count];
-    player_states = new PlayerState[count];
     // ---
     for (int i = 0; i < count; ++i) {
       Player player = null;
@@ -331,7 +329,8 @@ public class GameManager {
         // ---
         initPlayer(player);
         addEntity(player);
-        players[i] = player;
+        players.add(player);
+        player_states.add(new PlayerState());
         savePlayerState(i);
       } catch (Exception e) {
         System.out.println(e.getMessage());
@@ -421,13 +420,14 @@ public class GameManager {
    * the state of the player.
    */
   private void savePlayerState(int idx) {
-    player_states[idx] = players[idx].getState();
+    PlayerState state = players.get(idx).getState();
+    player_states.set(idx, state);
   }
 
   // --------------------------------------------------------------- //
   /** Calls 'movePlayer(int idx)' for each player */
   private void moveAllPlayers() {
-    for (int player_idx = 0; player_idx < players.length; ++player_idx)
+    for (int player_idx = 0; player_idx < players.size(); ++player_idx)
       movePlayer(player_idx);
   }
 
@@ -438,8 +438,8 @@ public class GameManager {
    * the borders of the board.
    */
   private void movePlayer(int player_idx) {
-    Vector2 old_pos = player_states[player_idx].old_pos;
-    Player player = players[player_idx];
+    Vector2 old_pos = player_states.get(player_idx).old_pos;
+    Player player = players.get(player_idx);
     Vector2 move_dir = player.getDirection();
     // ---
     Vector2 new_pos = old_pos.cpy();
@@ -448,19 +448,19 @@ public class GameManager {
     clampPositionToObstacles(new_pos, old_pos);
     // ---
     player.setPosition(new_pos, secret_key);
-    player_states[player_idx].new_pos = new_pos;
+    player_states.get(player_idx).new_pos = new_pos;
   }
 
   // --------------------------------------------------------------- //
   private void interactWithBoard() {
-    for (int player_idx = 0; player_idx < players.length; ++player_idx)
+    for (int player_idx = 0; player_idx < players.size(); ++player_idx)
       interactWithBoard(player_idx);
   }
 
   // --------------------------------------------------------------- //
   private void interactWithBoard(int player_idx) {
-    Player player = players[player_idx];
-    Vector2 pos = player_states[player_idx].new_pos;
+    Player player = players.get(player_idx);
+    Vector2 pos = player_states.get(player_idx).new_pos;
     int x = (int) pos.x;
     int y = (int) pos.y;
     ItemType cell_type = board.getType(x, y);
@@ -556,11 +556,11 @@ public class GameManager {
 
   // --------------------------------------------------------------- //
   private void paintOnCanvas() {
-    for (int idx = 0; idx < players.length; ++idx) {
-      Player player = players[idx];
+    for (int idx = 0; idx < players.size(); ++idx) {
+      Player player = players.get(idx);
       if ((player.getPaintAmount() <= 0.0))
         continue;
-      Vector2 position = player_states[idx].new_pos;
+      Vector2 position = player_states.get(idx).new_pos;
       int radius = player.getPaintRadius();
       int used_paint = canvas.paint(position, player.getPaintColor(), radius,
           board, secret_key);
@@ -571,13 +571,13 @@ public class GameManager {
 
   // --------------------------------------------------------------- //
   private void adjustScores() {
-    for (int player_idx = 0; player_idx < players.length; ++player_idx)
+    for (int player_idx = 0; player_idx < players.size(); ++player_idx)
       adjustScore(player_idx);
   }
 
   // --------------------------------------------------------------- //
   private void adjustScore(int player_idx) {
-    Player player = players[player_idx];
+    Player player = players.get(player_idx);
     long pixels = canvas.getPaintCount()[player_idx];
     long score = pixels * 100 / (board.getPaintableArea() + 1); // max 99%
     player.setScore((int) score, secret_key);
