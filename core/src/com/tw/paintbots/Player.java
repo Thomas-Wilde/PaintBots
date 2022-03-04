@@ -175,10 +175,12 @@ public abstract class Player extends Entity {
   @Override
   public void update(SecretKey key) {
     Objects.requireNonNull(key);
-    // ---
+    if (animation == null)
+      return;
+    // --- update animation if graphics are loaded
     Vector2 pos = getPosition();
     animation.setRenderPosition(Array.of((int) pos.x, (int) pos.y));
-    // ---
+    // --- add magic value to get different animation steps for each player
     float time = (float) GameManager.get().getElapsedTime() + 0.25f * player_id;
     animation.setAnimationTime(time);
     dir_indicator.setAnimationTime(time);
