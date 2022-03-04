@@ -2,8 +2,6 @@ package com.tw.paintbots.Renderables;
 
 import java.util.Objects;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import com.tw.paintbots.GameManager.SecretKey;

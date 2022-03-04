@@ -1,7 +1,5 @@
 package com.tw.paintbots.Renderables;
 
-import java.util.Objects;
-
 import java.util.List;
 import java.util.ArrayList;
 

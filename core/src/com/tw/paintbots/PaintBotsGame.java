@@ -1,19 +1,14 @@
 package com.tw.paintbots;
 
 import com.badlogic.gdx.ApplicationAdapter;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Music;
+// import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.ParticleEmitter.SpawnShapeValue;
 import com.badlogic.gdx.utils.ScreenUtils;
-
-import java.net.URLClassLoader;
-import java.net.URL;
 
 public class PaintBotsGame extends ApplicationAdapter {
   // --------------------------------------------------------------- //
-  private Music music;
+  // private Music music;
   private SpriteBatch batch;
   private OrthographicCamera camera;
   private GameManager game_mgr = GameManager.get();

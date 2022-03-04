@@ -26,12 +26,12 @@ public class BotLoader extends ClassLoader {
   }
 
   // --------------------------------------------------------------- //
-  public HashMap<String, Class> loadBots() {
+  public HashMap<String, Class<?>> loadBots() {
     // ---
     checkBotDirectory();
     List<String> filenames = readBotFilenames();
     // ---
-    HashMap<String, Class> bots = new HashMap<>();
+    HashMap<String, Class<?>> bots = new HashMap<>();
     try {
       bots = loadBotClasses(filenames);
     } catch (Exception e) {
@@ -66,24 +66,29 @@ public class BotLoader extends ClassLoader {
   }
 
   // --------------------------------------------------------------- //
-  private HashMap<String, Class> loadBotClasses(List<String> filenames)
+  private HashMap<String, Class<?>> loadBotClasses(List<String> filenames)
       throws MalformedURLException {
     // ---
-    HashMap<String, Class> bots = new HashMap<>();
+    HashMap<String, Class<?>> bots = new HashMap<>();
     File file = new File(run_dir);
     URL url = file.toURI().toURL();
     URL[] urls = new URL[] {url};
-    ClassLoader cl = new URLClassLoader(urls);
+    URLClassLoader cl = new URLClassLoader(urls);
     // ---
     for (String filename : filenames) {
       try {
-        Class bot_class = cl.loadClass("bots." + filename);
+        Class<?> bot_class = cl.loadClass("bots." + filename);
         AIPlayer bot_obj = (AIPlayer) bot_class.getConstructor().newInstance();
         bots.put(bot_obj.getBotName(), bot_class);
       } catch (Exception e) {
         System.out.println("Could not load bot from 'bots." + filename + ": "
             + e.getMessage());
       }
+    }
+    try {
+      cl.close();
+    } catch (Exception e) {
+      System.out.println("Could not close ClassLoader. " + e.getMessage());
     }
     return bots;
   }
