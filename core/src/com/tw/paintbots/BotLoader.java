@@ -5,6 +5,9 @@ import java.net.URL;
 import java.net.URLClassLoader;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +28,7 @@ public class BotLoader extends ClassLoader {
   // --------------------------------------------------------------- //
   public HashMap<String, Class> loadBots() {
     // ---
+    checkBotDirectory();
     List<String> filenames = readBotFilenames();
     // ---
     HashMap<String, Class> bots = new HashMap<>();
@@ -82,5 +86,19 @@ public class BotLoader extends ClassLoader {
       }
     }
     return bots;
+  }
+
+  // ----------------------------------------------------//
+  private void checkBotDirectory() {
+    Path bot_path = Paths.get(bot_dir);
+    if (!Files.exists(bot_path) || !Files.isDirectory(bot_path)) {
+      try {
+        System.out
+            .println(bot_dir + " directory not found - try to create it.");
+        new File(bot_dir).mkdirs();
+      } catch (Exception e) {
+        System.out.println("Could not create bot directory.");
+      }
+    }
   }
 }
