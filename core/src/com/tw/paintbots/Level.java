@@ -24,7 +24,6 @@ public class Level {
   public Level(String file, SecretKey secret_key) {
     this.file = file;
     this.secret_key = secret_key;
-
     if (item_dict == null)
       initItemDictionary();
   }
@@ -51,12 +50,17 @@ public class Level {
   public void loadLevel(List<Item> items, GameSettings settings) {
     this.items = items;
     this.settings = settings;
-    // ---
-    // FileHandle file_handle = new FileHandle(file);
-    FileHandle file_handle = Gdx.files.internal(file);
+    // --- try to load file from settings
+    FileHandle file_handle = new FileHandle(file);
+    // --- load default level if level file was not opened
     if (!file_handle.exists()) {
-      System.out.println("Level file does not exists");
-      return;
+      System.out.println("Level file '" + file + "'does not exists.");
+      System.out.println("Load default level.");
+      file_handle = Gdx.files.internal("level.lvl");
+      if (!file_handle.exists()) {
+        System.out.println("Default level could not be loaded.");
+        return;
+      }
     }
     String content = file_handle.readString();
     String[] data = content.split("\\r?\\n");
