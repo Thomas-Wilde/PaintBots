@@ -212,17 +212,18 @@ public class GameManager {
   // --------------------------------------------------------------- //
   public void loadMap(GameSettings settings) throws GameMangerException {
     game_settings = settings;
-    sanityCheckPlayerSettings(); // throws an exception if something is wrong
     createBackground();
     createFloor();
     createUITimer();
-    createPlayers();
-    initPlayerRenderables();
+    // ---
     createCanvas();
     initCanvasRenderables();
     createBoard();
-    // ---
     loadLevelContent();
+    // --- players have to be loaded after the level
+    sanityCheckPlayerSettings(); // throws an exception if something is wrong
+    createPlayers();
+    initPlayerRenderables();
   }
 
   // --------------------------------------------------------------- //
@@ -598,7 +599,7 @@ public class GameManager {
     // ---
     List<Item> level_items = new ArrayList<>();
     Level level = new Level("level1.lvl", secret_key);
-    level.loadLevel(level_items);
+    level.loadLevel(level_items, game_settings);
     // ---
     for (Item item : level_items) {
       addEntity(item);

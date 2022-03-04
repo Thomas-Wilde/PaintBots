@@ -6,10 +6,10 @@ public class GameSettings {
   public PlayerType[] player_types =
       {PlayerType.HUMAN, PlayerType.HUMAN, PlayerType.AI, PlayerType.AI};
   public String[] bot_names =
-      {"Random Bot", "Random Bot", "Random Bot2", "Random Bot"};
+      {"Random Bot2", "Random Bot2", "Random Bot", "Random Bot"};
   public Vector2[] start_positions =
-      {new Vector2(250.0f, 500.0f), new Vector2(750.0f, 500.0f),
-          new Vector2(500.0f, 750.0f), new Vector2(500.0f, 250.0f)};
+      {new Vector2(500.0f, 500.0f), new Vector2(500.0f, 500.0f),
+          new Vector2(500.0f, 500.0f), new Vector2(500.0f, 500.0f)};
   public Vector2[] start_directions =
       {new Vector2(-1.0f, 0.0f), new Vector2(1.0f, 0.0f),
           new Vector2(0.0f, 1.0f), new Vector2(0.0f, -1.0f),};

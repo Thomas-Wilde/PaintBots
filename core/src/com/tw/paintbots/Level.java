@@ -18,6 +18,7 @@ public class Level {
   private String file;
   private List<Item> items = null;
   private SecretKey secret_key = null;
+  private GameSettings settings = null;
 
   // --------------------------------------------------------------- //
   public Level(String file, SecretKey secret_key) {
@@ -32,24 +33,24 @@ public class Level {
   private static void initItemDictionary() {
     item_dict = new HashMap<>();
     //@formatter:off
-    item_dict.put("RB", new ItemProperties("RB", "RefillBlue",   "refill_blue.png",   "refill_blue_area.png",   Array.of(0.35f, 0.35f), 200));
-    item_dict.put("RG", new ItemProperties("RG", "RefillGreen",  "refill_green.png",  "refill_green_area.png",  Array.of(0.35f, 0.35f), 200));
-    item_dict.put("RO", new ItemProperties("RO", "RefillOrange", "refill_orange.png", "refill_orange_area.png", Array.of(0.35f, 0.35f), 200));
-    item_dict.put("RP", new ItemProperties("RP", "RefillPurple", "refill_purple.png", "refill_purple_area.png", Array.of(0.35f, 0.35f), 200));
+    item_dict.put("RB", new ItemProperties("RB", "RefillBlue",   "refill_blue.png",   "refill_blue_area.png", 200));
+    item_dict.put("RG", new ItemProperties("RG", "RefillGreen",  "refill_green.png",  "refill_green_area.png", 200));
+    item_dict.put("RO", new ItemProperties("RO", "RefillOrange", "refill_orange.png", "refill_orange_area.png", 200));
+    item_dict.put("RP", new ItemProperties("RP", "RefillPurple", "refill_purple.png", "refill_purple_area.png", 200));
 
-    item_dict.put("PB", new ItemProperties("PB", "PaintBooth", "paint_booth.png", "paint_booth_area.png", Array.of(0.65f, 0.65f), 120));
-    item_dict.put("FH", new ItemProperties("FH", "FenceH", "fence_h.png", "fence_h_area.png", Array.of(0.40f, 0.40f), 200));
-    item_dict.put("FV", new ItemProperties("FV", "FenceV", "fence_v.png", "fence_v_area.png", Array.of(0.40f, 0.40f), 100));
-    item_dict.put("TS", new ItemProperties("TS", "TreeS",  "tree_s.png", "tree_s_area.png", Array.of(0.35f, 0.35f), 150));
-    item_dict.put("TM", new ItemProperties("TM", "TreeM",  "tree_m.png", "tree_m_area.png", Array.of(0.75f, 0.75f), 150));
-    item_dict.put("TL", new ItemProperties("TL", "TreeL",  "tree_l.png", "tree_l_area.png", Array.of(1.00f, 1.00f), 150));
+    item_dict.put("PB", new ItemProperties("PB", "PaintBooth", "paint_booth.png", "paint_booth_area.png", 120));
+    item_dict.put("FH", new ItemProperties("FH", "FenceH", "fence_h.png", "fence_h_area.png", 200));
+    item_dict.put("FV", new ItemProperties("FV", "FenceV", "fence_v.png", "fence_v_area.png", 100));
+    item_dict.put("TS", new ItemProperties("TS", "TreeS",  "tree_s.png", "tree_s_area.png", 150));
+    item_dict.put("TM", new ItemProperties("TM", "TreeM",  "tree_m.png", "tree_m_area.png", 150));
+    item_dict.put("TL", new ItemProperties("TL", "TreeL",  "tree_l.png", "tree_l_area.png", 150));
     //@formatter:on
   }
 
   // --------------------------------------------------------------- //
-  public void loadLevel(List<Item> items) {
-    // ---
+  public void loadLevel(List<Item> items, GameSettings settings) {
     this.items = items;
+    this.settings = settings;
     // ---
     // FileHandle file_handle = new FileHandle(file);
     FileHandle file_handle = Gdx.files.internal(file);
@@ -65,37 +66,75 @@ public class Level {
 
   // --------------------------------------------------------------- //
   private void processLine(String line) {
-    if (line.charAt(0) == '#')
+    if (line.length() == 0 || line.charAt(0) == '#')
       return;
     String[] content = line.split(",");
     // ---
-    if (content.length == 0)
+    if (content.length != 5)
       return;
     // ---
-    int x = Integer.parseInt(content[1]);
-    int y = Integer.parseInt(content[2]);
-    // ---
     String token = content[0];
+    //@formatter:off
+    // --- load player info
+    if (token.equals("P0") || token.equals("P1") ||
+        token.equals("P2") || token.equals("P3")) //@formatter:on
+      loadPlayer(content);
+
+    // --- load item
     ItemProperties props = item_dict.get(token);
     if (props == null)
       return;
+    loadItem(content, props);
+
+    //@formatter:off
+    // --- refill places consist of two Renderables
+    if (token.equals("RB") || token.equals("RG") ||
+        token.equals("RO") || token.equals("RP"))  //@formatter:on
+      loadRefillBase(content);
+    //@formatter:off
+  }
+
+  // --------------------------------------------------------------- //
+  private void loadItem(String[] data, ItemProperties props) {
+    int x = Integer.parseInt(data[1]);
+    int y = Integer.parseInt(data[2]);
+    float sx = Float.parseFloat(data[3]);
+    float sy = Float.parseFloat(data[4]);
     // ---
     Item item = new Item(props.name, props.tex_file, props.area_file,
-        props.scale, props.occ_depth);
+        Array.of(sx, sy), props.occ_depth);
     item.setPosition(new Vector2(x, y), secret_key);
     item.setRenderPosition(Array.of(x, y));
     item.init();
-    // ---
     items.add(item);
+  }
+
+  // --------------------------------------------------------------- //
+  private void loadRefillBase(String[] data) {
+    int x = Integer.parseInt(data[1]);
+    int y = Integer.parseInt(data[2]);
+    float sx = Float.parseFloat(data[3]);
+    float sy = Float.parseFloat(data[4]);
     // ---
-    //@formatter:off
-    // --- refill places consist of two Renderables
-    if (token.equals("RB") || token.equals("RG") || token.equals("RO") || token.equals("RP")) { //@formatter:on
-      item = new RefillPlaceBase();
-      item.setPosition(new Vector2(x, y), secret_key);
-      item.setRenderPosition(Array.of(x, y));
-      item.init();
-      items.add(item);
-    }
+    Item item = new RefillPlaceBase(Array.of(sx,sy));
+    item.setPosition(new Vector2(x, y), secret_key);
+    item.setRenderPosition(Array.of(x, y));
+    item.init();
+    items.add(item);
+  }
+
+  // --------------------------------------------------------------- //
+  private void loadPlayer(String[] data) {
+    String token = data[0];
+    int x = Integer.parseInt(data[1]);
+    int y = Integer.parseInt(data[2]);
+    float dx = Float.parseFloat(data[3]);
+    float dy = Float.parseFloat(data[4]);
+    int idx = 0;
+    if (token.equals("P1")) idx = 1;
+    if (token.equals("P2")) idx = 2;
+    if (token.equals("P3")) idx = 3;
+    settings.start_positions[idx] = new Vector2(x,y);
+    settings.start_directions[idx] = new Vector2(dx,dy);
   }
 }
