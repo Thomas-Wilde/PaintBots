@@ -1,8 +1,5 @@
 package com.tw.paintbots;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
