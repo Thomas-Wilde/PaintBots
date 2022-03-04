@@ -60,7 +60,7 @@ public class HumanPlayer extends Player {
 
   // --------------------------------------------------------------- //
   @Override
-  public void setDirection(Vector2 dir, GameManager.SecretKey key) {
+  public void setInitialDirection(Vector2 dir, GameManager.SecretKey key) {
     Objects.requireNonNull(key);
     setDirection(dir);
   }
