@@ -4,7 +4,9 @@ import com.badlogic.gdx.math.Vector2;
 
 public class GameSettings {
   public PlayerType[] player_types =
-      {PlayerType.HUMAN, PlayerType.HUMAN, PlayerType.HUMAN, PlayerType.HUMAN};
+      {PlayerType.HUMAN, PlayerType.HUMAN, PlayerType.AI, PlayerType.AI};
+  public String[] bot_names =
+      {"Random Bot", "Random Bot", "Random Bot2", "Random Bot"};
   public Vector2[] start_positions =
       {new Vector2(250.0f, 500.0f), new Vector2(750.0f, 500.0f),
           new Vector2(500.0f, 750.0f), new Vector2(500.0f, 250.0f)};

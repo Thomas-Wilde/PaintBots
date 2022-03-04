@@ -1,5 +1,7 @@
 package com.tw.paintbots;
 
+import java.lang.reflect.Constructor;
+
 import java.util.List;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,6 +23,7 @@ import com.tw.paintbots.Items.Item;
 import com.tw.paintbots.Items.ItemArea;
 import com.tw.paintbots.Items.ItemType;
 import com.tw.paintbots.Level;
+import com.tw.paintbots.BotLoader;
 
 /**
  * The GameManager is the core class of the game. It creates all Entities and
@@ -57,6 +60,7 @@ public class GameManager {
   private PlayerState[] player_states = null;
   private Canvas canvas = null;
   private Board board = null;
+  private HashMap<String, Class> bots = null;
 
   // ======================== Getter/Setter ======================== //
   //@formatter:off
@@ -78,7 +82,11 @@ public class GameManager {
   /**
    * Constructor is private due to the sigleton pattern.
    */
-  private GameManager() {}
+  private GameManager() {
+    // --- load some bots
+    BotLoader bot_loader = new BotLoader();
+    bots = bot_loader.loadBots();
+  }
 
   // --------------------------------------------------------------- //
   /** Dispose all entities. */
@@ -309,10 +317,18 @@ public class GameManager {
     player_states = new PlayerState[count];
     // ---
     for (int i = 0; i < count; ++i) {
-      if (game_settings.player_types[i] == PlayerType.AI)
-        throw new GameMangerException("No AI players implemented.");
+      Player player = null;
       try {
-        Player player = new HumanPlayer("Player" + i);
+        // --- load bot
+        if (game_settings.player_types[i] == PlayerType.AI) {
+          player = createBot(i);
+          if (player == null)
+            continue;
+        }
+        // --- load human player
+        if (game_settings.player_types[i] == PlayerType.HUMAN)
+          player = new HumanPlayer("Player" + i);
+        // ---
         initPlayer(player);
         addEntity(player);
         players[i] = player;
@@ -321,6 +337,29 @@ public class GameManager {
         System.out.println(e.getMessage());
       }
     }
+  }
+
+  // --------------------------------------------------------------- //
+  private Player createBot(int player_idx) {
+    Player player = null;
+    String bot_name = game_settings.bot_names[player_idx];
+    Class<?> bot_class = bots.get(bot_name);
+    // --- check if a bot with the name exists
+    if (bot_class == null) {
+      System.out
+          .println("Could not load " + bot_name + " - check class and name!");
+      return null;
+    }
+    // --- try to access the constructor
+    try {
+      Constructor<?> cons = bot_class.getConstructor(String.class);
+      player = (AIPlayer) cons.newInstance("AI_" + bot_name + player_idx);
+    } catch (Exception e) {
+      System.out.println(e.getMessage());
+      return null;
+    }
+    // ---
+    return player;
   }
 
   // --------------------------------------------------------------- //
