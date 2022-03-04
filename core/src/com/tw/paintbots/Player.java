@@ -54,7 +54,11 @@ public abstract class Player extends Entity {
   //@formatter:on
 
   // ======================= Player methods ======================== //
-  Player(String name) throws PlayerException {
+  /** The standard constructor is only called during bot load process. */
+  protected Player() {}
+
+  // --------------------------------------------------------------- //
+  protected Player(String name) throws PlayerException {
     player_id = id_counter++;
     if (player_id >= MAX_COUNT)
       throw new PlayerException("Tried to create too many players.");
@@ -218,6 +222,5 @@ public abstract class Player extends Entity {
    * @param dir The (normalized) direction in which the player is oriented.
    * @param key A secret key only the GameManager can access.
    */
-  public abstract void setDirection(Vector2 dir, SecretKey key);
-
+  public abstract void setInitialDirection(Vector2 dir, SecretKey key);
 }

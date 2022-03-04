@@ -348,7 +348,7 @@ public class GameManager {
     int paint_radius = game_settings.paint_radius;
     int refill_speed = game_settings.refill_speed;
     player.setPosition(pos, secret_key);
-    player.setDirection(dir, secret_key);
+    player.setInitialDirection(dir, secret_key);
     player.setMaximumPaintAmount(max_paint, secret_key);
     player.setPaintAmount(start_paint, secret_key);
     player.setPaintRadius(paint_radius, secret_key);

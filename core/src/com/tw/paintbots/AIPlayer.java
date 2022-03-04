@@ -6,8 +6,13 @@ import com.tw.paintbots.GameManager.SecretKey;
 // =============================================================== //
 public abstract class AIPlayer extends Player {
   // ===================== AIPlayer methods ===================== //
-  protected AIPlayer() throws PlayerException {
-    super("AI-Player");
+  /** Standard constructor used for bot loading. */
+  public AIPlayer() {}
+
+  // --------------------------------------------------------------- //
+  /** Constructor to create the actual bots. */
+  public AIPlayer(String name) throws PlayerException {
+    super("AI-" + name);
   }
 
   // --------------------------------------------------------------- //
@@ -22,6 +27,7 @@ public abstract class AIPlayer extends Player {
   public abstract String getStudent();
   public abstract int getMatrikel();
   public abstract Vector2 getDirection();
-  public abstract void setDirection(Vector2 dir, SecretKey key);
+  public abstract void setInitialDirection(Vector2 dir, SecretKey key);
+  public abstract void initBot();
   //@formatter:on
 }
