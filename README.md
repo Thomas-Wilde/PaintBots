@@ -12,7 +12,7 @@
 [![Build][gradle-build-badge]]
 [![Doxygen-Docu][doxygen-badge]][doxygen-url]
 
-[gradle_build-badge]: https://github.com/Thomas-Wilde/PaintBots/actions/workflows/gradle.yml/badge.svg
+[gradle-build-badge]: https://github.com/Thomas-Wilde/PaintBots/actions/workflows/gradle.yml/badge.svg
 [doxygen-badge]: https://github.com/Thomas-Wilde/PaintBots/actions/workflows/doxygen.yml/badge.svg
 [doxygen-url]: https://thomas-wilde.github.io/PaintBots/
 
