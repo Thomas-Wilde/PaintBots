@@ -9,7 +9,7 @@
 *** https://www.markdownguide.org/basic-syntax/#reference-style-links
 -->
 
-[![Build][gradle-build-badge]]
+![Build][gradle-build-badge]
 [![Doxygen-Docu][doxygen-badge]][doxygen-url]
 
 [gradle-build-badge]: https://github.com/Thomas-Wilde/PaintBots/actions/workflows/gradle.yml/badge.svg
