@@ -19,35 +19,74 @@ public class BotLoader extends ClassLoader {
 
   // --------------------------------------------------------------- //
   public BotLoader() {
-    // ---
     run_dir = System.getProperty("user.dir");
     bot_dir = run_dir + "/bots";
     // ---
   }
 
   // --------------------------------------------------------------- //
+  /**
+   * Loads bots from the subdirectory './bots'. If the subdirectory does not
+   * exist, it is created. The loaded bots are listed at the at the console
+   *
+   * @return A HashMap that contains the names of the bots and the corresponding
+   *         class needed to create them.
+   */
   public HashMap<String, Class<?>> loadBots() {
-    // ---
-    checkBotDirectory();
-    List<String> filenames = readBotFilenames();
-    // ---
     HashMap<String, Class<?>> bots = new HashMap<>();
+    // --- check if the bot folder exists
+    if (!checkBotDirectory() && !createBotDirectory())
+      return bots;
+    // ---
+    List<String> filenames = readBotFilenames();
     try {
       bots = loadBotClasses(filenames);
     } catch (Exception e) {
       System.out.println(
           "Could not load bots from './bots' directory: " + e.getMessage());
     }
+    // ---
     System.out.println("loaded bots:");
     for (String bot_name : bots.keySet())
       System.out.println(bot_name);
-
     return bots;
   }
 
   // --------------------------------------------------------------- //
   /**
-   * @return A list with all class files int the ./bot subdirectory.
+   * Checks if the folder 'bots' exists in the base directory.
+   *
+   * @return true, if the directory exists, false otherwise
+   */
+  private boolean checkBotDirectory() {
+    Path bot_path = Paths.get(bot_dir);
+    if (!Files.exists(bot_path) || !Files.isDirectory(bot_path)) {
+      System.out.println(bot_dir + " directory not found.");
+      return false;
+    }
+    return true;
+  }
+
+  // --------------------------------------------------------------- //
+  /**
+   * Creates the subdirectory './bots' in the working folder.
+   *
+   * @return true if the directory was created, false otherwise.
+   */
+  private boolean createBotDirectory() {
+    try {
+      System.out.println("Create " + bot_dir + " directory.");
+      new File(bot_dir).mkdirs();
+    } catch (Exception e) {
+      System.out.println("Could not create bot directory.");
+      return false;
+    }
+    return true;
+  }
+
+  // --------------------------------------------------------------- //
+  /**
+   * @return A list with all class files int the './bots' subdirectory.
    */
   private List<String> readBotFilenames() {
     System.out.println("load bots from: " + bot_dir);
@@ -91,19 +130,5 @@ public class BotLoader extends ClassLoader {
       System.out.println("Could not close ClassLoader. " + e.getMessage());
     }
     return bots;
-  }
-
-  // ----------------------------------------------------//
-  private void checkBotDirectory() {
-    Path bot_path = Paths.get(bot_dir);
-    if (!Files.exists(bot_path) || !Files.isDirectory(bot_path)) {
-      try {
-        System.out
-            .println(bot_dir + " directory not found - try to create it.");
-        new File(bot_dir).mkdirs();
-      } catch (Exception e) {
-        System.out.println("Could not create bot directory.");
-      }
-    }
   }
 }
