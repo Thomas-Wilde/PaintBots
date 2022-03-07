@@ -5,6 +5,9 @@ import java.net.URL;
 import java.net.URLClassLoader;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,11 +26,12 @@ public class BotLoader extends ClassLoader {
   }
 
   // --------------------------------------------------------------- //
-  public HashMap<String, Class> loadBots() {
+  public HashMap<String, Class<?>> loadBots() {
     // ---
+    checkBotDirectory();
     List<String> filenames = readBotFilenames();
     // ---
-    HashMap<String, Class> bots = new HashMap<>();
+    HashMap<String, Class<?>> bots = new HashMap<>();
     try {
       bots = loadBotClasses(filenames);
     } catch (Exception e) {
@@ -62,18 +66,18 @@ public class BotLoader extends ClassLoader {
   }
 
   // --------------------------------------------------------------- //
-  private HashMap<String, Class> loadBotClasses(List<String> filenames)
+  private HashMap<String, Class<?>> loadBotClasses(List<String> filenames)
       throws MalformedURLException {
     // ---
-    HashMap<String, Class> bots = new HashMap<>();
+    HashMap<String, Class<?>> bots = new HashMap<>();
     File file = new File(run_dir);
     URL url = file.toURI().toURL();
     URL[] urls = new URL[] {url};
-    ClassLoader cl = new URLClassLoader(urls);
+    URLClassLoader cl = new URLClassLoader(urls);
     // ---
     for (String filename : filenames) {
       try {
-        Class bot_class = cl.loadClass("bots." + filename);
+        Class<?> bot_class = cl.loadClass("bots." + filename);
         AIPlayer bot_obj = (AIPlayer) bot_class.getConstructor().newInstance();
         bots.put(bot_obj.getBotName(), bot_class);
       } catch (Exception e) {
@@ -81,6 +85,25 @@ public class BotLoader extends ClassLoader {
             + e.getMessage());
       }
     }
+    try {
+      cl.close();
+    } catch (Exception e) {
+      System.out.println("Could not close ClassLoader. " + e.getMessage());
+    }
     return bots;
+  }
+
+  // ----------------------------------------------------//
+  private void checkBotDirectory() {
+    Path bot_path = Paths.get(bot_dir);
+    if (!Files.exists(bot_path) || !Files.isDirectory(bot_path)) {
+      try {
+        System.out
+            .println(bot_dir + " directory not found - try to create it.");
+        new File(bot_dir).mkdirs();
+      } catch (Exception e) {
+        System.out.println("Could not create bot directory.");
+      }
+    }
   }
 }

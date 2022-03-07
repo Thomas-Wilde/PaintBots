@@ -7,8 +7,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 
-import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
@@ -22,8 +20,6 @@ import com.tw.paintbots.Renderables.UIPlayerBoard;
 import com.tw.paintbots.Items.Item;
 import com.tw.paintbots.Items.ItemArea;
 import com.tw.paintbots.Items.ItemType;
-import com.tw.paintbots.Level;
-import com.tw.paintbots.BotLoader;
 
 /**
  * The GameManager is the core class of the game. It creates all Entities and
@@ -60,7 +56,7 @@ public class GameManager {
   private ArrayList<PlayerState> player_states = new ArrayList<>();
   private Canvas canvas = null;
   private Board board = null;
-  private HashMap<String, Class> bots = null;
+  private HashMap<String, Class<?>> bots = null;
 
   // ======================== Getter/Setter ======================== //
   //@formatter:off

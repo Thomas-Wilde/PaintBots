@@ -2,10 +2,7 @@ package com.tw.paintbots;
 
 import java.util.Objects;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import com.tw.paintbots.GameManager.SecretKey;
 import com.tw.paintbots.Renderables.DirectionIndicator;

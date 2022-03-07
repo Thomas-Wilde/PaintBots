@@ -5,7 +5,6 @@ import java.util.Objects;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import com.tw.paintbots.Array;
-import com.tw.paintbots.PaintColor;
 import com.tw.paintbots.GameManager;
 import com.tw.paintbots.GameManager.SecretKey;
 
@@ -18,7 +17,6 @@ public class UITimer extends SimpleRenderable {
 
   // --------------------------------------------------------------- //
   private UIDigit[] digits = new UIDigit[4]; // use 4 digits to show the time
-  private PaintColor color = PaintColor.BLACK;
   private Type type = Type.CLOCK;
   private int countdown = 0;
   private int time = 0;
