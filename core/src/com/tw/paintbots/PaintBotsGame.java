@@ -29,6 +29,16 @@ public class PaintBotsGame extends ApplicationAdapter {
   }
 
   // --------------------------------------------------------------- //
+  public void initGameManagerHeadless() {
+    GameSettings settings = new GameSettings();
+    try {
+      game_mgr.loadMapHeadless(settings);
+    } catch (Exception e) {
+      System.out.println(e.getMessage());
+    }
+  }
+
+  // --------------------------------------------------------------- //
   @Override
   public void create() {
     // loadAIBotClasses();
