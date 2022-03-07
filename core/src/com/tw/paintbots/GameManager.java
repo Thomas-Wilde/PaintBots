@@ -597,8 +597,10 @@ public class GameManager {
     if (render_layers.get(20) == null)
       render_layers.put(20, new ArrayList<Renderable>());
     // ---
+    String level_file = System.getProperty("user.dir") + "/levels/level1.lvl";
+    System.out.println("level file: " + level_file);
     List<Item> level_items = new ArrayList<>();
-    Level level = new Level("level1.lvl", secret_key);
+    Level level = new Level(level_file, secret_key);
     level.loadLevel(level_items, game_settings);
     // ---
     for (Item item : level_items) {
