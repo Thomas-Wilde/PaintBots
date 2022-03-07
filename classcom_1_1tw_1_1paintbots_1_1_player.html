@@ -135,6 +135,8 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>setRefillSpeed</b> (i
 <tr class="memitem:a511a2ffea2bffdff46c560724b16f2c6"><td class="memItemLeft" align="right" valign="top"><a id="a511a2ffea2bffdff46c560724b16f2c6" name="a511a2ffea2bffdff46c560724b16f2c6"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>setScore</b> (int points, SecretKey key)</td></tr>
 <tr class="separator:a511a2ffea2bffdff46c560724b16f2c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6292d3331fc62083d3aa08cd9d1082ab"><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcom_1_1tw_1_1paintbots_1_1_player.html#a6292d3331fc62083d3aa08cd9d1082ab">setPosition</a> (Vector2 position, SecretKey key)</td></tr>
+<tr class="separator:a6292d3331fc62083d3aa08cd9d1082ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab10bfdba93239300653ba4256c239656"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcom_1_1tw_1_1paintbots_1_1_player.html#ab10bfdba93239300653ba4256c239656">destroy</a> (SecretKey key)</td></tr>
 <tr class="separator:ab10bfdba93239300653ba4256c239656"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab16593d109c218b3e061cb86a769e0cc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcom_1_1tw_1_1paintbots_1_1_player.html#ab16593d109c218b3e061cb86a769e0cc">update</a> (SecretKey key)</td></tr>
@@ -645,6 +647,46 @@ Additional Inherited Members</h2></td></tr>
 </dl>
 
 <p>Reimplemented in <a class="el" href="classcom_1_1tw_1_1paintbots_1_1_a_i_player.html#a08271930e7997bd709e82c46cf12dad5">com.tw.paintbots.AIPlayer</a>.</p>
+
+</div>
+</div>
+<a id="a6292d3331fc62083d3aa08cd9d1082ab" name="a6292d3331fc62083d3aa08cd9d1082ab"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6292d3331fc62083d3aa08cd9d1082ab">&#9670;&nbsp;</a></span>setPosition()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">boolean com.tw.paintbots.Player.setPosition </td>
+          <td>(</td>
+          <td class="paramtype">Vector2&#160;</td>
+          <td class="paramname"><em>position</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">SecretKey&#160;</td>
+          <td class="paramname"><em>key</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >Set the position of the <a class="el" href="classcom_1_1tw_1_1paintbots_1_1_entity.html">Entity</a>. The position has to be on the gaming board, i.e. in the interval [x,y] = [0, width) x [0,height), were width and height are the board dimensions in game coordinates. Only the <a class="el" href="classcom_1_1tw_1_1paintbots_1_1_game_manager.html">GameManager</a> can call this method.</p>
+<dl class="section return"><dt>Returns</dt><dd>false if the position is outside of the board, true otherwise. </dd></dl>
+
+<p>Reimplemented from <a class="el" href="classcom_1_1tw_1_1paintbots_1_1_entity.html#ad9fb93d4f0c4efb2e8a415d14efcca8a">com.tw.paintbots.Entity</a>.</p>
 
 </div>
 </div>
