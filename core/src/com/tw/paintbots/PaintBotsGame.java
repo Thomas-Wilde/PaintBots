@@ -13,11 +13,11 @@ public class PaintBotsGame extends ApplicationAdapter {
   private OrthographicCamera camera;
   private GameManager game_mgr = GameManager.get();
 
-  // ==================== PaintBotGame methods ==================== //
+  // ==================== PaintBotsGame methods ==================== //
   public void initGameManager() {
     GameSettings settings = new GameSettings();
     try {
-      game_mgr.loadMap(settings);
+      game_mgr.loadGame(settings);
     } catch (Exception e) {
       System.out.println(e.getMessage());
     }

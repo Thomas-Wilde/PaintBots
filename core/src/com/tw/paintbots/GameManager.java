@@ -206,7 +206,7 @@ public class GameManager {
   }
 
   // --------------------------------------------------------------- //
-  public void loadMap(GameSettings settings) throws GameMangerException {
+  public void loadGame(GameSettings settings) throws GameMangerException {
     game_settings = settings;
     createBackground();
     createFloor();
