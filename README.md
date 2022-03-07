@@ -14,6 +14,6 @@
 [![Build][gradle-build-badge]]
 [![Doxygen-Docu][doxygen-badge]][doxygen-url]
 
-[gradle_build-badge]: https://img.shields.io/github/contributors/github_username/repo_name.svg?style=for-the-badge
+[gradle-build-badge]: https://img.shields.io/github/contributors/github_username/repo_name.svg?style=for-the-badge
 [doxygen-badge]: https://github.com/Thomas-Wilde/PaintBots/actions/workflows/doxygen.yml/badge.svg
 [doxygen-url]: https://thomas-wilde.github.io/PaintBots/
