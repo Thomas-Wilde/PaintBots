@@ -7,6 +7,15 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 public class PaintBotsGame extends ApplicationAdapter {
+  // ======================= GameKey class ======================= //
+  //@formatter:off
+  /** The PaintBotsGame mimics a friend class behavior, i.e. every method that
+   * should be accessed only by the GamPaintBotsGame asks for the GameKey.
+   * Only the PaintBotsGame can deliver this GameKey */
+  public static final class GameKey { private GameKey() {} }
+  private static final GameKey game_key = new GameKey();
+  //@formatter:on
+
   // --------------------------------------------------------------- //
   // private Music music;
   private SpriteBatch batch;
@@ -17,7 +26,7 @@ public class PaintBotsGame extends ApplicationAdapter {
   public void initGameManager() {
     GameSettings settings = new GameSettings();
     try {
-      game_mgr.loadMap(settings);
+      game_mgr.loadMap(settings, game_key);
     } catch (Exception e) {
       System.out.println(e.getMessage());
     }
@@ -27,7 +36,7 @@ public class PaintBotsGame extends ApplicationAdapter {
   public void initGameManagerHeadless() {
     GameSettings settings = new GameSettings();
     try {
-      game_mgr.loadMapHeadless(settings);
+      game_mgr.loadMapHeadless(settings, game_key);
     } catch (Exception e) {
       System.out.println(e.getMessage());
     }
@@ -61,10 +70,10 @@ public class PaintBotsGame extends ApplicationAdapter {
     // coordinate system specified by the camera.
     batch.setProjectionMatrix(camera.combined);
     // tell the GameManager to perform an update step
-    game_mgr.update();
+    game_mgr.update(game_key);
     // draw the graphics
     batch.begin();
-    game_mgr.render(batch);
+    game_mgr.render(batch, game_key);
     batch.end();
   }
 
@@ -72,7 +81,7 @@ public class PaintBotsGame extends ApplicationAdapter {
   public void dispose() {
     // dispose of all the native resources
     // music.dispose();
-    game_mgr.destroy();
+    game_mgr.destroy(game_key);
     batch.dispose();
   }
 }

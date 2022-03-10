@@ -2,6 +2,7 @@ package com.tw.paintbots;
 
 import java.lang.reflect.Constructor;
 
+import java.util.Objects;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,6 +11,7 @@ import java.util.Set;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
+import com.tw.paintbots.PaintBotsGame.GameKey;
 import com.tw.paintbots.Renderables.Canvas;
 import com.tw.paintbots.Renderables.RenderDepthComparator;
 import com.tw.paintbots.Renderables.Renderable;
@@ -31,8 +33,8 @@ public class GameManager {
   // ======================= SecretKey class ======================= //
   //@formatter:off
   /** The GameManager mimics a friend class behavior, i.e. every method that
-   * should be accessed only by the GameManager asked for the SecretKey. Only
-   * the Game Manager can deliver this SecretKey */
+   * should be accessed only by the GameManager asks for the SecretKey.
+   * Only the GameManager can deliver this SecretKey */
   public static final class SecretKey { private SecretKey() {} }
   private static final SecretKey secret_key = new SecretKey();
   //@formatter:on
@@ -60,7 +62,7 @@ public class GameManager {
 
   // ======================== Getter/Setter ======================== //
   //@formatter:off
-  /** Get the time that passed since the start of the round in milliseconds. */
+  /** Get the time that passed since the start of the round in seconds. */
   public double getElapsedTime() { return elapsed_time; }
   /** Get the between the current and the last update step. */
   public double getDeltaTime() { return delta_time; }
@@ -86,14 +88,16 @@ public class GameManager {
 
   // --------------------------------------------------------------- //
   /** Dispose all entities. */
-  public void destroy() {
+  public void destroy(GameKey key) {
+    Objects.requireNonNull(key);
     for (Entity entity : entities)
       entity.destroy(secret_key);
     entities.clear();
   }
 
   // --------------------------------------------------------------- //
-  public void update() {
+  public void update(GameKey key) {
+    Objects.requireNonNull(key);
     // delta_time = Gdx.graphics.getDeltaTime();
     delta_time = 1.0 / 60.0;
     elapsed_time += delta_time;
@@ -120,7 +124,8 @@ public class GameManager {
 
   // --------------------------------------------------------------- //
   /** Draw the Renderables of each layer. */
-  public void render(SpriteBatch batch) {
+  public void render(SpriteBatch batch, GameKey key) {
+    Objects.requireNonNull(key);
     Set<Integer> layer_ids = render_layers.keySet();
     for (Integer id : layer_ids) {
       // ---
@@ -136,7 +141,7 @@ public class GameManager {
   }
 
   // --------------------------------------------------------------- //
-  public void renderItemLayer(SpriteBatch batch) {
+  private void renderItemLayer(SpriteBatch batch) {
     // ---
     List<Renderable> items = render_layers.get(20);
     RenderDepthComparator comparator = new RenderDepthComparator();
@@ -206,7 +211,9 @@ public class GameManager {
   }
 
   // --------------------------------------------------------------- //
-  public void loadMap(GameSettings settings) throws GameMangerException {
+  public void loadMap(GameSettings settings, GameKey key)
+      throws GameMangerException {
+    Objects.requireNonNull(key);
     game_settings = settings;
     createBackground();
     createFloor();
@@ -223,8 +230,9 @@ public class GameManager {
   }
 
   // --------------------------------------------------------------- //
-  public void loadMapHeadless(GameSettings settings)
+  public void loadMapHeadless(GameSettings settings, GameKey key)
       throws GameMangerException {
+    Objects.requireNonNull(key);
     game_settings = settings;
     int width = game_settings.board_dimensions[0];
     int height = game_settings.board_dimensions[1];
@@ -483,7 +491,6 @@ public class GameManager {
       int refill_speed = player.getRefillSpeed();
       int increase = (int) (refill_speed * delta_time);
       player.increasePaintAmount(increase, secret_key);
-      return;
     }
   }
 
