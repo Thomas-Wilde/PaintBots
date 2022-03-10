@@ -26,6 +26,7 @@ public abstract class Player extends Entity {
   private int score = 0;
   private int paint_radius = 40;
   private int refill_speed = 50000;
+  private Vector2 old_position = new Vector2(-1.0f, -1.0f);
 
   // ======================== Getter/Setter ======================== //
   //@formatter:off
@@ -161,6 +162,13 @@ public abstract class Player extends Entity {
 
   // ====================== Entity methods ====================== //
   @Override
+  public boolean setPosition(Vector2 position, SecretKey key) {
+    old_position = this.getPosition();
+    return super.setPosition(position, key);
+  }
+
+  // --------------------------------------------------------------- //
+  @Override
   public void destroy(SecretKey key) {
     Objects.requireNonNull(key);
     // ---
@@ -177,16 +185,28 @@ public abstract class Player extends Entity {
     // --- update animation if graphics are loaded
     Vector2 pos = getPosition();
     animation.setRenderPosition(Array.of((int) pos.x, (int) pos.y));
-    // --- add magic value to get different animation steps for each player
-    float time = (float) GameManager.get().getElapsedTime() + 0.25f * player_id;
-    animation.setAnimationTime(time);
+    //
+    // --- scale the animation time by walk distance
+    // compute how far we have walked ...
+    Vector2 temp = old_position;
+    temp.sub(getPosition());
+    // ... use the walk distance to scale the animation speed
+    float dist = (float) temp.len();
+    float old_time = animation.getAnimationTime();
+    float delta_time = (float) GameManager.get().getDeltaTime();
+    float new_time = old_time + (delta_time) * dist / 3.0f;
+    animation.setAnimationTime(new_time);
+    animation.updateFrameTexture();
+    //
+    // --- direction indicator just blinks
+    float time = (float) GameManager.get().getElapsedTime();
     dir_indicator.setAnimationTime(time);
-    // ---
+    dir_indicator.updateFrameTexture();
+    //
+    // --- rotate the player and the direction indicator
     Vector2 move_dir = getDirection();
     move_dir.setLength(1.0f);
     animation.setMoveDirection(move_dir);
-    animation.updateFrameTexture();
-    dir_indicator.updateFrameTexture();
     // ---
     float deg = dirVectorToRotDegree(move_dir);
     dir_indicator.setRotation(deg);
