@@ -27,7 +27,7 @@ public class BotLoader extends ClassLoader {
   // --------------------------------------------------------------- //
   /**
    * Loads bots from the subdirectory './bots'. If the subdirectory does not
-   * exist, it is created. The loaded bots are listed at the at the console
+   * exist, it is created. The loaded bots are listed at the at the console.
    *
    * @return A HashMap that contains the names of the bots and the corresponding
    *         class needed to create them.
