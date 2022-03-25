@@ -18,6 +18,7 @@ import com.tw.paintbots.Renderables.Renderable;
 import com.tw.paintbots.Renderables.SimpleRenderable;
 import com.tw.paintbots.Renderables.RepeatedRenderable;
 import com.tw.paintbots.Renderables.UITimer;
+import com.tw.paintbots.Renderables.StartTimer;
 import com.tw.paintbots.Renderables.UIPlayerBoard;
 import com.tw.paintbots.Items.Item;
 import com.tw.paintbots.Items.ItemArea;
@@ -39,13 +40,19 @@ public class GameManager {
   private static final SecretKey secret_key = new SecretKey();
   //@formatter:on
 
+  // ======================== GameState enum ======================= //
+  private enum GameState {
+    MENU, STARTTIMER, GAME, RESULT
+  }
+
   // ====================== GameManager class ====================== //
   // GameManager uses singleton pattern
   private static GameManager instance = null;
   private double elapsed_time = 0.0;
   private double delta_time = 0.0;
+  private GameState game_state = GameState.STARTTIMER;
 
-  // RenderLayer 20 is reserved for elements on the game board, e.g. objects.
+  // --- RenderLayer 20 is reserved for game board elements, e.g. objects.
   private HashMap<Integer, List<Renderable>> render_layers = new HashMap<>();
   private List<Renderable> player_layer = new ArrayList<>();
   private ArrayList<Entity> entities = new ArrayList<>();
@@ -54,6 +61,7 @@ public class GameManager {
   // --- List of Entities needed to create other ones
   private SimpleRenderable floor = null;
   private UITimer timer = null;
+  private StartTimer start_timer = null;
   private ArrayList<Player> players = new ArrayList<>();
   private ArrayList<PlayerState> player_states = new ArrayList<>();
   private Canvas canvas = null;
@@ -102,6 +110,34 @@ public class GameManager {
     delta_time = 1.0 / 60.0;
     elapsed_time += delta_time;
     // ---
+    switch (game_state) {
+      // ---
+      case STARTTIMER: {
+        updateStartTime();
+      }
+        break;
+      // ---
+      case GAME:
+        updateGame();
+        break;
+      default:
+        break;
+    }
+  }
+
+  // --------------------------------------------------------------- //
+  private void updateStartTime() {
+    start_timer.setElapsed((float) elapsed_time);
+    // ---
+    if (!start_timer.isActive()) {
+      game_state = GameState.GAME;
+      elapsed_time = 0.0;
+      start_timer.setVisible(false);
+    }
+  }
+
+  // --------------------------------------------------------------- //
+  private void updateGame() {
     preUpdate();
     // --- update all entities
     for (Entity entity : entities)
@@ -136,7 +172,8 @@ public class GameManager {
       // ---
       List<Renderable> renderables = render_layers.get(id);
       for (Renderable item : renderables)
-        item.render(batch, id.intValue());
+        if (item.isVisible())
+          item.render(batch, id.intValue());
     }
   }
 
@@ -164,7 +201,8 @@ public class GameManager {
         return;
       // ---
       if (comparator.compare(item, player) < 0) {
-        item.render(batch, 20);
+        if (item.isVisible())
+          item.render(batch, 20);
         ++idx_item;
       } else {
         player.render(batch, 20);
@@ -218,6 +256,7 @@ public class GameManager {
     createBackground();
     createFloor();
     createUITimer();
+    createStartTimer();
     // ---
     createCanvas();
     initCanvasRenderables();
@@ -315,6 +354,22 @@ public class GameManager {
   }
 
   // --------------------------------------------------------------- //
+  private void createStartTimer() {
+    start_timer = new StartTimer(5.0f);
+    start_timer.setAnker(floor);
+    start_timer.setElapsed(0.0f);
+    // --- define position and size
+    int[] floor_size = floor.getRenderSize();
+    int[] timer_size = start_timer.getRenderSize();
+    int pos_x = floor_size[0] / 2 - timer_size[0] / 2;
+    int pos_y = floor_size[1] / 2 - timer_size[1] / 2;
+    start_timer.setRenderPosition(Array.of(pos_x, pos_y));
+    // ---
+    addRenderable(start_timer);
+    addEntity(start_timer);
+  }
+
+  // --------------------------------------------------------------- //
   private void createPlayers() throws GameMangerException {
     // --- create players
     int count = game_settings.player_types.length;
@@ -374,6 +429,10 @@ public class GameManager {
       player_layer.add(player.getAnimation());
       addRenderable(player.getIndicator());
       createPlayerUI(player);
+      // --- place renderable at correct location
+      Vector2 pos = player.getPosition();
+      player.getAnimation()
+          .setRenderPosition(Array.of((int) pos.x, (int) pos.y));
     }
   }
 
