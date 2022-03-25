@@ -16,6 +16,7 @@ public abstract class Renderable extends Entity {
   private int occlusion_depth = -1;
   private float[] scale = {1.0f, 1.0f};
   private int[] layers = null;
+  private boolean is_visible = true;
   protected Renderable anker = null;
   protected TextureRegion texture_region = null;
   protected int[] resolution = null;
@@ -44,6 +45,10 @@ public abstract class Renderable extends Entity {
   public void setOcclusionDepth(int depth) { occlusion_depth = depth; }
   // ToDo: comment
   public int getOcclusionDepth() { return occlusion_depth; }
+  /** Set the visibilty of this Renderable. */
+  public void setVisible(boolean visible) { is_visible = visible; }
+  /** Return true if this renderable is visible, false otherwise. */
+  public boolean isVisible() { return is_visible; }
   //@formatter:on
 
   // ====================== Renderable methods ====================== //
