@@ -20,6 +20,7 @@ import com.tw.paintbots.Renderables.RepeatedRenderable;
 import com.tw.paintbots.Renderables.UITimer;
 import com.tw.paintbots.Renderables.StartTimer;
 import com.tw.paintbots.Renderables.UIPlayerBoard;
+import com.tw.paintbots.Renderables.UIBotSelect;
 import com.tw.paintbots.Items.Item;
 import com.tw.paintbots.Items.ItemArea;
 import com.tw.paintbots.Items.ItemType;
@@ -50,13 +51,16 @@ public class GameManager {
   private static GameManager instance = null;
   private double elapsed_time = 0.0;
   private double delta_time = 0.0;
-  private GameState game_state = GameState.STARTTIMER;
+  private GameState game_state = GameState.MENU;
 
   // --- RenderLayer 20 is reserved for game board elements, e.g. objects.
   private HashMap<Integer, List<Renderable>> render_layers = new HashMap<>();
   private List<Renderable> player_layer = new ArrayList<>();
   private ArrayList<Entity> entities = new ArrayList<>();
   private GameSettings game_settings = null;
+
+  // --- Entities for the menu
+  private ArrayList<UIBotSelect> bot_selects = new ArrayList<>();
 
   // --- List of Entities needed to create other ones
   private SimpleRenderable floor = null;
@@ -112,6 +116,11 @@ public class GameManager {
     // ---
     switch (game_state) {
       // ---
+      case MENU: {
+        updateMenu();
+      }
+        break;
+      // ---
       case STARTTIMER: {
         updateStartTime();
       }
@@ -123,6 +132,11 @@ public class GameManager {
       default:
         break;
     }
+  }
+
+  // --------------------------------------------------------------- //
+  private void updateMenu() {
+
   }
 
   // --------------------------------------------------------------- //
@@ -249,11 +263,37 @@ public class GameManager {
   }
 
   // --------------------------------------------------------------- //
+  public void loadMenu(GameSettings settings, GameKey key) {
+    Objects.requireNonNull(key);
+    game_settings = settings;
+    createBackground();
+    createBotSelection();
+  }
+
+  // --------------------------------------------------------------- //
+  private void createBotSelection() {
+    for (int i = 0; i < 4; ++i) {
+      UIBotSelect select = new UIBotSelect(i);
+      bot_selects.add(select);
+      // --- define position and size
+      int res_x = game_settings.cam_resolution[0];
+      int res_y = game_settings.cam_resolution[1];
+      int width = select.getRenderSize()[0];
+      int height = select.getRenderSize()[1];
+      int pos_x = (res_x - width) / 2;
+      int pos_y = res_y / 2 + height - height * i;
+      select.setRenderPosition(Array.of(pos_x, pos_y));
+
+      addRenderable(select);
+      addEntity(select);
+    }
+  }
+
+  // --------------------------------------------------------------- //
   public void loadMap(GameSettings settings, GameKey key)
       throws GameMangerException {
     Objects.requireNonNull(key);
     game_settings = settings;
-    createBackground();
     createFloor();
     createUITimer();
     createStartTimer();
@@ -474,7 +514,7 @@ public class GameManager {
     info_board.setRenderPosition(Array.of(pos_x, pos_y));
     // ---
     addRenderable(info_board);
-    entities.add(info_board);
+    addEntity(info_board);
   }
 
   // --------------------------------------------------------------- //

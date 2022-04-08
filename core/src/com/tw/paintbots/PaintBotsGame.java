@@ -26,7 +26,7 @@ public class PaintBotsGame extends ApplicationAdapter {
   public void initGameManager() {
     GameSettings settings = new GameSettings();
     try {
-      game_mgr.loadMap(settings, game_key);
+      game_mgr.loadMenu(settings, game_key);
     } catch (Exception e) {
       System.out.println(e.getMessage());
     }
