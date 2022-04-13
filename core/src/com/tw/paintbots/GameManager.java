@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
@@ -61,6 +63,8 @@ public class GameManager {
 
   // --- Entities for the menu
   private ArrayList<UIBotSelect> bot_selects = new ArrayList<>();
+  private int menu_select = 0;
+  private boolean read_menu_key = true;
 
   // --- List of Entities needed to create other ones
   private SimpleRenderable floor = null;
@@ -136,7 +140,47 @@ public class GameManager {
 
   // --------------------------------------------------------------- //
   private void updateMenu() {
+    if (ignoreMenuInteraction())
+      return;
+    // --- handle up/down key
+    if (Gdx.input.isKeyPressed(Keys.UP) || Gdx.input.isKeyPressed(Keys.DOWN)) {
+      changeMenuFocus();
+      read_menu_key = false;
+    }
 
+    // --- start the game
+    if (Gdx.input.isKeyPressed(Keys.ENTER))
+      try {
+        game_state = GameState.STARTTIMER;
+        loadMap();
+      } catch (GameMangerException e) {
+        e.printStackTrace();
+      }
+  }
+
+  // --------------------------------------------------------------- //
+  private boolean ignoreMenuInteraction() {
+    // --- user must release keys after each press
+    if (!Gdx.input.isKeyPressed(Keys.UP) && !Gdx.input.isKeyPressed(Keys.DOWN))
+      read_menu_key = true;
+    return !read_menu_key;
+  }
+
+  // --------------------------------------------------------------- //
+  private void changeMenuFocus() {
+    int old_menu_select = menu_select;
+    if (Gdx.input.isKeyPressed(Keys.UP))
+      menu_select -= 1;
+    if (Gdx.input.isKeyPressed(Keys.DOWN))
+      menu_select += 1;
+    // --- clamp to entry count
+    if (menu_select < 0)
+      menu_select = 3;
+    if (menu_select > 3)
+      menu_select = 0;
+    // ---
+    bot_selects.get(old_menu_select).setFocus(false);
+    bot_selects.get(menu_select).setFocus(true);
   }
 
   // --------------------------------------------------------------- //
@@ -290,10 +334,7 @@ public class GameManager {
   }
 
   // --------------------------------------------------------------- //
-  public void loadMap(GameSettings settings, GameKey key)
-      throws GameMangerException {
-    Objects.requireNonNull(key);
-    game_settings = settings;
+  private void loadMap() throws GameMangerException {
     createFloor();
     createUITimer();
     createStartTimer();
