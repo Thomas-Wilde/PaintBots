@@ -1,3 +1,4 @@
 {
-  "java.format.settings.url": ".vscode/eclipse-java-google-style.xml"
+  "java.format.settings.url": ".vscode/eclipse-java-google-style.xml",
+  "java.configuration.updateBuildConfiguration": "interactive"
 }
