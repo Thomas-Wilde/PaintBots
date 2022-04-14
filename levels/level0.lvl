@@ -5,6 +5,8 @@
 # To place objects, use the following syntax:
 #
 # T,x,y,sx,sy
+# ',' separates the entries
+# NO WHITESPACES allowed
 #
 # T     - object type (possible types are listed below)
 #
