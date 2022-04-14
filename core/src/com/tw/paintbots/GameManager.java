@@ -85,7 +85,10 @@ public class GameManager {
   //@formatter:on
 
   // ===================== GameManager methods ===================== //
-  /** Access the single instance of the GameManager. */
+  /**
+   * The GameManager implements the singleton pattern. With this method you can
+   * access the only existing instance of the GameManager.
+   */
   public static GameManager get() {
     if (instance == null)
       instance = new GameManager();
