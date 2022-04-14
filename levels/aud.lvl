@@ -1,0 +1,92 @@
+# This is a simple level file.
+# Comments start with a '#' and are ignored.
+# ---
+#
+# To place objects, use the following syntax:
+#
+# T,x,y,sx,sy
+# ',' separates the entries
+# NO WHITESPACES allowed
+
+#
+# T     - object type (possible types are listed below)
+#
+# x,y   - position of the object in x and y coordinates
+#       - 0 <= [x,y] < 1000
+#       - [x,y] of type int
+#       - 0,0 is bottom left
+#
+# sx,sy - scale factors in x and y direction, used to scale the graphics
+#       - [sx,sy] of type float
+#       - if the object is a player its initial direction
+#
+# --- list of items ---
+# Currently the following items are available:
+#
+# P* - player; with position and initial direction; * in [0,...,3]
+# PB - paint stand; a stand where all players can refill paint
+# RO - refill orange; a stand where orange can refill
+# RG - refill green; a stand where green can refill
+# RB - refill blue; a stand where blue can refill
+# RP - refill purple; a stand where purple can refill
+# FH - fence horizontal
+# FV - fence vertical
+# TS - tree small
+# TM - tree medium
+# TL - tree large
+#
+# ---
+#
+# That is it. Hopefully, we have time to add some more items.
+# If you have any ideas for items, send an eMail!
+#
+# The lines below define the level and its objects.
+#
+P0,200,200,1.0,1.0
+P1,200,800,1.0,-1.0
+P2,800,200,-1.0,1.0
+P3,800,800,-1.0,-1.0
+#
+# paint refill
+# ---
+RG,100,100,0.25,0.25
+RP,100,900,0.25,0.25
+RB,900,100,0.25,0.25
+RO,900,900,0.25,0.25
+#
+# some trees
+# --- A ---
+TS,200,400,0.25,0.25
+TS,200,450,0.25,0.25
+TS,200,500,0.25,0.25
+TS,200,550,0.25,0.25
+TS,250,500,0.25,0.25
+TS,250,600,0.25,0.25
+TS,300,500,0.25,0.25
+TS,300,600,0.25,0.25
+TS,350,400,0.25,0.25
+TS,350,450,0.25,0.25
+TS,350,500,0.25,0.25
+TS,350,550,0.25,0.25
+# --- u ---
+TS,450,450,0.25,0.25
+TS,450,500,0.25,0.25
+TS,450,550,0.25,0.25
+TS,500,400,0.25,0.25
+TS,550,400,0.25,0.25
+TS,600,450,0.25,0.25
+TS,600,500,0.25,0.25
+TS,600,550,0.25,0.25
+# --- D ---
+TS,700,400,0.25,0.25
+TS,700,450,0.25,0.25
+TS,700,500,0.25,0.25
+TS,700,550,0.25,0.25
+TS,700,600,0.25,0.25
+TS,750,400,0.25,0.25
+TS,750,600,0.25,0.25
+TS,800,400,0.25,0.25
+TS,800,600,0.25,0.25
+TS,850,450,0.25,0.25
+TS,850,500,0.25,0.25
+TS,850,550,0.25,0.25
