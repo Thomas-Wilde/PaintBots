@@ -24,8 +24,8 @@ public class UIMenuItem extends SimpleRenderable {
   private static boolean init_font = true;
   private boolean has_focus = false;
   private Label label = null;
-  private String label_text = "Human";
-  private int bot_index = 0;
+  private String item_name = "Human";
+  private int item_index = 0;
 
   // ==================== UIPlayerBoard methods ==================== //
   public UIMenuItem(int item_idx) {
@@ -64,7 +64,7 @@ public class UIMenuItem extends SimpleRenderable {
 
   // --------------------------------------------------------------- //
   private void createLabel() {
-    label = new Label(label_text, style);
+    label = new Label(item_name, style);
     int[] size = this.getRenderSize();
     label.setSize(size[0] * 0.7f, size[1] * 0.7f);
   }
@@ -81,7 +81,7 @@ public class UIMenuItem extends SimpleRenderable {
       case 2:  portrait_file = "portrait_blue.png"; break;
       case 3:  portrait_file = "portrait_orange.png"; break;
       case 4:  portrait_file = "map.png"; break;
-      default: { label_text = ""; return; }
+      default: { item_name = ""; return; }
     }
     //@formatter:on
     portrait = new SimpleRenderable("portrait", 2, portrait_file);
@@ -127,32 +127,32 @@ public class UIMenuItem extends SimpleRenderable {
   }
 
   // --------------------------------------------------------------- //
-  public void setBot(String name, int index, SecretKey key) {
+  public void setItem(String name, int index, SecretKey key) {
     Objects.requireNonNull(key);
-    label_text = name;
-    bot_index = index;
+    item_name = name;
+    item_index = index;
     label.setText(name);
   }
 
   // --------------------------------------------------------------- //
-  public void setLabelText(String text, SecretKey key) {
+  public void setItemName(String text, SecretKey key) {
     Objects.requireNonNull(key);
-    label_text = text;
+    item_name = text;
     label.setText(text);
   }
 
   // --------------------------------------------------------------- //
-  /** Get the name of the bot. */
-  public String getLabelText(SecretKey key) {
+  /** Get the name of the item. */
+  public String getItemName(SecretKey key) {
     Objects.requireNonNull(key);
-    return label_text;
+    return item_name;
   }
 
   // --------------------------------------------------------------- //
   /** Get the index of the bot in the list with the loaded bots. */
-  public int getBotIndex(SecretKey key) {
+  public int getItemIndex(SecretKey key) {
     Objects.requireNonNull(key);
-    return bot_index;
+    return item_index;
   }
 
   // --------------------------------------------------------------- //
