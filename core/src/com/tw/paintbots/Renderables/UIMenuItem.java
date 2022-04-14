@@ -12,11 +12,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 
 import com.tw.paintbots.GameManager.SecretKey;
-import com.tw.paintbots.Player;
 import com.tw.paintbots.Array;
 
 // =============================================================== //
-public class UIBotSelect extends SimpleRenderable {
+public class UIMenuItem extends SimpleRenderable {
   private int player_idx = -1;
   private SimpleRenderable portrait = null;
   private SimpleRenderable sword = null;
@@ -26,10 +25,11 @@ public class UIBotSelect extends SimpleRenderable {
   private boolean has_focus = false;
   private Label bot_name_label = null;
   private String bot_name = "Human";
+  private int bot_index = 0;
 
   // ==================== UIPlayerBoard methods ==================== //
-  public UIBotSelect(int player_idx) {
-    super("UIBotSelect", 2, "bot_select.png");
+  public UIMenuItem(int player_idx) {
+    super("UIMenuItem", 2, "bot_select.png");
     this.player_idx = player_idx;
     // ---
     if (init_font == true) {
@@ -122,9 +122,25 @@ public class UIBotSelect extends SimpleRenderable {
   }
 
   // --------------------------------------------------------------- //
-  public void setBotName(String name, SecretKey key) {
+  public void setBot(String name, int index, SecretKey key) {
+    Objects.requireNonNull(key);
     bot_name = name;
-    bot_name_label.setText("test");
+    bot_index = index;
+    bot_name_label.setText(name);
+  }
+
+  // --------------------------------------------------------------- //
+  /** Get the name of the bot. */
+  public String getBotName(SecretKey key) {
+    Objects.requireNonNull(key);
+    return bot_name;
+  }
+
+  // --------------------------------------------------------------- //
+  /** Get the index of the bot in the list with the loaded bots. */
+  public int getBotIndex(SecretKey key) {
+    Objects.requireNonNull(key);
+    return bot_index;
   }
 
   // --------------------------------------------------------------- //

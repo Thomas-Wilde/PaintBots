@@ -22,7 +22,7 @@ import com.tw.paintbots.Renderables.RepeatedRenderable;
 import com.tw.paintbots.Renderables.UITimer;
 import com.tw.paintbots.Renderables.StartTimer;
 import com.tw.paintbots.Renderables.UIPlayerBoard;
-import com.tw.paintbots.Renderables.UIBotSelect;
+import com.tw.paintbots.Renderables.UIMenuItem;
 import com.tw.paintbots.Items.Item;
 import com.tw.paintbots.Items.ItemArea;
 import com.tw.paintbots.Items.ItemType;
@@ -62,7 +62,8 @@ public class GameManager {
   private GameSettings game_settings = null;
 
   // --- Entities for the menu
-  private ArrayList<UIBotSelect> bot_selects = new ArrayList<>();
+  private ArrayList<UIMenuItem> menu_item = new ArrayList<>();
+  private ArrayList<String> bot_names = new ArrayList<>();
   private int menu_select = 0;
   private boolean read_menu_key = true;
 
@@ -100,6 +101,12 @@ public class GameManager {
     // --- load some bots
     BotLoader bot_loader = new BotLoader();
     bots = bot_loader.loadBots();
+    // ---
+    bots.put("Human", HumanPlayer.class);
+    // ---
+    Set<String> loaded_names = bots.keySet();
+    for (String name : loaded_names)
+      bot_names.add(name);
   }
 
   // --------------------------------------------------------------- //
@@ -147,7 +154,12 @@ public class GameManager {
       changeMenuFocus();
       read_menu_key = false;
     }
-
+    // --- handle left/right key
+    if (Gdx.input.isKeyPressed(Keys.LEFT)
+        || Gdx.input.isKeyPressed(Keys.RIGHT)) {
+      changeMenuValue();
+      read_menu_key = false;
+    }
     // --- start the game
     if (Gdx.input.isKeyPressed(Keys.ENTER))
       try {
@@ -161,7 +173,9 @@ public class GameManager {
   // --------------------------------------------------------------- //
   private boolean ignoreMenuInteraction() {
     // --- user must release keys after each press
-    if (!Gdx.input.isKeyPressed(Keys.UP) && !Gdx.input.isKeyPressed(Keys.DOWN))
+    if (!Gdx.input.isKeyPressed(Keys.UP) && !Gdx.input.isKeyPressed(Keys.DOWN)
+        && !Gdx.input.isKeyPressed(Keys.LEFT)
+        && !Gdx.input.isKeyPressed(Keys.RIGHT))
       read_menu_key = true;
     return !read_menu_key;
   }
@@ -179,8 +193,33 @@ public class GameManager {
     if (menu_select > 3)
       menu_select = 0;
     // ---
-    bot_selects.get(old_menu_select).setFocus(false);
-    bot_selects.get(menu_select).setFocus(true);
+    menu_item.get(old_menu_select).setFocus(false);
+    menu_item.get(menu_select).setFocus(true);
+  }
+
+  // --------------------------------------------------------------- //
+  private void changeMenuValue() {
+    if (menu_select > 3)
+      return;
+    changeSelectedBot();
+  }
+
+  // --------------------------------------------------------------- //
+  private void changeSelectedBot() {
+    UIMenuItem bot_select = menu_item.get(menu_select);
+    int bot_index = bot_select.getBotIndex(secret_key);
+    // ---
+    if (Gdx.input.isKeyPressed(Keys.LEFT))
+      bot_index -= 1;
+    if (Gdx.input.isKeyPressed(Keys.RIGHT))
+      bot_index += 1;
+    // --- clamp to entry count
+    if (bot_index < 0)
+      bot_index = bot_names.size() - 1;
+    if (bot_index >= bot_names.size())
+      bot_index = 0;
+    // ---
+    bot_select.setBot(bot_names.get(bot_index), bot_index, secret_key);
   }
 
   // --------------------------------------------------------------- //
@@ -317,8 +356,8 @@ public class GameManager {
   // --------------------------------------------------------------- //
   private void createBotSelection() {
     for (int i = 0; i < 4; ++i) {
-      UIBotSelect select = new UIBotSelect(i);
-      bot_selects.add(select);
+      UIMenuItem select = new UIMenuItem(i);
+      menu_item.add(select);
       // --- define position and size
       int res_x = game_settings.cam_resolution[0];
       int res_y = game_settings.cam_resolution[1];
