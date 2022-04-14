@@ -16,21 +16,22 @@ import com.tw.paintbots.Array;
 
 // =============================================================== //
 public class UIMenuItem extends SimpleRenderable {
-  private int player_idx = -1;
+  private int item_idx = -1;
   private SimpleRenderable portrait = null;
   private SimpleRenderable sword = null;
   private static BitmapFont font = null;
   private static LabelStyle style = null;
   private static boolean init_font = true;
   private boolean has_focus = false;
-  private Label bot_name_label = null;
-  private String bot_name = "Human";
+  private Label label = null;
+  private String label_text = "Human";
   private int bot_index = 0;
 
   // ==================== UIPlayerBoard methods ==================== //
-  public UIMenuItem(int player_idx) {
-    super("UIMenuItem", 2, "bot_select.png");
-    this.player_idx = player_idx;
+  public UIMenuItem(int item_idx) {
+    super("UIMenuItem", 2,
+        item_idx == 5 ? "menu_start.png" : "menu_select.png");
+    this.item_idx = item_idx;
     // ---
     if (init_font == true) {
       init_font = false;
@@ -63,9 +64,9 @@ public class UIMenuItem extends SimpleRenderable {
 
   // --------------------------------------------------------------- //
   private void createLabel() {
-    bot_name_label = new Label(bot_name, style);
-    int[] size = portrait.getRenderSize();
-    bot_name_label.setSize(size[0] * 0.7f, size[1] * 0.7f);
+    label = new Label(label_text, style);
+    int[] size = this.getRenderSize();
+    label.setSize(size[0] * 0.7f, size[1] * 0.7f);
   }
 
   // --------------------------------------------------------------- //
@@ -74,11 +75,13 @@ public class UIMenuItem extends SimpleRenderable {
       return;
     String portrait_file = "";
     //@formatter:off
-    switch (player_idx) {
+    switch (item_idx) {
       case 0:  portrait_file = "portrait_green.png"; break;
       case 1:  portrait_file = "portrait_purple.png"; break;
       case 2:  portrait_file = "portrait_blue.png"; break;
-      default: portrait_file = "portrait_orange.png"; break;
+      case 3:  portrait_file = "portrait_orange.png"; break;
+      case 4:  portrait_file = "map.png"; break;
+      default: { label_text = ""; return; }
     }
     //@formatter:on
     portrait = new SimpleRenderable("portrait", 2, portrait_file);
@@ -96,6 +99,8 @@ public class UIMenuItem extends SimpleRenderable {
 
   // --------------------------------------------------------------- //
   private void updatePortraitPosition() {
+    if (portrait == null)
+      return;
     // position depends on the textures resolution
     int w = portrait.getRenderSize()[0];
     int[] size = getRenderSize();
@@ -109,8 +114,8 @@ public class UIMenuItem extends SimpleRenderable {
     int[] size = getRenderSize();
     int[] pos = getRenderPosition();
     int pos_x = (int) (size[0] * 0.30) + pos[0];
-    int pos_y = (int) (size[1] * 0.30) + pos[1];
-    bot_name_label.setPosition(pos_x, pos_y);
+    int pos_y = (int) (size[1] * 0.05) + pos[1];
+    label.setPosition(pos_x, pos_y);
   }
 
   // --------------------------------------------------------------- //
@@ -124,16 +129,23 @@ public class UIMenuItem extends SimpleRenderable {
   // --------------------------------------------------------------- //
   public void setBot(String name, int index, SecretKey key) {
     Objects.requireNonNull(key);
-    bot_name = name;
+    label_text = name;
     bot_index = index;
-    bot_name_label.setText(name);
+    label.setText(name);
+  }
+
+  // --------------------------------------------------------------- //
+  public void setLabelText(String text, SecretKey key) {
+    Objects.requireNonNull(key);
+    label_text = text;
+    label.setText(text);
   }
 
   // --------------------------------------------------------------- //
   /** Get the name of the bot. */
-  public String getBotName(SecretKey key) {
+  public String getLabelText(SecretKey key) {
     Objects.requireNonNull(key);
-    return bot_name;
+    return label_text;
   }
 
   // --------------------------------------------------------------- //
@@ -162,7 +174,8 @@ public class UIMenuItem extends SimpleRenderable {
   public void setScale(float[] scale) {
     super.setScale(scale);
     // ---
-    portrait.setScale(Array.of(scale[0] * 1.5f, scale[1] * 1.5f));
+    if (portrait != null)
+      portrait.setScale(Array.of(scale[0], scale[1]));
     updatePortraitPosition();
   }
 
@@ -175,8 +188,8 @@ public class UIMenuItem extends SimpleRenderable {
       portrait.render(batch, layer);
     if (sword != null && has_focus)
       sword.render(batch, layer);
-    if (bot_name_label != null)
-      bot_name_label.draw(batch, 1.0f);
+    if (label != null)
+      label.draw(batch, 1.0f);
   }
 
   // ======================== Entity methods ======================= //
@@ -191,7 +204,8 @@ public class UIMenuItem extends SimpleRenderable {
   public void destroy(SecretKey key) {
     Objects.requireNonNull(key);
     // ---
-    portrait.destroy(key);
+    if (portrait != null)
+      portrait.destroy(key);
     sword.destroy(key);
     super.destroy(key);
   }
