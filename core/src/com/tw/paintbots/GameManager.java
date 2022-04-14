@@ -12,7 +12,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-
 import com.tw.paintbots.PaintBotsGame.GameKey;
 import com.tw.paintbots.Renderables.Canvas;
 import com.tw.paintbots.Renderables.RenderDepthComparator;
@@ -161,9 +160,11 @@ public class GameManager {
       read_menu_key = false;
     }
     // --- start the game
-    if (Gdx.input.isKeyPressed(Keys.ENTER))
+    if (Gdx.input.isKeyPressed(Keys.ENTER) && menu_select == 5)
       try {
         game_state = GameState.STARTTIMER;
+        elapsed_time = 0.0;
+        hideMenu();
         loadMap();
       } catch (GameMangerException e) {
         e.printStackTrace();
@@ -189,8 +190,8 @@ public class GameManager {
       menu_select += 1;
     // --- clamp to entry count
     if (menu_select < 0)
-      menu_select = 3;
-    if (menu_select > 3)
+      menu_select = menu_item.size() - 1;
+    if (menu_select >= menu_item.size())
       menu_select = 0;
     // ---
     menu_item.get(old_menu_select).setFocus(false);
@@ -220,6 +221,14 @@ public class GameManager {
       bot_index = 0;
     // ---
     bot_select.setBot(bot_names.get(bot_index), bot_index, secret_key);
+  }
+
+  // --------------------------------------------------------------- //
+  private void hideMenu() {
+    for (UIMenuItem item : menu_item) {
+      item.setActive(false);
+      item.setVisible(false);
+    }
   }
 
   // --------------------------------------------------------------- //
@@ -350,22 +359,26 @@ public class GameManager {
     Objects.requireNonNull(key);
     game_settings = settings;
     createBackground();
-    createBotSelection();
+    createMenu();
   }
 
   // --------------------------------------------------------------- //
-  private void createBotSelection() {
-    for (int i = 0; i < 4; ++i) {
+  private void createMenu() {
+    for (int i = 0; i < 6; ++i) {
       UIMenuItem select = new UIMenuItem(i);
       menu_item.add(select);
+      select.setScale(Array.of(0.75f, 0.75f));
       // --- define position and size
       int res_x = game_settings.cam_resolution[0];
       int res_y = game_settings.cam_resolution[1];
       int width = select.getRenderSize()[0];
       int height = select.getRenderSize()[1];
       int pos_x = (res_x - width) / 2;
-      int pos_y = res_y / 2 + height - height * i;
+      int pos_y = res_y - (height * (i + 2));
       select.setRenderPosition(Array.of(pos_x, pos_y));
+
+      if (i == 4)
+        select.setLabelText("default", secret_key);
 
       addRenderable(select);
       addEntity(select);
