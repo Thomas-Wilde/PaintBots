@@ -54,7 +54,10 @@ public class Level {
     FileHandle file_handle = new FileHandle(file);
     // --- load default level if level file was not opened
     if (!file_handle.exists()) {
-      System.out.println("Level file '" + file + "'does not exists.");
+      if (file.length() == 0)
+        System.out.println("No level selected.");
+      else
+        System.out.println("Level file '" + file + "'does not exists.");
       System.out.println("Load default level.");
       file_handle = Gdx.files.internal("level.lvl");
       if (!file_handle.exists()) {
