@@ -28,7 +28,6 @@ public abstract class Entity {
   public boolean isActive() { return is_active; }
   /** Set the entity in-/active. An entity is only updated, it it is active. */
   public void setActive(boolean active) { is_active = active; }
-
   //@formatter:on
 
   // ======================= Entity methods ======================= //
