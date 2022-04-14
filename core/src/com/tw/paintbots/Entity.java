@@ -16,6 +16,7 @@ public abstract class Entity {
   private int id = -1;
   private String name = "entity";
   private Vector2 position = new Vector2(-1.0f, -1.0f);
+  private boolean is_active = true;
 
   // ======================== Getter/Setter ======================== //
   //@formatter:off
@@ -23,6 +24,11 @@ public abstract class Entity {
   public String getName() { return name; }
   /** Get the unique ID of the Entity. */
   public int getID() { return id; }
+  /** Get value of is_active flag. */
+  public boolean isActive() { return is_active; }
+  /** Set the entity in-/active. An entity is only updated, it it is active. */
+  public void setActive(boolean active) { is_active = active; }
+
   //@formatter:on
 
   // ======================= Entity methods ======================= //
