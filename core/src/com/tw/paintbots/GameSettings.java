@@ -4,9 +4,8 @@ import com.badlogic.gdx.math.Vector2;
 
 public class GameSettings {
   public PlayerType[] player_types =
-      {PlayerType.HUMAN, PlayerType.HUMAN, PlayerType.AI, PlayerType.AI};
-  public String[] bot_names =
-      {"Random Bot2", "Random Bot2", "Random Bot", "Random Bot"};
+      {PlayerType.HUMAN, PlayerType.HUMAN, PlayerType.HUMAN, PlayerType.HUMAN};
+  public String[] bot_names = {"---", "---", "---", "---"};
   public Vector2[] start_positions =
       {new Vector2(500.0f, 500.0f), new Vector2(500.0f, 500.0f),
           new Vector2(500.0f, 500.0f), new Vector2(500.0f, 500.0f)};
@@ -16,6 +15,7 @@ public class GameSettings {
 
   public String back_texture = "plank_background.png";
   public String floor_texture = "floor_stone_medium.png";
+  public String level_file = "";
   public int[] board_dimensions = {1000, 1000};
   public int[] board_border = {100, 100};
   public int ui_width = 600;
