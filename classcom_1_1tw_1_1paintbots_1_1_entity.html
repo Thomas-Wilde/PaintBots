@@ -91,7 +91,7 @@ Inheritance diagram for com.tw.paintbots.Entity:</div>
 <area href="classcom_1_1tw_1_1paintbots_1_1_items_1_1_item.html" alt="com.tw.paintbots.Items.Item" shape="rect" coords="1595,168,1904,192"/>
 <area href="classcom_1_1tw_1_1paintbots_1_1_renderables_1_1_animated_renderable.html" alt="com.tw.paintbots.Renderables.AnimatedRenderable" shape="rect" coords="1595,224,1904,248"/>
 <area href="classcom_1_1tw_1_1paintbots_1_1_renderables_1_1_repeated_renderable.html" alt="com.tw.paintbots.Renderables.RepeatedRenderable" shape="rect" coords="1595,280,1904,304"/>
-<area href="classcom_1_1tw_1_1paintbots_1_1_renderables_1_1_u_i_bot_select.html" alt="com.tw.paintbots.Renderables.UIBotSelect" shape="rect" coords="1595,336,1904,360"/>
+<area href="classcom_1_1tw_1_1paintbots_1_1_renderables_1_1_u_i_menu_item.html" alt="com.tw.paintbots.Renderables.UIMenuItem" shape="rect" coords="1595,336,1904,360"/>
 <area href="classcom_1_1tw_1_1paintbots_1_1_renderables_1_1_u_i_player_board.html" alt="com.tw.paintbots.Renderables.UIPlayerBoard" shape="rect" coords="1595,392,1904,416"/>
 <area href="classcom_1_1tw_1_1paintbots_1_1_renderables_1_1_u_i_timer.html" alt="com.tw.paintbots.Renderables.UITimer" shape="rect" coords="1595,448,1904,472"/>
 <area href="classcom_1_1tw_1_1paintbots_1_1_renderables_1_1_u_i_color_bar.html" alt="com.tw.paintbots.Renderables.UIColorBar" shape="rect" coords="2233,168,2542,192"/>
@@ -105,6 +105,10 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ac44f54887a12ca85de1a067ce2d7cd9e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6da331dd46df3abfe76b4b68f75675ee"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcom_1_1tw_1_1paintbots_1_1_entity.html#a6da331dd46df3abfe76b4b68f75675ee">getID</a> ()</td></tr>
 <tr class="separator:a6da331dd46df3abfe76b4b68f75675ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af83459440b9772cfd322eb7a5f2dd27a"><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcom_1_1tw_1_1paintbots_1_1_entity.html#af83459440b9772cfd322eb7a5f2dd27a">isActive</a> ()</td></tr>
+<tr class="separator:af83459440b9772cfd322eb7a5f2dd27a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac9429c0db41ed3cdac8672d66ede55a9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcom_1_1tw_1_1paintbots_1_1_entity.html#ac9429c0db41ed3cdac8672d66ede55a9">setActive</a> (boolean active)</td></tr>
+<tr class="separator:ac9429c0db41ed3cdac8672d66ede55a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad9fb93d4f0c4efb2e8a415d14efcca8a"><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcom_1_1tw_1_1paintbots_1_1_entity.html#ad9fb93d4f0c4efb2e8a415d14efcca8a">setPosition</a> (Vector2 position, SecretKey key)</td></tr>
 <tr class="separator:ad9fb93d4f0c4efb2e8a415d14efcca8a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7eb99f6fe66bcb10f713278e258f70f5"><td class="memItemLeft" align="right" valign="top">Vector2&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcom_1_1tw_1_1paintbots_1_1_entity.html#a7eb99f6fe66bcb10f713278e258f70f5">getPosition</a> ()</td></tr>
@@ -213,7 +217,7 @@ Protected Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p >This method is called by the <a class="el" href="classcom_1_1tw_1_1paintbots_1_1_game_manager.html">GameManager</a> at the end of the lifetime, e.g. to clean up resources. Only the <a class="el" href="classcom_1_1tw_1_1paintbots_1_1_game_manager.html">GameManager</a> can call this method. </p>
 
-<p>Reimplemented in <a class="el" href="classcom_1_1tw_1_1paintbots_1_1_player.html#ab10bfdba93239300653ba4256c239656">com.tw.paintbots.Player</a>, <a class="el" href="classcom_1_1tw_1_1paintbots_1_1_renderables_1_1_canvas.html#a0df99859f42c676814cb9716034fd95f">com.tw.paintbots.Renderables.Canvas</a>, <a class="el" href="classcom_1_1tw_1_1paintbots_1_1_renderables_1_1_multi_layer_renderable.html#a26e45897abfd8fec1f1c31831713209c">com.tw.paintbots.Renderables.MultiLayerRenderable</a>, <a class="el" href="classcom_1_1tw_1_1paintbots_1_1_renderables_1_1_simple_renderable.html#ae61985b9dbfd58ff3d6be0cbcbb73579">com.tw.paintbots.Renderables.SimpleRenderable</a>, <a class="el" href="classcom_1_1tw_1_1paintbots_1_1_renderables_1_1_texture_grid.html#a3edbe4cd1fec0910c5e82f72e4e06826">com.tw.paintbots.Renderables.TextureGrid</a>, <a class="el" href="classcom_1_1tw_1_1paintbots_1_1_renderables_1_1_u_i_bot_select.html#a7c04d2189698e37a5ada8750a699305f">com.tw.paintbots.Renderables.UIBotSelect</a>, <a class="el" href="classcom_1_1tw_1_1paintbots_1_1_renderables_1_1_u_i_player_board.html#adb24cdd08979f6b1c1b30e2bcd61a62e">com.tw.paintbots.Renderables.UIPlayerBoard</a>, and <a class="el" href="classcom_1_1tw_1_1paintbots_1_1_renderables_1_1_u_i_timer.html#adf44f04e612fcf3085c3c5ebde2eb59b">com.tw.paintbots.Renderables.UITimer</a>.</p>
+<p>Reimplemented in <a class="el" href="classcom_1_1tw_1_1paintbots_1_1_player.html#ab10bfdba93239300653ba4256c239656">com.tw.paintbots.Player</a>, <a class="el" href="classcom_1_1tw_1_1paintbots_1_1_renderables_1_1_canvas.html#a0df99859f42c676814cb9716034fd95f">com.tw.paintbots.Renderables.Canvas</a>, <a class="el" href="classcom_1_1tw_1_1paintbots_1_1_renderables_1_1_multi_layer_renderable.html#a26e45897abfd8fec1f1c31831713209c">com.tw.paintbots.Renderables.MultiLayerRenderable</a>, <a class="el" href="classcom_1_1tw_1_1paintbots_1_1_renderables_1_1_simple_renderable.html#ae61985b9dbfd58ff3d6be0cbcbb73579">com.tw.paintbots.Renderables.SimpleRenderable</a>, <a class="el" href="classcom_1_1tw_1_1paintbots_1_1_renderables_1_1_texture_grid.html#a3edbe4cd1fec0910c5e82f72e4e06826">com.tw.paintbots.Renderables.TextureGrid</a>, <a class="el" href="classcom_1_1tw_1_1paintbots_1_1_renderables_1_1_u_i_menu_item.html#a27b4b2b7c1dc9b42a59875dc66be21af">com.tw.paintbots.Renderables.UIMenuItem</a>, <a class="el" href="classcom_1_1tw_1_1paintbots_1_1_renderables_1_1_u_i_player_board.html#adb24cdd08979f6b1c1b30e2bcd61a62e">com.tw.paintbots.Renderables.UIPlayerBoard</a>, and <a class="el" href="classcom_1_1tw_1_1paintbots_1_1_renderables_1_1_u_i_timer.html#adf44f04e612fcf3085c3c5ebde2eb59b">com.tw.paintbots.Renderables.UITimer</a>.</p>
 
 </div>
 </div>
@@ -296,6 +300,34 @@ Protected Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="af83459440b9772cfd322eb7a5f2dd27a" name="af83459440b9772cfd322eb7a5f2dd27a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af83459440b9772cfd322eb7a5f2dd27a">&#9670;&nbsp;</a></span>isActive()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">boolean com.tw.paintbots.Entity.isActive </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >Get value of is_active flag. </p>
+
+<p>Reimplemented in <a class="el" href="classcom_1_1tw_1_1paintbots_1_1_renderables_1_1_start_timer.html#acb3c3339fe8fbb092341cc2d3832000f">com.tw.paintbots.Renderables.StartTimer</a>.</p>
+
+</div>
+</div>
 <a id="aeaf74a2eb6966eb4c22af6a72137a1c0" name="aeaf74a2eb6966eb4c22af6a72137a1c0"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aeaf74a2eb6966eb4c22af6a72137a1c0">&#9670;&nbsp;</a></span>removeFromBoard()</h2>
 
@@ -320,6 +352,33 @@ Protected Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 <p >Remove this entity from the board by settings its position to null, i.e. [-1, -1]. Only the <a class="el" href="classcom_1_1tw_1_1paintbots_1_1_game_manager.html">GameManager</a> can call this method. </p>
+
+</div>
+</div>
+<a id="ac9429c0db41ed3cdac8672d66ede55a9" name="ac9429c0db41ed3cdac8672d66ede55a9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac9429c0db41ed3cdac8672d66ede55a9">&#9670;&nbsp;</a></span>setActive()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void com.tw.paintbots.Entity.setActive </td>
+          <td>(</td>
+          <td class="paramtype">boolean&#160;</td>
+          <td class="paramname"><em>active</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >Set the entity in-/active. An entity is only updated, it it is active. </p>
 
 </div>
 </div>
@@ -425,7 +484,7 @@ Protected Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p >This method is called once per loop and can be used to update the state of an <a class="el" href="classcom_1_1tw_1_1paintbots_1_1_entity.html">Entity</a>. Only the <a class="el" href="classcom_1_1tw_1_1paintbots_1_1_game_manager.html">GameManager</a> can call this method. </p>
 
-<p>Reimplemented in <a class="el" href="classcom_1_1tw_1_1paintbots_1_1_player.html#ab16593d109c218b3e061cb86a769e0cc">com.tw.paintbots.Player</a>, <a class="el" href="classcom_1_1tw_1_1paintbots_1_1_renderables_1_1_canvas.html#ab7754e83dddb66353666cbfc25f93f3a">com.tw.paintbots.Renderables.Canvas</a>, <a class="el" href="classcom_1_1tw_1_1paintbots_1_1_renderables_1_1_multi_layer_renderable.html#a026146bf349df235f7bceb6a8805f39e">com.tw.paintbots.Renderables.MultiLayerRenderable</a>, <a class="el" href="classcom_1_1tw_1_1paintbots_1_1_renderables_1_1_simple_renderable.html#a6148b8b30f5d081b23b52442b788d2b4">com.tw.paintbots.Renderables.SimpleRenderable</a>, <a class="el" href="classcom_1_1tw_1_1paintbots_1_1_renderables_1_1_texture_grid.html#a6930be8aac8497686a918eb1fd9e0138">com.tw.paintbots.Renderables.TextureGrid</a>, <a class="el" href="classcom_1_1tw_1_1paintbots_1_1_renderables_1_1_u_i_bot_select.html#a3db6cb532c35cce34809c82889ab5342">com.tw.paintbots.Renderables.UIBotSelect</a>, <a class="el" href="classcom_1_1tw_1_1paintbots_1_1_renderables_1_1_u_i_player_board.html#a4e0ca7fe4a2cd188f7867b5872fa3263">com.tw.paintbots.Renderables.UIPlayerBoard</a>, <a class="el" href="classcom_1_1tw_1_1paintbots_1_1_renderables_1_1_u_i_timer.html#a2669f270389f11d84784a5a2299f564f">com.tw.paintbots.Renderables.UITimer</a>, and <a class="el" href="classcom_1_1tw_1_1paintbots_1_1_human_player.html#a2e56b84e41a560a7771eb760dc78ba55">com.tw.paintbots.HumanPlayer</a>.</p>
+<p>Reimplemented in <a class="el" href="classcom_1_1tw_1_1paintbots_1_1_player.html#ab16593d109c218b3e061cb86a769e0cc">com.tw.paintbots.Player</a>, <a class="el" href="classcom_1_1tw_1_1paintbots_1_1_renderables_1_1_canvas.html#ab7754e83dddb66353666cbfc25f93f3a">com.tw.paintbots.Renderables.Canvas</a>, <a class="el" href="classcom_1_1tw_1_1paintbots_1_1_renderables_1_1_multi_layer_renderable.html#a026146bf349df235f7bceb6a8805f39e">com.tw.paintbots.Renderables.MultiLayerRenderable</a>, <a class="el" href="classcom_1_1tw_1_1paintbots_1_1_renderables_1_1_simple_renderable.html#a6148b8b30f5d081b23b52442b788d2b4">com.tw.paintbots.Renderables.SimpleRenderable</a>, <a class="el" href="classcom_1_1tw_1_1paintbots_1_1_renderables_1_1_texture_grid.html#a6930be8aac8497686a918eb1fd9e0138">com.tw.paintbots.Renderables.TextureGrid</a>, <a class="el" href="classcom_1_1tw_1_1paintbots_1_1_renderables_1_1_u_i_menu_item.html#a82a95afa6e463e741203a5985eea2455">com.tw.paintbots.Renderables.UIMenuItem</a>, <a class="el" href="classcom_1_1tw_1_1paintbots_1_1_renderables_1_1_u_i_player_board.html#a4e0ca7fe4a2cd188f7867b5872fa3263">com.tw.paintbots.Renderables.UIPlayerBoard</a>, <a class="el" href="classcom_1_1tw_1_1paintbots_1_1_renderables_1_1_u_i_timer.html#a2669f270389f11d84784a5a2299f564f">com.tw.paintbots.Renderables.UITimer</a>, and <a class="el" href="classcom_1_1tw_1_1paintbots_1_1_human_player.html#a2e56b84e41a560a7771eb760dc78ba55">com.tw.paintbots.HumanPlayer</a>.</p>
 
 </div>
 </div>
