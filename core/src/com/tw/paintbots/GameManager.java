@@ -22,6 +22,7 @@ import com.tw.paintbots.Renderables.UITimer;
 import com.tw.paintbots.Renderables.StartTimer;
 import com.tw.paintbots.Renderables.UIPlayerBoard;
 import com.tw.paintbots.Renderables.UIMenuItem;
+import com.tw.paintbots.LevelLoader;
 import com.tw.paintbots.Items.Item;
 import com.tw.paintbots.Items.ItemArea;
 import com.tw.paintbots.Items.ItemType;
@@ -60,11 +61,12 @@ public class GameManager {
   private ArrayList<Entity> entities = new ArrayList<>();
   private GameSettings game_settings = null;
 
-  // --- Entities for the menu
+  // --- stuff for the menu
   private ArrayList<UIMenuItem> menu_item = new ArrayList<>();
   private ArrayList<String> bot_names = new ArrayList<>();
   private int menu_select = 0;
   private boolean read_menu_key = true;
+  private ArrayList<String> level_files = new ArrayList<>();
 
   // --- List of Entities needed to create other ones
   private SimpleRenderable floor = null;
@@ -100,6 +102,12 @@ public class GameManager {
    * Constructor is private due to the sigleton pattern.
    */
   private GameManager() {
+    loadBots();
+    loadLevels();
+  }
+
+  // --------------------------------------------------------------- //
+  private void loadBots() {
     // --- load some bots
     BotLoader bot_loader = new BotLoader();
     bots = bot_loader.loadBots();
@@ -109,6 +117,13 @@ public class GameManager {
     Set<String> loaded_names = bots.keySet();
     for (String name : loaded_names)
       bot_names.add(name);
+  }
+
+  // --------------------------------------------------------------- //
+  private void loadLevels() {
+    LevelLoader level_loader = new LevelLoader();
+    level_files = level_loader.loadLevelFiles();
+    level_files.add(0, "default");
   }
 
   // --------------------------------------------------------------- //
@@ -162,16 +177,9 @@ public class GameManager {
       changeMenuValue();
       read_menu_key = false;
     }
-    // --- start the game
+    // ---
     if (Gdx.input.isKeyPressed(Keys.ENTER) && menu_select == 5)
-      try {
-        game_state = GameState.STARTTIMER;
-        elapsed_time = 0.0;
-        hideMenu();
-        loadMap();
-      } catch (GameMangerException e) {
-        e.printStackTrace();
-      }
+      startGame();
   }
 
   // --------------------------------------------------------------- //
@@ -203,15 +211,16 @@ public class GameManager {
 
   // --------------------------------------------------------------- //
   private void changeMenuValue() {
-    if (menu_select > 3)
-      return;
-    changeSelectedBot();
+    if (menu_select >= 0 && menu_select <= 3)
+      changeSelectedBot();
+    if (menu_select == 4)
+      changeSelectedLevel();
   }
 
   // --------------------------------------------------------------- //
   private void changeSelectedBot() {
     UIMenuItem bot_select = menu_item.get(menu_select);
-    int bot_index = bot_select.getBotIndex(secret_key);
+    int bot_index = bot_select.getItemIndex(secret_key);
     // ---
     if (Gdx.input.isKeyPressed(Keys.LEFT))
       bot_index -= 1;
@@ -223,7 +232,57 @@ public class GameManager {
     if (bot_index >= bot_names.size())
       bot_index = 0;
     // ---
-    bot_select.setBot(bot_names.get(bot_index), bot_index, secret_key);
+    bot_select.setItem(bot_names.get(bot_index), bot_index, secret_key);
+  }
+
+  // --------------------------------------------------------------- //
+  private void changeSelectedLevel() {
+    UIMenuItem level_select = menu_item.get(menu_select);
+    int level_index = level_select.getItemIndex(secret_key);
+    // ---
+    if (Gdx.input.isKeyPressed(Keys.LEFT))
+      level_index -= 1;
+    if (Gdx.input.isKeyPressed(Keys.RIGHT))
+      level_index += 1;
+    // --- clamp to entry count
+    if (level_index < 0)
+      level_index = level_files.size() - 1;
+    if (level_index >= level_files.size())
+      level_index = 0;
+    // ---
+    level_select.setItem(level_files.get(level_index), level_index, secret_key);
+  }
+
+  // --------------------------------------------------------------- //
+  private void startGame() {
+    // --- read bot settings from menu
+    for (int i = 0; i < 4; ++i) {
+      UIMenuItem bot_select = menu_item.get(i);
+      int bot_idx = bot_select.getItemIndex(secret_key);
+      if (bot_idx == 0) {
+        game_settings.player_types[i] = PlayerType.HUMAN;
+        game_settings.bot_names[i] = "Human";
+      } else {
+        game_settings.player_types[i] = PlayerType.AI;
+        game_settings.bot_names[i] = bot_select.getItemName(secret_key);
+      }
+    }
+    // --- read level settings from menu
+    UIMenuItem level_select = menu_item.get(4);
+    String level_file = "";
+    if (level_select.getItemIndex(secret_key) != 0)
+      level_file = System.getProperty("user.dir") + "/levels/"
+          + level_select.getItemName(secret_key);
+    game_settings.level_file = level_file;
+    // ---
+    game_state = GameState.STARTTIMER;
+    elapsed_time = 0.0;
+    hideMenu();
+    try {
+      loadMap();
+    } catch (GameMangerException e) {
+      e.printStackTrace();
+    }
   }
 
   // --------------------------------------------------------------- //
@@ -381,7 +440,7 @@ public class GameManager {
       select.setRenderPosition(Array.of(pos_x, pos_y));
 
       if (i == 4)
-        select.setLabelText("default", secret_key);
+        select.setItemName("default", secret_key);
 
       addRenderable(select);
       addEntity(select);
@@ -795,8 +854,7 @@ public class GameManager {
     if (render_layers.get(20) == null)
       render_layers.put(20, new ArrayList<Renderable>());
     // ---
-    String level_file = System.getProperty("user.dir") + "/levels/level1.lvl";
-    System.out.println("level file: " + level_file);
+    String level_file = game_settings.level_file;
     List<Item> level_items = new ArrayList<>();
     Level level = new Level(level_file, secret_key);
     level.loadLevel(level_items, game_settings);
