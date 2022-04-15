@@ -957,4 +957,22 @@ public class GameManager {
     List<Renderable> items_list = render_layers.get(20);
     items_list.sort(new RenderDepthComparator());
   }
+
+  // --------------------------------------------------------------- //
+  // ============ public mathods to acces game content ============= //
+
+  // --------------------------------------------------------------- //
+  /**
+   * Access the current state of a player specified by its index. The index of
+   * the player has to be in [0,3].
+   * 
+   * @param player_idx The index of the player.
+   * @return A copy of the players GameState or null if player_index is not in
+   *         [0,3].
+   */
+  public PlayerState getPlayerState(int player_idx) {
+    if (player_idx < 0 || player_idx > 3)
+      return null;
+    return players.get(player_idx).getState();
+  }
 }
