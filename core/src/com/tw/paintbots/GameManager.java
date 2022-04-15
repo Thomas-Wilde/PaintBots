@@ -156,6 +156,9 @@ public class GameManager {
    * Dispose all entities. This method is called when the program closes to
    * clean up the memory. This method can only be called by the PaintBotsGame
    * class.
+   * 
+   * @param key The hidden GameKey which is only available to the PaintBotsGame
+   *        class.
    */
   public void destroy(GameKey key) {
     Objects.requireNonNull(key);
@@ -173,6 +176,9 @@ public class GameManager {
   * - MENU: The keyboard controls are used to select bots and levels
   * - STARTTIMER: Count down 5 seconds at the start of the game.
   * - GANE: Update all entities, especially the players/bots.
+  *
+  * @param key The hidden GameKey which is only available to the PaintBotsGame
+  *        class.  
   */
   //@formatter:on
   public void update(GameKey key) {
@@ -410,7 +416,14 @@ public class GameManager {
   }
 
   // --------------------------------------------------------------- //
-  /** Draw the Renderables of each layer. */
+  /**
+   * Draw the Renderables of each layer. This method is called afted the
+   * update() routine and it is only available to the PaintBotsGame class.
+   * 
+   * @param batch The render batch in that graphics are drawn.
+   * @param key The hidden GameKey which is only available to the PaintBotsGame
+   *        class.
+   */
   public void render(SpriteBatch batch, GameKey key) {
     Objects.requireNonNull(key);
     Set<Integer> layer_ids = render_layers.keySet();
