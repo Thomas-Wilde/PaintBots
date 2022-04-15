@@ -477,24 +477,6 @@ public class GameManager {
   }
 
   // --------------------------------------------------------------- //
-  public void loadMapHeadless(GameSettings settings, GameKey key)
-      throws GameMangerException {
-    Objects.requireNonNull(key);
-    game_settings = settings;
-    int width = game_settings.board_dimensions[0];
-    int height = game_settings.board_dimensions[1];
-    // ---
-    Entity.setBoardDimensions(Array.of(width, height), secret_key);
-    sanityCheckPlayerSettings(); // throws an exception if something is wrong
-    createPlayers();
-    // ---
-    createCanvas();
-    createBoard();
-    // ---
-    loadLevelContent();
-  }
-
-  // --------------------------------------------------------------- //
   /**
    * Check the game settings for correctness. If something is wrong, throw an
    * exceptions. Things that may be wrong are: - the number of players is not in
