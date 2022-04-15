@@ -782,6 +782,7 @@ public class GameManager {
     Vector2 old_pos = player_states.get(player_idx).old_pos;
     Player player = players.get(player_idx);
     Vector2 move_dir = player.getDirection();
+    move_dir.setLength(1.0f);
     // ---
     Vector2 new_pos = old_pos.cpy();
     new_pos.add(move_dir.scl(200.0f * (float) delta_time)); // scale
