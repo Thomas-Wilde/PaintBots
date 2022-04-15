@@ -80,9 +80,10 @@ Inheritance diagram for com.tw.paintbots.Player:</div>
  <div class="center">
   <img src="classcom_1_1tw_1_1paintbots_1_1_player.png" usemap="#com.tw.paintbots.Player_map" alt=""/>
   <map id="com.tw.paintbots.Player_map" name="com.tw.paintbots.Player_map">
-<area href="classcom_1_1tw_1_1paintbots_1_1_entity.html" alt="com.tw.paintbots.Entity" shape="rect" coords="97,0,282,24"/>
+<area href="classcom_1_1tw_1_1paintbots_1_1_entity.html" alt="com.tw.paintbots.Entity" shape="rect" coords="195,0,380,24"/>
 <area href="classcom_1_1tw_1_1paintbots_1_1_a_i_player.html" alt="com.tw.paintbots.AIPlayer" shape="rect" coords="0,112,185,136"/>
 <area href="classcom_1_1tw_1_1paintbots_1_1_human_player.html" alt="com.tw.paintbots.HumanPlayer" shape="rect" coords="195,112,380,136"/>
+<area href="classcom_1_1tw_1_1paintbots_1_1_none_player.html" alt="com.tw.paintbots.NonePlayer" shape="rect" coords="390,112,575,136"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -331,7 +332,7 @@ Additional Inherited Members</h2></td></tr>
 <p >Get the current direction, in which the player will move in the next update-step. The direction vector needs to be normalized, i.e., it has a Euclidean length of 1.0. If it has not length 1.0, it will be normalized anyway but this maybe modify the intented direction.</p>
 <dl class="section return"><dt>Returns</dt><dd>A copy to the (normalized) direction vector. </dd></dl>
 
-<p>Reimplemented in <a class="el" href="classcom_1_1tw_1_1paintbots_1_1_a_i_player.html#a2281ec59a8c81fd39d6bbb7fc79f2b66">com.tw.paintbots.AIPlayer</a>, and <a class="el" href="classcom_1_1tw_1_1paintbots_1_1_human_player.html#ae1685daa66a73f8326fa70a284b2d69e">com.tw.paintbots.HumanPlayer</a>.</p>
+<p>Reimplemented in <a class="el" href="classcom_1_1tw_1_1paintbots_1_1_a_i_player.html#a2281ec59a8c81fd39d6bbb7fc79f2b66">com.tw.paintbots.AIPlayer</a>, <a class="el" href="classcom_1_1tw_1_1paintbots_1_1_human_player.html#ae1685daa66a73f8326fa70a284b2d69e">com.tw.paintbots.HumanPlayer</a>, and <a class="el" href="classcom_1_1tw_1_1paintbots_1_1_none_player.html#a90822e75bf4d3b6d91b8faa34705e72d">com.tw.paintbots.NonePlayer</a>.</p>
 
 </div>
 </div>
@@ -565,9 +566,9 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p >Currently two types are supported: HUMAN and AI. A HUMAN player is controlled by the keyboard. The AI is controlled by your program. </p>
+<p >Currently three types are supported: HUMAN, NONE and AI. A HUMAN player is controlled by the keyboard. NONE is the type for inactivated players - this one is created but does nothing and is also not visible. The AI is controlled by your program. </p>
 
-<p>Reimplemented in <a class="el" href="classcom_1_1tw_1_1paintbots_1_1_a_i_player.html#a98d3d59dccd5ed2033257cc206af8ce6">com.tw.paintbots.AIPlayer</a>, and <a class="el" href="classcom_1_1tw_1_1paintbots_1_1_human_player.html#a37e91cf6806f3729def7653b9ef16f0f">com.tw.paintbots.HumanPlayer</a>.</p>
+<p>Reimplemented in <a class="el" href="classcom_1_1tw_1_1paintbots_1_1_a_i_player.html#a98d3d59dccd5ed2033257cc206af8ce6">com.tw.paintbots.AIPlayer</a>, <a class="el" href="classcom_1_1tw_1_1paintbots_1_1_human_player.html#a37e91cf6806f3729def7653b9ef16f0f">com.tw.paintbots.HumanPlayer</a>, and <a class="el" href="classcom_1_1tw_1_1paintbots_1_1_none_player.html#a0d190fffd8cfb5a3389be5cc50c377c0">com.tw.paintbots.NonePlayer</a>.</p>
 
 </div>
 </div>
