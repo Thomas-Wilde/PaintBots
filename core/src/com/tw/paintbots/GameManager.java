@@ -12,6 +12,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+
 import com.tw.paintbots.PaintBotsGame.GameKey;
 import com.tw.paintbots.Renderables.Canvas;
 import com.tw.paintbots.Renderables.RenderDepthComparator;
@@ -26,6 +27,7 @@ import com.tw.paintbots.LevelLoader;
 import com.tw.paintbots.Items.Item;
 import com.tw.paintbots.Items.ItemArea;
 import com.tw.paintbots.Items.ItemType;
+import com.tw.paintbots.NonePlayer;
 
 /**
  * The GameManager is the core class of the game. It creates all Entities and
@@ -112,11 +114,15 @@ public class GameManager {
     BotLoader bot_loader = new BotLoader();
     bots = bot_loader.loadBots();
     // ---
-    bots.put("Human", HumanPlayer.class);
+    bot_names.add("Human");
+    bot_names.add("---");
     // ---
     Set<String> loaded_names = bots.keySet();
     for (String name : loaded_names)
       bot_names.add(name);
+    // ---
+    bots.put("Human", HumanPlayer.class);
+    bots.put("---", null);
   }
 
   // --------------------------------------------------------------- //
@@ -262,6 +268,9 @@ public class GameManager {
       if (bot_idx == 0) {
         game_settings.player_types[i] = PlayerType.HUMAN;
         game_settings.bot_names[i] = "Human";
+      } else if (bot_idx == 1) {
+        game_settings.player_types[i] = PlayerType.NONE;
+        game_settings.bot_names[i] = "---";
       } else {
         game_settings.player_types[i] = PlayerType.AI;
         game_settings.bot_names[i] = bot_select.getItemName(secret_key);
@@ -309,7 +318,8 @@ public class GameManager {
     preUpdate();
     // --- update all entities
     for (Entity entity : entities)
-      entity.update(secret_key);
+      if (entity.isActive())
+        entity.update(secret_key);
     // ---
     moveAllPlayers();
     if (timer.getTime() > 0) {
@@ -322,8 +332,11 @@ public class GameManager {
 
   // --------------------------------------------------------------- //
   private void preUpdate() {
-    for (int idx = 0; idx < players.size(); ++idx)
+    for (int idx = 0; idx < players.size(); ++idx) {
+      if (players.get(idx).getType() == PlayerType.NONE)
+        continue;
       savePlayerState(idx);
+    }
   }
 
   // --------------------------------------------------------------- //
@@ -581,6 +594,11 @@ public class GameManager {
         // --- load human player
         if (game_settings.player_types[i] == PlayerType.HUMAN)
           player = new HumanPlayer("Player" + i);
+
+        if (game_settings.player_types[i] == PlayerType.NONE) {
+          player = new NonePlayer("Player" + i);
+          player.setActive(false);
+        }
         // ---
         initPlayer(player);
         addEntity(player);
@@ -619,6 +637,8 @@ public class GameManager {
   // --------------------------------------------------------------- //
   private void initPlayerRenderables() {
     for (Player player : players) {
+      if (player.getType() == PlayerType.NONE)
+        continue;
       player.initRenderables();
       player.setAnker(floor, secret_key);
       player_layer.add(player.getAnimation());
@@ -686,8 +706,11 @@ public class GameManager {
   // --------------------------------------------------------------- //
   /** Calls 'movePlayer(int idx)' for each player */
   private void moveAllPlayers() {
-    for (int player_idx = 0; player_idx < players.size(); ++player_idx)
+    for (int player_idx = 0; player_idx < players.size(); ++player_idx) {
+      if (players.get(player_idx).getType() == PlayerType.NONE)
+        continue;
       movePlayer(player_idx);
+    }
   }
 
   // --------------------------------------------------------------- //
@@ -712,8 +735,11 @@ public class GameManager {
 
   // --------------------------------------------------------------- //
   private void interactWithBoard() {
-    for (int player_idx = 0; player_idx < players.size(); ++player_idx)
+    for (int player_idx = 0; player_idx < players.size(); ++player_idx) {
+      if (players.get(player_idx).getType() == PlayerType.NONE)
+        continue;
       interactWithBoard(player_idx);
+    }
   }
 
   // --------------------------------------------------------------- //
@@ -816,6 +842,8 @@ public class GameManager {
   private void paintOnCanvas() {
     for (int idx = 0; idx < players.size(); ++idx) {
       Player player = players.get(idx);
+      if (player.getType() == PlayerType.NONE)
+        continue;
       if ((player.getPaintAmount() <= 0.0))
         continue;
       Vector2 position = player_states.get(idx).new_pos;
