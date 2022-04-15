@@ -698,14 +698,14 @@ public class GameManager {
     for (Player player : players) {
       if (player.getType() == PlayerType.NONE)
         continue;
-      player.initRenderables();
+      player.initRenderables(secret_key);
       player.setAnker(floor, secret_key);
-      player_layer.add(player.getAnimation());
-      addRenderable(player.getIndicator());
+      player_layer.add(player.getAnimation(secret_key));
+      addRenderable(player.getIndicator(secret_key));
       createPlayerUI(player);
       // --- place renderable at correct location
       Vector2 pos = player.getPosition();
-      player.getAnimation()
+      player.getAnimation(secret_key)
           .setRenderPosition(Array.of((int) pos.x, (int) pos.y));
     }
   }
