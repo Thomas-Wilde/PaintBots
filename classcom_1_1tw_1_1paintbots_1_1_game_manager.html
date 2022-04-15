@@ -88,17 +88,14 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a579875811cdabbbf4d3a9412e6e7ac82"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acd192ef283ff07fe45148d2caf0f0c0c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcom_1_1tw_1_1paintbots_1_1_game_manager.html#acd192ef283ff07fe45148d2caf0f0c0c">destroy</a> (GameKey key)</td></tr>
 <tr class="separator:acd192ef283ff07fe45148d2caf0f0c0c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a31feb31900c60a9dfa8f03151e17a48b"><td class="memItemLeft" align="right" valign="top"><a id="a31feb31900c60a9dfa8f03151e17a48b" name="a31feb31900c60a9dfa8f03151e17a48b"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>update</b> (GameKey key)</td></tr>
+<tr class="memitem:a31feb31900c60a9dfa8f03151e17a48b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcom_1_1tw_1_1paintbots_1_1_game_manager.html#a31feb31900c60a9dfa8f03151e17a48b">update</a> (GameKey key)</td></tr>
 <tr class="separator:a31feb31900c60a9dfa8f03151e17a48b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa39a61fec292c5a9c791976072a65b43"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcom_1_1tw_1_1paintbots_1_1_game_manager.html#aa39a61fec292c5a9c791976072a65b43">render</a> (SpriteBatch batch, GameKey key)</td></tr>
 <tr class="separator:aa39a61fec292c5a9c791976072a65b43"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a671dad82d71b5e7371e0072a89be2631"><td class="memItemLeft" align="right" valign="top"><a id="a671dad82d71b5e7371e0072a89be2631" name="a671dad82d71b5e7371e0072a89be2631"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>loadMenu</b> (<a class="el" href="classcom_1_1tw_1_1paintbots_1_1_game_settings.html">GameSettings</a> settings, GameKey key)</td></tr>
+<tr class="memitem:a671dad82d71b5e7371e0072a89be2631"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcom_1_1tw_1_1paintbots_1_1_game_manager.html#a671dad82d71b5e7371e0072a89be2631">loadMenu</a> (<a class="el" href="classcom_1_1tw_1_1paintbots_1_1_game_settings.html">GameSettings</a> settings, GameKey key)</td></tr>
 <tr class="separator:a671dad82d71b5e7371e0072a89be2631"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a940906f81d9b278af4bdf42d8bafef62"><td class="memItemLeft" align="right" valign="top"><a id="a940906f81d9b278af4bdf42d8bafef62" name="a940906f81d9b278af4bdf42d8bafef62"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>loadMapHeadless</b> (<a class="el" href="classcom_1_1tw_1_1paintbots_1_1_game_settings.html">GameSettings</a> settings, GameKey key)  throws GameMangerException </td></tr>
-<tr class="separator:a940906f81d9b278af4bdf42d8bafef62"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7df67eed743cd35dd95f003840e16162"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcom_1_1tw_1_1paintbots_1_1_player_state.html">PlayerState</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcom_1_1tw_1_1paintbots_1_1_game_manager.html#a7df67eed743cd35dd95f003840e16162">getPlayerState</a> (int player_idx)</td></tr>
+<tr class="separator:a7df67eed743cd35dd95f003840e16162"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
@@ -131,7 +128,13 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p >Dispose all entities. </p>
+<p >Dispose all entities. This method is called when the program closes to clean up the memory. This method can only be called by the <a class="el" href="classcom_1_1tw_1_1paintbots_1_1_paint_bots_game.html">PaintBotsGame</a> class.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">key</td><td>The hidden GameKey which is only available to the <a class="el" href="classcom_1_1tw_1_1paintbots_1_1_paint_bots_game.html">PaintBotsGame</a> class. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -183,7 +186,7 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p >Get the between the current and the last update step. </p>
+<p >Get the time between the current and the last update step. </p>
 
 </div>
 </div>
@@ -210,6 +213,84 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 <p >Get the time that passed since the start of the round in seconds. </p>
+
+</div>
+</div>
+<a id="a7df67eed743cd35dd95f003840e16162" name="a7df67eed743cd35dd95f003840e16162"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7df67eed743cd35dd95f003840e16162">&#9670;&nbsp;</a></span>getPlayerState()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classcom_1_1tw_1_1paintbots_1_1_player_state.html">PlayerState</a> com.tw.paintbots.GameManager.getPlayerState </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>player_idx</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >Access the current state of a player specified by its index. The index of the player has to be in [0,3].</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">player_idx</td><td>The index of the player. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A copy of the players GameState or null if player_index is not in [0,3]. </dd></dl>
+
+</div>
+</div>
+<a id="a671dad82d71b5e7371e0072a89be2631" name="a671dad82d71b5e7371e0072a89be2631"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a671dad82d71b5e7371e0072a89be2631">&#9670;&nbsp;</a></span>loadMenu()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void com.tw.paintbots.GameManager.loadMenu </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classcom_1_1tw_1_1paintbots_1_1_game_settings.html">GameSettings</a>&#160;</td>
+          <td class="paramname"><em>settings</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">GameKey&#160;</td>
+          <td class="paramname"><em>key</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >This method is the entry point from the main class into the actual game. This method can only be called the <a class="el" href="classcom_1_1tw_1_1paintbots_1_1_paint_bots_game.html">PaintBotsGame</a> class</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">settings</td><td>The initial <a class="el" href="classcom_1_1tw_1_1paintbots_1_1_game_settings.html">GameSettings</a> that can be changed in the menu </td></tr>
+    <tr><td class="paramname">key</td><td>The GameKey that is only available to the <a class="el" href="classcom_1_1tw_1_1paintbots_1_1_paint_bots_game.html">PaintBotsGame</a> class </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -246,7 +327,52 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p >Draw the Renderables of each layer. </p>
+<p >Draw the Renderables of each layer. This method is called afted the <a class="el" href="classcom_1_1tw_1_1paintbots_1_1_game_manager.html#a31feb31900c60a9dfa8f03151e17a48b">update()</a> routine and it is only available to the <a class="el" href="classcom_1_1tw_1_1paintbots_1_1_paint_bots_game.html">PaintBotsGame</a> class.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">batch</td><td>The render batch in that graphics are drawn. </td></tr>
+    <tr><td class="paramname">key</td><td>The hidden GameKey which is only available to the <a class="el" href="classcom_1_1tw_1_1paintbots_1_1_paint_bots_game.html">PaintBotsGame</a> class. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a31feb31900c60a9dfa8f03151e17a48b" name="a31feb31900c60a9dfa8f03151e17a48b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a31feb31900c60a9dfa8f03151e17a48b">&#9670;&nbsp;</a></span>update()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void com.tw.paintbots.GameManager.update </td>
+          <td>(</td>
+          <td class="paramtype">GameKey&#160;</td>
+          <td class="paramname"><em>key</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >The update routine that is called in the loop. This method can only be called by the <a class="el" href="classcom_1_1tw_1_1paintbots_1_1_paint_bots_game.html">PaintBotsGame</a> class. Depending on the GameState different things happen:*</p><ul>
+<li>MENU: The keyboard controls are used to select bots and levels</li>
+<li>STARTTIMER: Count down 5 seconds at the start of the game.</li>
+<li>GANE: Update all entities, especially the players/bots.</li>
+</ul>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">key</td><td>The hidden GameKey which is only available to the <a class="el" href="classcom_1_1tw_1_1paintbots_1_1_paint_bots_game.html">PaintBotsGame</a> class. <br  />
+ </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
