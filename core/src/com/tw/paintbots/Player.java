@@ -86,10 +86,20 @@ public abstract class Player extends Entity {
   // --------------------------------------------------------------- //
   public PlayerState getState() {
     PlayerState state = new PlayerState();
-    state.old_pos = this.getPosition();
+    state.player_id = this.player_id;
+    state.paint_color = this.getPaintColor();
     state.type = this.getType();
-    state.dir = this.getDirection();
-    state.dir.setLength(1.0f);
+
+    state.old_pos = this.getPosition();
+    state.new_pos = this.getPosition();
+    state.dir = this.getDirection().cpy();
+
+    state.score = this.getScore();
+    state.paint_radius = this.getPaintRadius();
+    state.paint_amount = this.getPaintAmount();
+    state.max_paint_amount = this.getMaximumPaintAmount();
+    state.refill_speed = this.getRefillSpeed();
+
     return state;
   }
 
