@@ -30,10 +30,22 @@ public abstract class Player extends Entity {
 
   // ======================== Getter/Setter ======================== //
   //@formatter:off
-  /** Get the Renderable that draws the character. */
-  public PlayerAnimation getAnimation() { return animation; }
-  /** Get the Renderable that draws the direction indicator around the character. */
-  public DirectionIndicator getIndicator() { return dir_indicator; }
+  /** Get the Renderable that draws the character. 
+   * This method is only available to the GameManager.
+   * @param key The SecretKey owned by the GameManager.
+   */
+  public PlayerAnimation getAnimation(SecretKey key) {
+    Objects.requireNonNull(key); 
+    return animation; 
+  }
+  /** Get the Renderable that draws the direction indicator around the character. 
+   * This method is only available to the GameManager.
+   * @param key The SecretKey owned by the GameManager.
+  */
+  public DirectionIndicator getIndicator(SecretKey key) {
+    Objects.requireNonNull(key); 
+    return dir_indicator; 
+  }
   /** Get the ID of the player. It is an element in [0,3], i.e. we allow at most
    *  4 players. The ID is set at the beginning of the game and it is immutable. */
   public int getPlayerID() { return player_id; }
@@ -63,7 +75,14 @@ public abstract class Player extends Entity {
   }
 
   // --------------------------------------------------------------- //
-  public void initRenderables() {
+  /**
+   * Load and initialize the animation and the direction indicator. This method
+   * is only availbale to the GameManager.
+   * 
+   * @param key The SecretKey that is only available to the GameManager.
+   */
+  public void initRenderables(SecretKey key) {
+    Objects.requireNonNull(key);
     loadAnimation();
     dir_indicator = new DirectionIndicator();
     dir_indicator.setAnker(animation);
