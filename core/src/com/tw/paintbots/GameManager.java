@@ -38,17 +38,28 @@ import com.tw.paintbots.NonePlayer;
 public class GameManager {
   // ======================= SecretKey class ======================= //
   //@formatter:off
-  /** The GameManager mimics a friend class behavior, i.e. every method that
+  /** 
+   * The GameManager mimics a friend class behavior, i.e. every method that
    * should be accessed only by the GameManager asks for the SecretKey.
-   * Only the GameManager can deliver this SecretKey */
+   * Only the GameManager can deliver this SecretKey 
+   */
   public static final class SecretKey { private SecretKey() {} }
   private static final SecretKey secret_key = new SecretKey();
   //@formatter:on
 
   // ======================== GameState enum ======================= //
+  /**
+   * The GameState effectively controls what is shown an what happens in the
+   * update() routine.
+   */
+  //@formatter:off
   private enum GameState {
-    MENU, STARTTIMER, GAME, RESULT
+    MENU,        ///< Show the menu for bot and level selection.
+    STARTTIMER,  ///< Show the countdown at the start of the game.
+    GAME,        ///< The normal state during the game.
+    RESULT       ///< Show the result at the end of the game.
   }
+  //@formatter:on
 
   // ====================== GameManager class ====================== //
   // GameManager uses singleton pattern
@@ -84,7 +95,7 @@ public class GameManager {
   //@formatter:off
   /** Get the time that passed since the start of the round in seconds. */
   public double getElapsedTime() { return elapsed_time; }
-  /** Get the between the current and the last update step. */
+  /** Get the time between the current and the last update step. */
   public double getDeltaTime() { return delta_time; }
   //@formatter:on
 
@@ -109,6 +120,11 @@ public class GameManager {
   }
 
   // --------------------------------------------------------------- //
+  /**
+   * Read the bots from the bots directory and collect them in a HashMap (name
+   * and class) and an ArrayList (name). Furthermore dummy bots for human
+   * controlled and inactive players are added.
+   */
   private void loadBots() {
     // --- load some bots
     BotLoader bot_loader = new BotLoader();
@@ -126,6 +142,9 @@ public class GameManager {
   }
 
   // --------------------------------------------------------------- //
+  /**
+   * Collect the level files from the levels directory in an ArrayList.
+   */
   private void loadLevels() {
     LevelLoader level_loader = new LevelLoader();
     level_files = level_loader.loadLevelFiles();
@@ -133,7 +152,11 @@ public class GameManager {
   }
 
   // --------------------------------------------------------------- //
-  /** Dispose all entities. */
+  /**
+   * Dispose all entities. This method is called when the program closes to
+   * clean up the memory. This method can only be called by the PaintBotsGame
+   * class.
+   */
   public void destroy(GameKey key) {
     Objects.requireNonNull(key);
     for (Entity entity : entities)
@@ -142,6 +165,16 @@ public class GameManager {
   }
 
   // --------------------------------------------------------------- //
+ //@formatter:off
+ /**
+  * The update routine that is called in the loop. This method can only be
+  * called by the PaintBotsGame class. Depending on the GameState different
+  * things happen:* 
+  * - MENU: The keyboard controls are used to select bots and levels
+  * - STARTTIMER: Count down 5 seconds at the start of the game.
+  * - GANE: Update all entities, especially the players/bots.
+  */
+  //@formatter:on
   public void update(GameKey key) {
     Objects.requireNonNull(key);
     // delta_time = Gdx.graphics.getDeltaTime();
@@ -169,6 +202,7 @@ public class GameManager {
   }
 
   // --------------------------------------------------------------- //
+  /** Read the keyboard input to control the main menu. */
   private void updateMenu() {
     if (ignoreMenuInteraction())
       return;
@@ -189,6 +223,10 @@ public class GameManager {
   }
 
   // --------------------------------------------------------------- //
+  /**
+   * The interaction with the menu needs discrete key presses, i.e. the key has
+   * to be released.
+   */
   private boolean ignoreMenuInteraction() {
     // --- user must release keys after each press
     if (!Gdx.input.isKeyPressed(Keys.UP) && !Gdx.input.isKeyPressed(Keys.DOWN)
@@ -199,6 +237,7 @@ public class GameManager {
   }
 
   // --------------------------------------------------------------- //
+  /** With up/down cursors the focus for the menu entry can be set. */
   private void changeMenuFocus() {
     int old_menu_select = menu_select;
     if (Gdx.input.isKeyPressed(Keys.UP))
@@ -216,6 +255,7 @@ public class GameManager {
   }
 
   // --------------------------------------------------------------- //
+  /** Depending on the menu entry bots or levels can be swutched. */
   private void changeMenuValue() {
     if (menu_select >= 0 && menu_select <= 3)
       changeSelectedBot();
@@ -224,6 +264,10 @@ public class GameManager {
   }
 
   // --------------------------------------------------------------- //
+  /**
+   * With left/right cursor the selected bot at the current menu entry can be
+   * changed.
+   */
   private void changeSelectedBot() {
     UIMenuItem bot_select = menu_item.get(menu_select);
     int bot_index = bot_select.getItemIndex(secret_key);
@@ -242,6 +286,10 @@ public class GameManager {
   }
 
   // --------------------------------------------------------------- //
+  /**
+   * With left/right cursor the selected level at the level menu entry can be
+   * changed.
+   */
   private void changeSelectedLevel() {
     UIMenuItem level_select = menu_item.get(menu_select);
     int level_index = level_select.getItemIndex(secret_key);
@@ -260,6 +308,10 @@ public class GameManager {
   }
 
   // --------------------------------------------------------------- //
+  /**
+   * Read the selection from the main menu, deactivate the main menu and load
+   * the map.
+   */
   private void startGame() {
     // --- read bot settings from menu
     for (int i = 0; i < 4; ++i) {
@@ -295,6 +347,7 @@ public class GameManager {
   }
 
   // --------------------------------------------------------------- //
+  /** Deactivate and hide the main menu. */
   private void hideMenu() {
     for (UIMenuItem item : menu_item) {
       item.setActive(false);
@@ -303,6 +356,11 @@ public class GameManager {
   }
 
   // --------------------------------------------------------------- //
+  /**
+   * Update the StartTimer that is shown at the start of the game. The
+   * StartTimer gets the elapsed time. If the elapsed time reaches the countdown
+   * the timer deactivates itself. If so the GameState is changed to 'GAME'.
+   */
   private void updateStartTime() {
     start_timer.setElapsed((float) elapsed_time);
     // ---
@@ -314,6 +372,18 @@ public class GameManager {
   }
 
   // --------------------------------------------------------------- //
+ //@formatter:off
+ /**
+  * This method effectively runs the game and is called in each update loop.
+  * The following things happen:
+  * - save the player states
+  * - update all active entities
+  * - move all players
+  * - paint on the canvas
+  * - adjust the score
+  * - let the players interact with the board
+  */
+  //@formatter:on
   private void updateGame() {
     preUpdate();
     // --- update all entities
@@ -430,6 +500,13 @@ public class GameManager {
   }
 
   // --------------------------------------------------------------- //
+  /**
+   * This method is the entry point from the main class into the actual game.
+   * This method can only be called the PaintBotsGame class
+   * 
+   * @param settings The initial GameSettings that can be changed in the menu
+   * @param key The GameKey that is only available to the PaintBotsGame class
+   */
   public void loadMenu(GameSettings settings, GameKey key) {
     Objects.requireNonNull(key);
     game_settings = settings;
