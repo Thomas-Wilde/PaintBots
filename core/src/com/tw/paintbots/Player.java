@@ -214,8 +214,10 @@ public abstract class Player extends Entity {
 
   // ====================== abstract methods ====================== //
   /**
-   * Currently two types are supported: HUMAN and AI. A HUMAN player is
-   * controlled by the keyboard. The AI is controlled by your program.
+   * Currently three types are supported: HUMAN, NONE and AI. A HUMAN player is
+   * controlled by the keyboard. NONE is the type for inactivated players - this
+   * one is created but does nothing and is also not visible. The AI is
+   * controlled by your program.
    */
   public abstract PlayerType getType();
 
