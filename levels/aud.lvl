@@ -34,6 +34,7 @@
 # TS - tree small
 # TM - tree medium
 # TL - tree large
+# BSH - barrel stack horizontal
 #
 # ---
 #
@@ -90,3 +91,5 @@ TS,800,600,0.25,0.25
 TS,850,450,0.25,0.25
 TS,850,500,0.25,0.25
 TS,850,550,0.25,0.25
+#
+BSH,450,300,0.40,0.40

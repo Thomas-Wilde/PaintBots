@@ -38,11 +38,14 @@ public class Level {
     item_dict.put("RP", new ItemProperties("RP", "RefillPurple", "refill_purple.png", "refill_purple_area.png", 200));
 
     item_dict.put("PB", new ItemProperties("PB", "PaintBooth", "paint_booth.png", "paint_booth_area.png", 120));
+
     item_dict.put("FH", new ItemProperties("FH", "FenceH", "fence_h.png", "fence_h_area.png", 200));
     item_dict.put("FV", new ItemProperties("FV", "FenceV", "fence_v.png", "fence_v_area.png", 100));
     item_dict.put("TS", new ItemProperties("TS", "TreeS",  "tree_s.png", "tree_s_area.png", 150));
     item_dict.put("TM", new ItemProperties("TM", "TreeM",  "tree_m.png", "tree_m_area.png", 150));
     item_dict.put("TL", new ItemProperties("TL", "TreeL",  "tree_l.png", "tree_l_area.png", 150));
+
+    item_dict.put("BSH", new ItemProperties("BSH", "BarrelStack",  "barrel_stack_h.png", "barrel_stack_h_area.png", 100));
     //@formatter:on
   }
 
