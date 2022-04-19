@@ -89,9 +89,8 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:add60f4b51dfa022c9f62c146f73ad8f5"><td class="memItemLeft" align="right" valign="top"><a id="add60f4b51dfa022c9f62c146f73ad8f5" name="add60f4b51dfa022c9f62c146f73ad8f5"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>Canvas</b> (int width, int height)</td></tr>
 <tr class="separator:add60f4b51dfa022c9f62c146f73ad8f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5c757d62375a2bd427938a103b668acd"><td class="memItemLeft" align="right" valign="top"><a id="a5c757d62375a2bd427938a103b668acd" name="a5c757d62375a2bd427938a103b668acd"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>initCanvasRenderables</b> ()</td></tr>
-<tr class="separator:a5c757d62375a2bd427938a103b668acd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a43a21913f91670be628abf8220586a3c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcom_1_1tw_1_1paintbots_1_1_renderables_1_1_canvas.html#a43a21913f91670be628abf8220586a3c">initCanvasRenderables</a> (SecretKey key)</td></tr>
+<tr class="separator:a43a21913f91670be628abf8220586a3c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9d9e3b8ac6e40e7f26985844c70150a8"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcom_1_1tw_1_1paintbots_1_1_renderables_1_1_canvas.html#a9d9e3b8ac6e40e7f26985844c70150a8">paint</a> (Vector2 position, <a class="el" href="enumcom_1_1tw_1_1paintbots_1_1_paint_color.html">PaintColor</a> color, int radius, <a class="el" href="classcom_1_1tw_1_1paintbots_1_1_board.html">Board</a> board, SecretKey key)</td></tr>
 <tr class="separator:a9d9e3b8ac6e40e7f26985844c70150a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7aa651ed91089352ccfaaa493bcfac93"><td class="memItemLeft" align="right" valign="top"><a id="a7aa651ed91089352ccfaaa493bcfac93" name="a7aa651ed91089352ccfaaa493bcfac93"></a>
@@ -288,6 +287,39 @@ int[]&#160;</td><td class="memItemRight" valign="bottom"><b>resolution</b> = nul
 
 </div>
 </div>
+<a id="a43a21913f91670be628abf8220586a3c" name="a43a21913f91670be628abf8220586a3c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a43a21913f91670be628abf8220586a3c">&#9670;&nbsp;</a></span>initCanvasRenderables()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void com.tw.paintbots.Renderables.Canvas.initCanvasRenderables </td>
+          <td>(</td>
+          <td class="paramtype">SecretKey&#160;</td>
+          <td class="paramname"><em>key</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >The canvas also refers to a texture that shows which location contains which color. Thie texture is initialized in this method. This method is only available to the <a class="el" href="classcom_1_1tw_1_1paintbots_1_1_game_manager.html">GameManager</a>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">key</td><td>SecretKey only available to the <a class="el" href="classcom_1_1tw_1_1paintbots_1_1_game_manager.html">GameManager</a> </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="aad3d4afdfcfba1fd0b8d2401cdc1cd62" name="aad3d4afdfcfba1fd0b8d2401cdc1cd62"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aad3d4afdfcfba1fd0b8d2401cdc1cd62">&#9670;&nbsp;</a></span>initResolution()</h2>
 
@@ -393,7 +425,17 @@ int[]&#160;</td><td class="memItemRight" valign="bottom"><b>resolution</b> = nul
   </tr>
 </table>
 </div><div class="memdoc">
-<p >Paint the canvas at the given position, if it is possible to paint there.</p>
+<p >Paint the canvas at the given position, with the given color, if it is possible to paint there. The paint is applied in circles. This method is only available to the <a class="el" href="classcom_1_1tw_1_1paintbots_1_1_game_manager.html">GameManager</a>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">position</td><td>The coordinates of the location that you want to paint. </td></tr>
+    <tr><td class="paramname">color</td><td>The color used for the coloring process. </td></tr>
+    <tr><td class="paramname">radius</td><td>The radius of the colored circle in pixels/cells. </td></tr>
+    <tr><td class="paramname">board</td><td>The board, to check if the location is paintable. </td></tr>
+    <tr><td class="paramname">key</td><td>SecretKey only available to the <a class="el" href="classcom_1_1tw_1_1paintbots_1_1_game_manager.html">GameManager</a></td></tr>
+  </table>
+  </dd>
+</dl>
 <dl class="section return"><dt>Returns</dt><dd>The number of pixels that were painted. This number corresponds to the amount of paint needed for the coloring. </dd></dl>
 
 </div>
