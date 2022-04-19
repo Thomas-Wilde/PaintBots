@@ -16,7 +16,11 @@ import com.tw.paintbots.Board;
 
 // =============================================================== //
 /**
- * Canvas represents the area that gets painted.
+ * The Canvas represents the area that gets painted by the players. It has the
+ * same size as the board. The paint process is performed in circles with a
+ * given radius. The Canvas holds a Pixmap that is used for the painting. The
+ * Pixmap gets is send to a texture that is drawn to the screen. The canvas also
+ * counts how many pixels/cells are covered with each color.
  */
 // =============================================================== //
 public class Canvas extends Renderable {
@@ -80,9 +84,8 @@ public class Canvas extends Renderable {
    * @param radius The radius of the colored circle in pixels/cells.
    * @param board The board, to check if the location is paintable.
    * @param key SecretKey only available to the GameManager
-   *
-   * @return The number of pixels that were painted. This number corresponds
-   *         to the amount of paint needed for the coloring.
+   * @return The number of pixels that were painted. This number corresponds to
+   *         the amount of paint needed for the coloring.
    */
   public int paint(Vector2 position, PaintColor color, int radius, Board board,
       SecretKey key) {
@@ -158,12 +161,21 @@ public class Canvas extends Renderable {
   }
 
   // --------------------------------------------------------------- //
-  public void sendPixmapToTexture() {
+  /**
+   * The players draw into an internal pixmap. This methods converts the Pixmap
+   * to a texture. This method is only available to the GameManager.
+   *
+   * @param key SecretKey only available to the GameManager
+   */
+  public void sendPixmapToTexture(SecretKey key) {
     texture.draw(pixmap, 0, 0);
   }
 
   // --------------------------------------------------------------- //
-  /** @return An array with the areas/pixels each player has painted. */
+  /**
+   * @return A copy of an array with the number of cells/pixels each player has
+   *         painted.
+   */
   public long[] getPaintCount() {
     return paint_count.clone();
   }

@@ -98,10 +98,10 @@ public class Board {
 
   // --------------------------------------------------------------- //
   /**
-   * Set the interaction type of a specific location at the game board. The
-   * type defines which interactions can be performed at this location, e.g.
-   * refill paint, move across, paint the location. This method is only
-   * available to the GameManager.
+   * Set the interaction type of a specific location at the game board. The type
+   * defines which interactions can be performed at this location, e.g. refill
+   * paint, move across, paint the location. This method is only available to
+   * the GameManager.
    *
    * @param x coordinate of the location
    * @param y coordinate of the location
