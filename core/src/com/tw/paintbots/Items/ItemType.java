@@ -1,10 +1,25 @@
 package com.tw.paintbots.Items;
 
+// =============================================================== //
+/**
+ * The ItemType defines which interactions a player can perform on a specific
+ * location at the game board.
+ *
+ * \see Board, Canvas, PaintColor
+ */
+// =============================================================== //
 public enum ItemType {
   //@formatter:off
-  NONE(0), OBSTACLE(1), BLOCKED(2),
-  REFILL(10), REFILL_GREEN(11), REFILL_PURPLE(12), REFILL_BLUE(13), REFILL_ORANGE(14);
+  NONE(0),           ///< Inital type - nothing special here.
+  OBSTACLE(1),       ///< You can paint but not walk here.
+  BLOCKED(2),        ///< You can neither paint nor walk here.
+  REFILL(10),        ///< Walk here to refill your paint.
+  REFILL_GREEN(11),  ///< Only green can refill here.
+  REFILL_PURPLE(12), ///< Only purple can refill here.
+  REFILL_BLUE(13),   ///< Only blue can refill here.
+  REFILL_ORANGE(14); ///< Only orange can refill here.
   //@formatter:on
+
   private final int type_id;
 
   // --------------------------------------------------------------- //

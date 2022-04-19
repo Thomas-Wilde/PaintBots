@@ -15,7 +15,10 @@ import com.tw.paintbots.PaintColor;
 import com.tw.paintbots.Board;
 
 // =============================================================== //
-/** Canvas represents the area that gets painted. */
+/**
+ * Canvas represents the area that gets painted.
+ */
+// =============================================================== //
 public class Canvas extends Renderable {
   // --------------------------------------------------------------- //
   /** Contains the painting information. */
@@ -53,7 +56,14 @@ public class Canvas extends Renderable {
   }
 
   // --------------------------------------------------------------- //
-  public void initCanvasRenderables() {
+  /**
+   * The canvas also refers to a texture that shows which location contains
+   * which color. Thie texture is initialized in this method. This method is
+   * only available to the GameManager.
+   *
+   * @param key SecretKey only available to the GameManager
+   */
+  public void initCanvasRenderables(SecretKey key) {
     createPixmap();
     texture = new Texture(pixmap);
     initTextureRegion();
@@ -61,10 +71,18 @@ public class Canvas extends Renderable {
 
   // --------------------------------------------------------------- //
   /**
-   * Paint the canvas at the given position, if it is possible to paint there.
+   * Paint the canvas at the given position, with the given color, if it is
+   * possible to paint there. The paint is applied in circles. This method is
+   * only available to the GameManager.
    *
-   * @return The number of pixels that were painted. This number corresponds to
-   *         the amount of paint needed for the coloring.
+   * @param position The coordinates of the location that you want to paint.
+   * @param color The color used for the coloring process.
+   * @param radius The radius of the colored circle in pixels/cells.
+   * @param board The board, to check if the location is paintable.
+   * @param key SecretKey only available to the GameManager
+   *
+   * @return The number of pixels that were painted. This number corresponds
+   *         to the amount of paint needed for the coloring.
    */
   public int paint(Vector2 position, PaintColor color, int radius, Board board,
       SecretKey key) {

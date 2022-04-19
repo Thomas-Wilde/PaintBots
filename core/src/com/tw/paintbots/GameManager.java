@@ -29,6 +29,7 @@ import com.tw.paintbots.Items.ItemArea;
 import com.tw.paintbots.Items.ItemType;
 import com.tw.paintbots.NonePlayer;
 
+// =============================================================== //
 /**
  * The GameManager is the core class of the game. It creates all Entities and
  * manages their behavior. It also calls the update routine and is responsible
@@ -38,10 +39,10 @@ import com.tw.paintbots.NonePlayer;
 public class GameManager {
   // ======================= SecretKey class ======================= //
   //@formatter:off
-  /** 
+  /**
    * The GameManager mimics a friend class behavior, i.e. every method that
    * should be accessed only by the GameManager asks for the SecretKey.
-   * Only the GameManager can deliver this SecretKey 
+   * Only the GameManager can deliver this SecretKey
    */
   public static final class SecretKey { private SecretKey() {} }
   private static final SecretKey secret_key = new SecretKey();
@@ -90,14 +91,6 @@ public class GameManager {
   private Canvas canvas = null;
   private Board board = null;
   private HashMap<String, Class<?>> bots = null;
-
-  // ======================== Getter/Setter ======================== //
-  //@formatter:off
-  /** Get the time that passed since the start of the round in seconds. */
-  public double getElapsedTime() { return elapsed_time; }
-  /** Get the time between the current and the last update step. */
-  public double getDeltaTime() { return delta_time; }
-  //@formatter:on
 
   // ===================== GameManager methods ===================== //
   /**
@@ -156,7 +149,7 @@ public class GameManager {
    * Dispose all entities. This method is called when the program closes to
    * clean up the memory. This method can only be called by the PaintBotsGame
    * class.
-   * 
+   *
    * @param key The hidden GameKey which is only available to the PaintBotsGame
    *        class.
    */
@@ -172,19 +165,18 @@ public class GameManager {
  /**
   * The update routine that is called in the loop. This method can only be
   * called by the PaintBotsGame class. Depending on the GameState different
-  * things happen:* 
+  * things happen:*
   * - MENU: The keyboard controls are used to select bots and levels
   * - STARTTIMER: Count down 5 seconds at the start of the game.
   * - GANE: Update all entities, especially the players/bots.
   *
   * @param key The hidden GameKey which is only available to the PaintBotsGame
-  *        class.  
+  *        class.
   */
   //@formatter:on
   public void update(GameKey key) {
     Objects.requireNonNull(key);
-    // delta_time = Gdx.graphics.getDeltaTime();
-    delta_time = 1.0 / 60.0;
+    delta_time = Gdx.graphics.getDeltaTime();
     elapsed_time += delta_time;
     // ---
     switch (game_state) {
@@ -419,7 +411,7 @@ public class GameManager {
   /**
    * Draw the Renderables of each layer. This method is called afted the
    * update() routine and it is only available to the PaintBotsGame class.
-   * 
+   *
    * @param batch The render batch in that graphics are drawn.
    * @param key The hidden GameKey which is only available to the PaintBotsGame
    *        class.
@@ -516,7 +508,7 @@ public class GameManager {
   /**
    * This method is the entry point from the main class into the actual game.
    * This method can only be called the PaintBotsGame class
-   * 
+   *
    * @param settings The initial GameSettings that can be changed in the menu
    * @param key The GameKey that is only available to the PaintBotsGame class
    */
@@ -906,7 +898,7 @@ public class GameManager {
 
   // --------------------------------------------------------------- //
   private void initCanvasRenderables() {
-    canvas.initCanvasRenderables();
+    canvas.initCanvasRenderables(secret_key);
     canvas.setAnker(floor);
     addRenderable(canvas);
   }
@@ -972,13 +964,13 @@ public class GameManager {
   }
 
   // --------------------------------------------------------------- //
-  // ============ public mathods to acces game content ============= //
+  // ============ public methods to acces game content ============= //
 
   // --------------------------------------------------------------- //
   /**
    * Access the current state of a player specified by its index. The index of
    * the player has to be in [0,3].
-   * 
+   *
    * @param player_idx The index of the player.
    * @return A copy of the players GameState or null if player_index is not in
    *         [0,3].
@@ -988,4 +980,48 @@ public class GameManager {
       return null;
     return players.get(player_idx).getState();
   }
+
+  //@formatter:off
+  // --------------------------------------------------------------- //
+  /**
+   * Get the time that passed since the start of the round in seconds.
+   * Note: This is the simulated game time not the wall clock time.
+   *       Each game second consists of 60 update steps.
+   */
+  public double getElapsedTime() { return elapsed_time; }
+
+  // --------------------------------------------------------------- //
+  /**
+   * Get the time between the current and the last update step.
+   * Note: This value is fixed to 1/60s for the programming contest.
+   */
+  public double getDeltaTime() { return delta_time; }
+
+
+  // --------------------------------------------------------------- //
+  /**
+   * Access the game board - the game board represents the current level. The
+   * board contains information about possible interactions. It does \b NOT
+   * contain any information about the coloring of the ground.
+   *
+   * @return A reference to the current board.
+   * @see ItemType
+   * @see GameManager::getCanvas()
+   */
+  public Board getBoard() { return board; }
+
+  // --------------------------------------------------------------- //
+  /**
+   * Access the canvas - the canvas represents the area that is painted. The
+   * canvas is divided into different cells/pixels. It has the same size as
+   * the board. It contains information about the current color of each
+   * location.
+   *
+   * @return A reference to the current canvas.
+   * @see PaintColor
+   * @see GameManager::getBoard()
+   */
+  public Canvas getCanvas() { return canvas; }
+
+  //@formatter:on
 }

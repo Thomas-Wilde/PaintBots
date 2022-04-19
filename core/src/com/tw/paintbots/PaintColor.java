@@ -3,6 +3,14 @@ package com.tw.paintbots;
 import com.badlogic.gdx.graphics.Color;
 
 // =============================================================== //
+/**
+ * Each player has a unique paint color. It defines which color is used to
+ * paint on the canvas. Actually PaintColor is just an enum to distinguish
+ * these colors.
+ *
+ * \see Canvas, Player, HumanPlayer, AIPlayer
+ */
+// =============================================================== //
 public enum PaintColor {
   GREEN(0), PURPLE(1), BLUE(2), ORANGE(3), BLACK(4);
 
