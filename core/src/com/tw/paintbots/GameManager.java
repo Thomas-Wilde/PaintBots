@@ -22,12 +22,10 @@ import com.tw.paintbots.Renderables.RepeatedRenderable;
 import com.tw.paintbots.Renderables.UITimer;
 import com.tw.paintbots.Renderables.StartTimer;
 import com.tw.paintbots.Renderables.UIPlayerBoard;
-import com.tw.paintbots.Renderables.UIMenuItem;
-import com.tw.paintbots.LevelLoader;
+import com.tw.paintbots.Renderables.UIBotSelect;
 import com.tw.paintbots.Items.Item;
 import com.tw.paintbots.Items.ItemArea;
 import com.tw.paintbots.Items.ItemType;
-import com.tw.paintbots.NonePlayer;
 
 /**
  * The GameManager is the core class of the game. It creates all Entities and
@@ -38,28 +36,17 @@ import com.tw.paintbots.NonePlayer;
 public class GameManager {
   // ======================= SecretKey class ======================= //
   //@formatter:off
-  /** 
-   * The GameManager mimics a friend class behavior, i.e. every method that
+  /** The GameManager mimics a friend class behavior, i.e. every method that
    * should be accessed only by the GameManager asks for the SecretKey.
-   * Only the GameManager can deliver this SecretKey 
-   */
+   * Only the GameManager can deliver this SecretKey */
   public static final class SecretKey { private SecretKey() {} }
   private static final SecretKey secret_key = new SecretKey();
   //@formatter:on
 
   // ======================== GameState enum ======================= //
-  /**
-   * The GameState effectively controls what is shown an what happens in the
-   * update() routine.
-   */
-  //@formatter:off
   private enum GameState {
-    MENU,        ///< Show the menu for bot and level selection.
-    STARTTIMER,  ///< Show the countdown at the start of the game.
-    GAME,        ///< The normal state during the game.
-    RESULT       ///< Show the result at the end of the game.
+    MENU, STARTTIMER, GAME, RESULT
   }
-  //@formatter:on
 
   // ====================== GameManager class ====================== //
   // GameManager uses singleton pattern
@@ -74,12 +61,10 @@ public class GameManager {
   private ArrayList<Entity> entities = new ArrayList<>();
   private GameSettings game_settings = null;
 
-  // --- stuff for the menu
-  private ArrayList<UIMenuItem> menu_item = new ArrayList<>();
-  private ArrayList<String> bot_names = new ArrayList<>();
+  // --- Entities for the menu
+  private ArrayList<UIBotSelect> bot_selects = new ArrayList<>();
   private int menu_select = 0;
   private boolean read_menu_key = true;
-  private ArrayList<String> level_files = new ArrayList<>();
 
   // --- List of Entities needed to create other ones
   private SimpleRenderable floor = null;
@@ -95,15 +80,12 @@ public class GameManager {
   //@formatter:off
   /** Get the time that passed since the start of the round in seconds. */
   public double getElapsedTime() { return elapsed_time; }
-  /** Get the time between the current and the last update step. */
+  /** Get the between the current and the last update step. */
   public double getDeltaTime() { return delta_time; }
   //@formatter:on
 
   // ===================== GameManager methods ===================== //
-  /**
-   * The GameManager implements the singleton pattern. With this method you can
-   * access the only existing instance of the GameManager.
-   */
+  /** Access the single instance of the GameManager. */
   public static GameManager get() {
     if (instance == null)
       instance = new GameManager();
@@ -115,51 +97,14 @@ public class GameManager {
    * Constructor is private due to the sigleton pattern.
    */
   private GameManager() {
-    loadBots();
-    loadLevels();
-  }
-
-  // --------------------------------------------------------------- //
-  /**
-   * Read the bots from the bots directory and collect them in a HashMap (name
-   * and class) and an ArrayList (name). Furthermore dummy bots for human
-   * controlled and inactive players are added.
-   */
-  private void loadBots() {
     // --- load some bots
     BotLoader bot_loader = new BotLoader();
     bots = bot_loader.loadBots();
-    // ---
-    bot_names.add("Human");
-    bot_names.add("---");
-    // ---
-    Set<String> loaded_names = bots.keySet();
-    for (String name : loaded_names)
-      bot_names.add(name);
-    // ---
-    bots.put("Human", HumanPlayer.class);
-    bots.put("---", null);
+    bots.put("Human", HumanPlayer);
   }
 
   // --------------------------------------------------------------- //
-  /**
-   * Collect the level files from the levels directory in an ArrayList.
-   */
-  private void loadLevels() {
-    LevelLoader level_loader = new LevelLoader();
-    level_files = level_loader.loadLevelFiles();
-    level_files.add(0, "default");
-  }
-
-  // --------------------------------------------------------------- //
-  /**
-   * Dispose all entities. This method is called when the program closes to
-   * clean up the memory. This method can only be called by the PaintBotsGame
-   * class.
-   * 
-   * @param key The hidden GameKey which is only available to the PaintBotsGame
-   *        class.
-   */
+  /** Dispose all entities. */
   public void destroy(GameKey key) {
     Objects.requireNonNull(key);
     for (Entity entity : entities)
@@ -168,19 +113,6 @@ public class GameManager {
   }
 
   // --------------------------------------------------------------- //
- //@formatter:off
- /**
-  * The update routine that is called in the loop. This method can only be
-  * called by the PaintBotsGame class. Depending on the GameState different
-  * things happen:* 
-  * - MENU: The keyboard controls are used to select bots and levels
-  * - STARTTIMER: Count down 5 seconds at the start of the game.
-  * - GANE: Update all entities, especially the players/bots.
-  *
-  * @param key The hidden GameKey which is only available to the PaintBotsGame
-  *        class.  
-  */
-  //@formatter:on
   public void update(GameKey key) {
     Objects.requireNonNull(key);
     // delta_time = Gdx.graphics.getDeltaTime();
@@ -208,7 +140,6 @@ public class GameManager {
   }
 
   // --------------------------------------------------------------- //
-  /** Read the keyboard input to control the main menu. */
   private void updateMenu() {
     if (ignoreMenuInteraction())
       return;
@@ -217,33 +148,26 @@ public class GameManager {
       changeMenuFocus();
       read_menu_key = false;
     }
-    // --- handle left/right key
-    if (Gdx.input.isKeyPressed(Keys.LEFT)
-        || Gdx.input.isKeyPressed(Keys.RIGHT)) {
-      changeMenuValue();
-      read_menu_key = false;
-    }
-    // ---
-    if (Gdx.input.isKeyPressed(Keys.ENTER) && menu_select == 5)
-      startGame();
+
+    // --- start the game
+    if (Gdx.input.isKeyPressed(Keys.ENTER))
+      try {
+        game_state = GameState.STARTTIMER;
+        loadMap();
+      } catch (GameMangerException e) {
+        e.printStackTrace();
+      }
   }
 
   // --------------------------------------------------------------- //
-  /**
-   * The interaction with the menu needs discrete key presses, i.e. the key has
-   * to be released.
-   */
   private boolean ignoreMenuInteraction() {
     // --- user must release keys after each press
-    if (!Gdx.input.isKeyPressed(Keys.UP) && !Gdx.input.isKeyPressed(Keys.DOWN)
-        && !Gdx.input.isKeyPressed(Keys.LEFT)
-        && !Gdx.input.isKeyPressed(Keys.RIGHT))
+    if (!Gdx.input.isKeyPressed(Keys.UP) && !Gdx.input.isKeyPressed(Keys.DOWN))
       read_menu_key = true;
     return !read_menu_key;
   }
 
   // --------------------------------------------------------------- //
-  /** With up/down cursors the focus for the menu entry can be set. */
   private void changeMenuFocus() {
     int old_menu_select = menu_select;
     if (Gdx.input.isKeyPressed(Keys.UP))
@@ -252,121 +176,15 @@ public class GameManager {
       menu_select += 1;
     // --- clamp to entry count
     if (menu_select < 0)
-      menu_select = menu_item.size() - 1;
-    if (menu_select >= menu_item.size())
+      menu_select = 3;
+    if (menu_select > 3)
       menu_select = 0;
     // ---
-    menu_item.get(old_menu_select).setFocus(false);
-    menu_item.get(menu_select).setFocus(true);
+    bot_selects.get(old_menu_select).setFocus(false);
+    bot_selects.get(menu_select).setFocus(true);
   }
 
   // --------------------------------------------------------------- //
-  /** Depending on the menu entry bots or levels can be swutched. */
-  private void changeMenuValue() {
-    if (menu_select >= 0 && menu_select <= 3)
-      changeSelectedBot();
-    if (menu_select == 4)
-      changeSelectedLevel();
-  }
-
-  // --------------------------------------------------------------- //
-  /**
-   * With left/right cursor the selected bot at the current menu entry can be
-   * changed.
-   */
-  private void changeSelectedBot() {
-    UIMenuItem bot_select = menu_item.get(menu_select);
-    int bot_index = bot_select.getItemIndex(secret_key);
-    // ---
-    if (Gdx.input.isKeyPressed(Keys.LEFT))
-      bot_index -= 1;
-    if (Gdx.input.isKeyPressed(Keys.RIGHT))
-      bot_index += 1;
-    // --- clamp to entry count
-    if (bot_index < 0)
-      bot_index = bot_names.size() - 1;
-    if (bot_index >= bot_names.size())
-      bot_index = 0;
-    // ---
-    bot_select.setItem(bot_names.get(bot_index), bot_index, secret_key);
-  }
-
-  // --------------------------------------------------------------- //
-  /**
-   * With left/right cursor the selected level at the level menu entry can be
-   * changed.
-   */
-  private void changeSelectedLevel() {
-    UIMenuItem level_select = menu_item.get(menu_select);
-    int level_index = level_select.getItemIndex(secret_key);
-    // ---
-    if (Gdx.input.isKeyPressed(Keys.LEFT))
-      level_index -= 1;
-    if (Gdx.input.isKeyPressed(Keys.RIGHT))
-      level_index += 1;
-    // --- clamp to entry count
-    if (level_index < 0)
-      level_index = level_files.size() - 1;
-    if (level_index >= level_files.size())
-      level_index = 0;
-    // ---
-    level_select.setItem(level_files.get(level_index), level_index, secret_key);
-  }
-
-  // --------------------------------------------------------------- //
-  /**
-   * Read the selection from the main menu, deactivate the main menu and load
-   * the map.
-   */
-  private void startGame() {
-    // --- read bot settings from menu
-    for (int i = 0; i < 4; ++i) {
-      UIMenuItem bot_select = menu_item.get(i);
-      int bot_idx = bot_select.getItemIndex(secret_key);
-      if (bot_idx == 0) {
-        game_settings.player_types[i] = PlayerType.HUMAN;
-        game_settings.bot_names[i] = "Human";
-      } else if (bot_idx == 1) {
-        game_settings.player_types[i] = PlayerType.NONE;
-        game_settings.bot_names[i] = "---";
-      } else {
-        game_settings.player_types[i] = PlayerType.AI;
-        game_settings.bot_names[i] = bot_select.getItemName(secret_key);
-      }
-    }
-    // --- read level settings from menu
-    UIMenuItem level_select = menu_item.get(4);
-    String level_file = "";
-    if (level_select.getItemIndex(secret_key) != 0)
-      level_file = System.getProperty("user.dir") + "/levels/"
-          + level_select.getItemName(secret_key);
-    game_settings.level_file = level_file;
-    // ---
-    game_state = GameState.STARTTIMER;
-    elapsed_time = 0.0;
-    hideMenu();
-    try {
-      loadMap();
-    } catch (GameMangerException e) {
-      e.printStackTrace();
-    }
-  }
-
-  // --------------------------------------------------------------- //
-  /** Deactivate and hide the main menu. */
-  private void hideMenu() {
-    for (UIMenuItem item : menu_item) {
-      item.setActive(false);
-      item.setVisible(false);
-    }
-  }
-
-  // --------------------------------------------------------------- //
-  /**
-   * Update the StartTimer that is shown at the start of the game. The
-   * StartTimer gets the elapsed time. If the elapsed time reaches the countdown
-   * the timer deactivates itself. If so the GameState is changed to 'GAME'.
-   */
   private void updateStartTime() {
     start_timer.setElapsed((float) elapsed_time);
     // ---
@@ -378,18 +196,6 @@ public class GameManager {
   }
 
   // --------------------------------------------------------------- //
- //@formatter:off
- /**
-  * This method effectively runs the game and is called in each update loop.
-  * The following things happen:
-  * - save the player states
-  * - update all active entities
-  * - move all players
-  * - paint on the canvas
-  * - adjust the score
-  * - let the players interact with the board
-  */
-  //@formatter:on
   private void updateGame() {
     preUpdate();
     // --- update all entities
@@ -408,22 +214,12 @@ public class GameManager {
 
   // --------------------------------------------------------------- //
   private void preUpdate() {
-    for (int idx = 0; idx < players.size(); ++idx) {
-      if (players.get(idx).getType() == PlayerType.NONE)
-        continue;
+    for (int idx = 0; idx < players.size(); ++idx)
       savePlayerState(idx);
-    }
   }
 
   // --------------------------------------------------------------- //
-  /**
-   * Draw the Renderables of each layer. This method is called afted the
-   * update() routine and it is only available to the PaintBotsGame class.
-   * 
-   * @param batch The render batch in that graphics are drawn.
-   * @param key The hidden GameKey which is only available to the PaintBotsGame
-   *        class.
-   */
+  /** Draw the Renderables of each layer. */
   public void render(SpriteBatch batch, GameKey key) {
     Objects.requireNonNull(key);
     Set<Integer> layer_ids = render_layers.keySet();
@@ -513,37 +309,26 @@ public class GameManager {
   }
 
   // --------------------------------------------------------------- //
-  /**
-   * This method is the entry point from the main class into the actual game.
-   * This method can only be called the PaintBotsGame class
-   * 
-   * @param settings The initial GameSettings that can be changed in the menu
-   * @param key The GameKey that is only available to the PaintBotsGame class
-   */
   public void loadMenu(GameSettings settings, GameKey key) {
     Objects.requireNonNull(key);
     game_settings = settings;
     createBackground();
-    createMenu();
+    createBotSelection();
   }
 
   // --------------------------------------------------------------- //
-  private void createMenu() {
-    for (int i = 0; i < 6; ++i) {
-      UIMenuItem select = new UIMenuItem(i);
-      menu_item.add(select);
-      select.setScale(Array.of(0.75f, 0.75f));
+  private void createBotSelection() {
+    for (int i = 0; i < 4; ++i) {
+      UIBotSelect select = new UIBotSelect(i);
+      bot_selects.add(select);
       // --- define position and size
       int res_x = game_settings.cam_resolution[0];
       int res_y = game_settings.cam_resolution[1];
       int width = select.getRenderSize()[0];
       int height = select.getRenderSize()[1];
       int pos_x = (res_x - width) / 2;
-      int pos_y = res_y - (height * (i + 2));
+      int pos_y = res_y / 2 + height - height * i;
       select.setRenderPosition(Array.of(pos_x, pos_y));
-
-      if (i == 4)
-        select.setItemName("default", secret_key);
 
       addRenderable(select);
       addEntity(select);
@@ -564,6 +349,24 @@ public class GameManager {
     sanityCheckPlayerSettings(); // throws an exception if something is wrong
     createPlayers();
     initPlayerRenderables();
+  }
+
+  // --------------------------------------------------------------- //
+  public void loadMapHeadless(GameSettings settings, GameKey key)
+      throws GameMangerException {
+    Objects.requireNonNull(key);
+    game_settings = settings;
+    int width = game_settings.board_dimensions[0];
+    int height = game_settings.board_dimensions[1];
+    // ---
+    Entity.setBoardDimensions(Array.of(width, height), secret_key);
+    sanityCheckPlayerSettings(); // throws an exception if something is wrong
+    createPlayers();
+    // ---
+    createCanvas();
+    createBoard();
+    // ---
+    loadLevelContent();
   }
 
   // --------------------------------------------------------------- //
@@ -666,11 +469,6 @@ public class GameManager {
         // --- load human player
         if (game_settings.player_types[i] == PlayerType.HUMAN)
           player = new HumanPlayer("Player" + i);
-
-        if (game_settings.player_types[i] == PlayerType.NONE) {
-          player = new NonePlayer("Player" + i);
-          player.setActive(false);
-        }
         // ---
         initPlayer(player);
         addEntity(player);
@@ -709,16 +507,14 @@ public class GameManager {
   // --------------------------------------------------------------- //
   private void initPlayerRenderables() {
     for (Player player : players) {
-      if (player.getType() == PlayerType.NONE)
-        continue;
-      player.initRenderables(secret_key);
+      player.initRenderables();
       player.setAnker(floor, secret_key);
-      player_layer.add(player.getAnimation(secret_key));
-      addRenderable(player.getIndicator(secret_key));
+      player_layer.add(player.getAnimation());
+      addRenderable(player.getIndicator());
       createPlayerUI(player);
       // --- place renderable at correct location
       Vector2 pos = player.getPosition();
-      player.getAnimation(secret_key)
+      player.getAnimation()
           .setRenderPosition(Array.of((int) pos.x, (int) pos.y));
     }
   }
@@ -778,11 +574,8 @@ public class GameManager {
   // --------------------------------------------------------------- //
   /** Calls 'movePlayer(int idx)' for each player */
   private void moveAllPlayers() {
-    for (int player_idx = 0; player_idx < players.size(); ++player_idx) {
-      if (players.get(player_idx).getType() == PlayerType.NONE)
-        continue;
+    for (int player_idx = 0; player_idx < players.size(); ++player_idx)
       movePlayer(player_idx);
-    }
   }
 
   // --------------------------------------------------------------- //
@@ -795,7 +588,6 @@ public class GameManager {
     Vector2 old_pos = player_states.get(player_idx).old_pos;
     Player player = players.get(player_idx);
     Vector2 move_dir = player.getDirection();
-    move_dir.setLength(1.0f);
     // ---
     Vector2 new_pos = old_pos.cpy();
     new_pos.add(move_dir.scl(200.0f * (float) delta_time)); // scale
@@ -808,11 +600,8 @@ public class GameManager {
 
   // --------------------------------------------------------------- //
   private void interactWithBoard() {
-    for (int player_idx = 0; player_idx < players.size(); ++player_idx) {
-      if (players.get(player_idx).getType() == PlayerType.NONE)
-        continue;
+    for (int player_idx = 0; player_idx < players.size(); ++player_idx)
       interactWithBoard(player_idx);
-    }
   }
 
   // --------------------------------------------------------------- //
@@ -915,8 +704,6 @@ public class GameManager {
   private void paintOnCanvas() {
     for (int idx = 0; idx < players.size(); ++idx) {
       Player player = players.get(idx);
-      if (player.getType() == PlayerType.NONE)
-        continue;
       if ((player.getPaintAmount() <= 0.0))
         continue;
       Vector2 position = player_states.get(idx).new_pos;
@@ -955,7 +742,8 @@ public class GameManager {
     if (render_layers.get(20) == null)
       render_layers.put(20, new ArrayList<Renderable>());
     // ---
-    String level_file = game_settings.level_file;
+    String level_file = System.getProperty("user.dir") + "/levels/level1.lvl";
+    System.out.println("level file: " + level_file);
     List<Item> level_items = new ArrayList<>();
     Level level = new Level(level_file, secret_key);
     level.loadLevel(level_items, game_settings);
@@ -969,23 +757,5 @@ public class GameManager {
     // ---
     List<Renderable> items_list = render_layers.get(20);
     items_list.sort(new RenderDepthComparator());
-  }
-
-  // --------------------------------------------------------------- //
-  // ============ public mathods to acces game content ============= //
-
-  // --------------------------------------------------------------- //
-  /**
-   * Access the current state of a player specified by its index. The index of
-   * the player has to be in [0,3].
-   * 
-   * @param player_idx The index of the player.
-   * @return A copy of the players GameState or null if player_index is not in
-   *         [0,3].
-   */
-  public PlayerState getPlayerState(int player_idx) {
-    if (player_idx < 0 || player_idx > 3)
-      return null;
-    return players.get(player_idx).getState();
   }
 }
