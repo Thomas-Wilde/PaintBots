@@ -917,7 +917,7 @@ public class GameManager {
           board, secret_key);
       player.decreasePaintAmount(used_paint, secret_key);
     }
-    canvas.sendPixmapToTexture();
+    canvas.sendPixmapToTexture(secret_key);
   }
 
   // --------------------------------------------------------------- //
