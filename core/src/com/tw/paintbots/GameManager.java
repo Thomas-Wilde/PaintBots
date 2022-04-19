@@ -100,6 +100,7 @@ public class GameManager {
     // --- load some bots
     BotLoader bot_loader = new BotLoader();
     bots = bot_loader.loadBots();
+    bots.put("Human", HumanPlayer);
   }
 
   // --------------------------------------------------------------- //
@@ -199,7 +200,8 @@ public class GameManager {
     preUpdate();
     // --- update all entities
     for (Entity entity : entities)
-      entity.update(secret_key);
+      if (entity.isActive())
+        entity.update(secret_key);
     // ---
     moveAllPlayers();
     if (timer.getTime() > 0) {
