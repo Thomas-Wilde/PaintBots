@@ -42,13 +42,14 @@ jobs:
       id: date
       run: |
        echo "::set-output name=date::$(date +'%m.%d')"
-       echo "date is $DATE_VAL"
+       echo date is $DATE_VAL
        mkdir deploy
        mv ./desktop/build/libs/desktop-1.0.jar ./deploy/paintbots_0.$DATE_VAL.jar
+       ls ./deploy
       env:
         DATE_VAL: ${{ steps.date.outputs.date }}
 
     - name: Create index.html for deploy directory
       run: |
-       cd deploy
-       tree -H '.' -L 1 --noreport --charset utf-8 -P "*.jar" -o index.html
+       tree -H './deploy' -L 1 --noreport --charset utf-8 -P "*.jar" -o ./deploy/index.html
+       ls ./deploy
