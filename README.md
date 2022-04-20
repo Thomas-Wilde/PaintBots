@@ -26,5 +26,5 @@ is part of a programming contest. The contest is organized for the lecture
 Magdeburg in the summer term of 2022.
 
 ## Release & Documentation
-You can find the current release [here][doxygen-url]. The corresponding source
-code documentation is [here][paintbots-release].
+You can find the current release [here][paintbots-release]. The corresponding source
+code documentation is [here][doxygen-url].
