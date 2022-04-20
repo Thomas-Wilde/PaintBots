@@ -35,16 +35,6 @@ jobs:
       with:
         arguments: desktop:build
 
-    - name: list0
-      run: |
-       ls
-       cd desktop
-       ls
-       cd build
-       ls
-       cd libs
-       ls
-
     - name: Get current date
       id: date
       run: echo "::set-output name=date::$(date +'%m.%d')"
@@ -60,4 +50,8 @@ jobs:
         DATE_VAL: ${{ steps.date.outputs.date }}
 
     - name: List files
-      run: echo ls ./desktop/build/libs/
+      run: |
+       cd desktop
+       cd build
+       cd libs
+       ls
