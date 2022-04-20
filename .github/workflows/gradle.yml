@@ -53,8 +53,8 @@ jobs:
     - name: Rename file based on current date
       run: |
        echo date is $DATE_VAL
-       mkdir html/release
-       mv ./desktop/build/libs/desktop-1.0.jar ./html/release/paintbots_0.$DATE_VAL.jar
+       sudo mkdir html/release
+       sudo mv ./desktop/build/libs/desktop-1.0.jar ./html/release/paintbots_0.$DATE_VAL.jar
        ls ./html/release
       env:
         DATE_VAL: ${{ steps.date.outputs.date }}
