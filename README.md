@@ -10,10 +10,21 @@
 -->
 
 ![Build][gradle-build-badge]
-[![Doxygen-Docu][doxygen-badge]][doxygen-url]
+<!-- [![Doxygen-Docu][doxygen-badge]][doxygen-url] -->
 
 [gradle-build-badge]: https://github.com/Thomas-Wilde/PaintBots/actions/workflows/gradle.yml/badge.svg
-[doxygen-badge]: https://github.com/Thomas-Wilde/PaintBots/actions/workflows/doxygen.yml/badge.svg
+<!--[doxygen-badge]: https://github.com/Thomas-Wilde/PaintBots/actions/workflows/doxygen.yml/badge.svg-->
 [doxygen-url]: https://thomas-wilde.github.io/PaintBots/
+[paintbots-release]: https://thomas-wilde.github.io/PaintBots/release
+[aud]: https://aud.vc.cs.ovgu.de
 
 # Paint Bots
+
+This repository contains the source code of the **Paint Bots** game. The game
+is part of a programming contest. The contest is organized for the lecture
+[*Algorithmen & Datenstrukturen*][aud] at the Otto-von-Guericke University in
+Magdeburg in the summer term of 2022.
+
+## Release & Documentation
+You can find the current release [here][doxygen-url]. The corresponding source
+code documentation is [here][paintbots-release].
