@@ -38,7 +38,7 @@ jobs:
     - name: list0
       run: |
        ls
-       cd dekstop
+       cd desktop
        ls
        cd build
        ls
