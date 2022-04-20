@@ -36,4 +36,4 @@ jobs:
         arguments: desktop:build
 
     - name: Rename build file.
-      run: ls
+      run: ls ./dekstop/build/libs
