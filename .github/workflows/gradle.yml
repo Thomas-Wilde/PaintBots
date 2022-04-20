@@ -35,14 +35,14 @@ jobs:
       with:
         arguments: desktop:build
 
-    - name: Set current date to env variable
-      run: echo "TODAY::$(date +'%m.%dT')" >> $GITHUB_ENV
+    - name: Get current date
+      run: echo "::set-output name=today::$(date +'%%m.%d')"
 
     - name: Show date
-      run: echo $TODAY
+      run: echo ${{ steps.date.outputs.today }}
 
     - name: Rename build file.
-      run: mv ./desktop/build/libs/desktop-1.0.jar paintbots_0.$TODAY.jar
+      run: mv ./desktop/build/libs/desktop-1.0.jar paintbots_0.${{ steps.date.outputs.today }}.jar
 
     - name: List files
       run: ls ./desktop/build/libs
