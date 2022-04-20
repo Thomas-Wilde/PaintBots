@@ -36,8 +36,9 @@ jobs:
         arguments: desktop:build
 
     - name: Get current date
-        id: date
-        run: echo "::set-output name=date::$(date +'%m-%d')"
+      id: date
+      run: echo "::set-output name=date::$(date +'%m-%d')"
+
     - name: Test with environment variables
       run: echo $TAG_NAME - $RELEASE_NAME
       env:
