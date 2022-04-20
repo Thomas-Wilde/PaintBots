@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['paintbots_0',['PaintBots',['../index.html',1,'']]]
+  ['paintbots_0',['PaintBots',['../index.xhtml',1,'']]]
 ];
