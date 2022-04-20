@@ -36,13 +36,14 @@ jobs:
         arguments: desktop:build
 
     - name: list0
-      run: ls
-      run: cd dekstop
-      run: ls
-      run: cd build
-      run: ls
-      run: cd libs
-      run: ls
+      run: |
+       ls
+       cd dekstop
+       ls
+       cd build
+       ls
+       cd libs
+       ls
 
     - name: Get current date
       id: date
