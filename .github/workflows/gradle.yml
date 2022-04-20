@@ -38,18 +38,20 @@ jobs:
       with:
         arguments: desktop:build
 
-    - name: Rename file based on current date
+    - name: Get current date
       id: date
+      run: echo "::set-output name=date::$(date +'%m.%d')"
+
+    - name: Rename file based on current date
       run: |
-       echo "::set-output name=date::$(date +'%m.%d')"
        echo date is $DATE_VAL
-       mkdir deploy
-       mv ./desktop/build/libs/desktop-1.0.jar ./deploy/paintbots_0.$DATE_VAL.jar
-       ls ./deploy
+       mkdir release
+       mv ./desktop/build/libs/desktop-1.0.jar ./release/paintbots_0.$DATE_VAL.jar
+       ls ./release
       env:
         DATE_VAL: ${{ steps.date.outputs.date }}
 
-    - name: Create index.html for deploy directory
+    - name: Create index.html for release directory
       run: |
-       tree -H './deploy' -L 1 --noreport --charset utf-8 -P "*.jar" -o ./deploy/index.html
-       ls ./deploy
+       tree -H './release' -L 1 --noreport --charset utf-8 -P "*.jar" -o ./release/index.html
+       ls ./release
