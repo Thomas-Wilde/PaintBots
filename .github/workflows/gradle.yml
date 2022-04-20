@@ -45,13 +45,9 @@ jobs:
         DATE_VAL: ${{ steps.date.outputs.date }}
 
     - name: Rename build file.
-      run: mv ./desktop/build/libs/desktop-1.0.jar paintbots_0.$DATE_VAL.jar
+      run: mv ./desktop/build/libs/desktop-1.0.jar ./desktop/build/libs/paintbots_0.$DATE_VAL.jar
       env:
         DATE_VAL: ${{ steps.date.outputs.date }}
 
     - name: List files
-      run: |
-       cd desktop
-       cd build
-       cd libs
-       ls
+      run: ls ./desktop/build/libs
