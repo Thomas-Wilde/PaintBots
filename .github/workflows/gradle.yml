@@ -36,7 +36,13 @@ jobs:
         arguments: desktop:build
 
     - name: Get current date
-      run: echo "::set-output name=today::$(date +'%%m.%d')"
+        id: date
+        run: echo "::set-output name=date::$(date +'%m-%d')"
+    - name: Test with environment variables
+      run: echo $TAG_NAME - $RELEASE_NAME
+      env:
+        TAG_NAME: nightly-tag-${{ steps.date.outputs.date }}
+        RELEASE_NAME: nightly-release-${{ steps.date.outputs.date }}
 
     - name: Show date
       run: echo ${{ steps.date.outputs.today }}
