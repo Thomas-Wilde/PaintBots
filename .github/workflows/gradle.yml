@@ -35,6 +35,15 @@ jobs:
       with:
         arguments: desktop:build
 
+    - name: list0
+      run: ls
+      run: cd dekstop
+      run: ls
+      run: cd build
+      run: ls
+      run: cd libs
+      run: ls
+
     - name: Get current date
       id: date
       run: echo "::set-output name=date::$(date +'%m.%d')"
