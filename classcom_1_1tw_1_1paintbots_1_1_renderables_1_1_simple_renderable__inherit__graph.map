@@ -1,0 +1,14 @@
+<map id="com.tw.paintbots.Renderables.SimpleRenderable" name="com.tw.paintbots.Renderables.SimpleRenderable">
+<area shape="rect" id="node1" title=" " alt="" coords="455,169,653,211"/>
+<area shape="rect" id="node4" href="$classcom_1_1tw_1_1paintbots_1_1_items_1_1_item.xhtml" title=" " alt="" coords="708,15,893,42"/>
+<area shape="rect" id="node6" href="$classcom_1_1tw_1_1paintbots_1_1_renderables_1_1_animated_renderable.xhtml" title=" " alt="" coords="701,71,900,112"/>
+<area shape="rect" id="node9" href="$classcom_1_1tw_1_1paintbots_1_1_renderables_1_1_repeated_renderable.xhtml" title=" " alt="" coords="701,136,900,177"/>
+<area shape="rect" id="node10" href="$classcom_1_1tw_1_1paintbots_1_1_renderables_1_1_u_i_menu_item.xhtml" title=" " alt="" coords="701,201,900,243"/>
+<area shape="rect" id="node11" href="$classcom_1_1tw_1_1paintbots_1_1_renderables_1_1_u_i_player_board.xhtml" title=" " alt="" coords="701,267,900,308"/>
+<area shape="rect" id="node12" href="$classcom_1_1tw_1_1paintbots_1_1_renderables_1_1_u_i_timer.xhtml" title=" " alt="" coords="701,332,900,373"/>
+<area shape="rect" id="node2" href="$classcom_1_1tw_1_1paintbots_1_1_renderables_1_1_renderable.xhtml" title=" " alt="" coords="208,169,407,211"/>
+<area shape="rect" id="node3" href="$classcom_1_1tw_1_1paintbots_1_1_entity.xhtml" title=" " alt="" coords="5,177,160,203"/>
+<area shape="rect" id="node5" href="$classcom_1_1tw_1_1paintbots_1_1_items_1_1_refill_place_base.xhtml" title=" " alt="" coords="954,5,1141,47"/>
+<area shape="rect" id="node7" href="$classcom_1_1tw_1_1paintbots_1_1_renderables_1_1_direction_indicator.xhtml" title=" " alt="" coords="948,71,1147,112"/>
+<area shape="rect" id="node8" href="$classcom_1_1tw_1_1paintbots_1_1_renderables_1_1_player_animation.xhtml" title=" " alt="" coords="948,136,1147,177"/>
+</map>

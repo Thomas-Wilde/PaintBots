@@ -1,0 +1,8 @@
+<map id="com.tw.paintbots.Renderables.StartTimer" name="com.tw.paintbots.Renderables.StartTimer">
+<area shape="rect" id="node1" title=" " alt="" coords="59,367,258,408"/>
+<area shape="rect" id="node2" href="$classcom_1_1tw_1_1paintbots_1_1_renderables_1_1_u_i_digit.xhtml" title=" " alt="" coords="59,276,258,317"/>
+<area shape="rect" id="node3" href="$classcom_1_1tw_1_1paintbots_1_1_renderables_1_1_texture_grid.xhtml" title=" " alt="" coords="59,185,258,227"/>
+<area shape="rect" id="node4" href="$classcom_1_1tw_1_1paintbots_1_1_renderables_1_1_renderable.xhtml" title=" " alt="" coords="59,95,258,136"/>
+<area shape="rect" id="node5" href="$classcom_1_1tw_1_1paintbots_1_1_entity.xhtml" title=" " alt="" coords="5,5,160,32"/>
+<area shape="rect" id="node6" title=" " alt="" coords="183,5,289,32"/>
+</map>

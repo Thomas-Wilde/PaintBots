@@ -1,0 +1,8 @@
+<map id="com.tw.paintbots.Renderables.AnimatedRenderable" name="com.tw.paintbots.Renderables.AnimatedRenderable">
+<area shape="rect" id="node1" title=" " alt="" coords="701,39,900,80"/>
+<area shape="rect" id="node5" href="$classcom_1_1tw_1_1paintbots_1_1_renderables_1_1_direction_indicator.xhtml" title=" " alt="" coords="948,5,1147,47"/>
+<area shape="rect" id="node6" href="$classcom_1_1tw_1_1paintbots_1_1_renderables_1_1_player_animation.xhtml" title=" " alt="" coords="948,71,1147,112"/>
+<area shape="rect" id="node2" href="$classcom_1_1tw_1_1paintbots_1_1_renderables_1_1_simple_renderable.xhtml" title=" " alt="" coords="455,39,653,80"/>
+<area shape="rect" id="node3" href="$classcom_1_1tw_1_1paintbots_1_1_renderables_1_1_renderable.xhtml" title=" " alt="" coords="208,39,407,80"/>
+<area shape="rect" id="node4" href="$classcom_1_1tw_1_1paintbots_1_1_entity.xhtml" title=" " alt="" coords="5,46,160,73"/>
+</map>
