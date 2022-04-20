@@ -50,4 +50,4 @@ jobs:
         DATE_VAL: ${{ steps.date.outputs.date }}
 
     - name: List files
-      run: ls ./desktop/build/libs
+      run: echo ls ./desktop/build/libs/
