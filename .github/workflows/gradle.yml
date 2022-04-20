@@ -45,13 +45,20 @@ jobs:
     - name: Rename file based on current date
       run: |
        echo date is $DATE_VAL
-       mkdir release
-       mv ./desktop/build/libs/desktop-1.0.jar ./release/paintbots_0.$DATE_VAL.jar
-       ls ./release
+       mkdir deploy
+       mkdir deploy/release
+       mv ./desktop/build/libs/desktop-1.0.jar ./deploy/release/paintbots_0.$DATE_VAL.jar
+       ls ./deploy/release
       env:
         DATE_VAL: ${{ steps.date.outputs.date }}
 
     - name: Create index.html for release directory
       run: |
-       tree -H './release' -L 1 --noreport --charset utf-8 -P "*.jar" -o ./release/index.html
-       ls ./release
+       tree -H './deploy/release' -L 1 --noreport --charset utf-8 -P "*.jar" -o ./deploy/release/index.html
+       ls ./deploy/release
+
+    - name: Deploy
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./deploy
