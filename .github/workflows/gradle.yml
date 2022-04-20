@@ -24,6 +24,14 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
+    - name: Doxygen Action
+      uses: mattnotmitt/doxygen-action@v1.1.0
+      with:
+        # Path to Doxyfile
+        doxyfile-path: "./core/src/Doxyfile" # default is ./Doxyfile
+        # Working directory
+        working-directory: "." # default is .
+
     - name: Set up JDK 11
       uses: actions/setup-java@v2
       with:
@@ -45,20 +53,21 @@ jobs:
     - name: Rename file based on current date
       run: |
        echo date is $DATE_VAL
-       mkdir deploy
-       mkdir deploy/release
-       mv ./desktop/build/libs/desktop-1.0.jar ./deploy/release/paintbots_0.$DATE_VAL.jar
-       ls ./deploy/release
+       mkdir html/release
+       mv ./desktop/build/libs/desktop-1.0.jar ./html/release/paintbots_0.$DATE_VAL.jar
+       ls ./html/release
       env:
         DATE_VAL: ${{ steps.date.outputs.date }}
 
     - name: Create index.html for release directory
       run: |
-       tree -H './deploy/release' -L 1 --noreport --charset utf-8 -P "*.jar" -o ./deploy/release/index.html
-       ls ./deploy/release
+       cd html/release
+       tree -H '.' -L 1 --noreport --charset utf-8 -P "*.jar" -o index.html
+       ls
+       cd ../..
 
     - name: Deploy
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./deploy
+        publish_dir: ./html
