@@ -165,10 +165,10 @@ public class GameManager {
  /**
   * The update routine that is called in the loop. This method can only be
   * called by the PaintBotsGame class. Depending on the GameState different
-  * things happen:*
+  * things happen:
   * - MENU: The keyboard controls are used to select bots and levels
   * - STARTTIMER: Count down 5 seconds at the start of the game.
-  * - GANE: Update all entities, especially the players/bots.
+  * - GAME: Update all entities, especially the players/bots.
   *
   * @param key The hidden GameKey which is only available to the PaintBotsGame
   *        class.
