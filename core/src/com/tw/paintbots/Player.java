@@ -301,8 +301,10 @@ public abstract class Player extends Entity {
   public void destroy(SecretKey key) {
     Objects.requireNonNull(key);
     // ---
-    animation.destroy(key);
-    dir_indicator.destroy(key);
+    if (animation != null)
+      animation.destroy(key);
+    if (dir_indicator != null)
+      dir_indicator.destroy(key);
   }
 
   // --------------------------------------------------------------- //
