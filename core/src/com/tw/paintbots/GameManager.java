@@ -689,6 +689,7 @@ public class GameManager {
     // --- try to access the constructor
     try {
       Constructor<?> cons = bot_class.getConstructor(String.class);
+      cons.setAccessible(true);
       player = (AIPlayer) cons.newInstance("AI_" + bot_name + player_idx);
     } catch (Exception e) {
       System.out.println(e.getMessage());

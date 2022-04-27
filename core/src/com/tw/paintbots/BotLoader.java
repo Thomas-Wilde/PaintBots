@@ -3,7 +3,6 @@ package com.tw.paintbots;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
-
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -11,6 +10,12 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.List;
+// import java.lang.module.ModuleDescriptor.Modifier;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.Method;
+import java.lang.reflect.Field;
 
 /** Class to load AI bots from the folder ./bots. */
 public class BotLoader extends ClassLoader {
@@ -109,7 +114,7 @@ public class BotLoader extends ClassLoader {
       throws MalformedURLException {
     // ---
     HashMap<String, Class<?>> bots = new HashMap<>();
-    File file = new File(run_dir);
+    File file = new File(run_dir + "/");
     URL url = file.toURI().toURL();
     URL[] urls = new URL[] {url};
     URLClassLoader cl = new URLClassLoader(urls);
@@ -117,11 +122,14 @@ public class BotLoader extends ClassLoader {
     for (String filename : filenames) {
       try {
         Class<?> bot_class = cl.loadClass("bots." + filename);
-        AIPlayer bot_obj = (AIPlayer) bot_class.getConstructor().newInstance();
+        // --- set access to constructors
+        Constructor<?> constructor = bot_class.getConstructor();
+        constructor.setAccessible(true);
+        AIPlayer bot_obj = (AIPlayer) constructor.newInstance();
         bots.put(bot_obj.getBotName(), bot_class);
       } catch (Exception e) {
-        System.out.println("Could not load bot from 'bots." + filename + ": "
-            + e.getMessage());
+        System.out.println(
+            "Could not load bot '" + filename + "'': " + e.getMessage());
       }
     }
     try {
