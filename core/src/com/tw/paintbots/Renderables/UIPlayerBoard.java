@@ -41,7 +41,7 @@ public class UIPlayerBoard extends SimpleRenderable {
       score[i].setDigitValue(0);
       score[i].setAnker(this);
     }
-    score[2].setDigitValue(12);
+    score[2].setDigitValue(12); // that is the % sign
   }
 
   // --------------------------------------------------------------- //
@@ -147,8 +147,8 @@ public class UIPlayerBoard extends SimpleRenderable {
     paintbar.setAmount((float) paint / max_paint);
     // ---
     int points = player.getScore();
-    score[1].setDigitValue(points % 10);
     score[0].setDigitValue(points / 10);
+    score[1].setDigitValue(points % 10);
   }
 
   // --------------------------------------------------------------- //
