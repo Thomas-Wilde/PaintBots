@@ -22,6 +22,7 @@ import com.tw.paintbots.Renderables.RepeatedRenderable;
 import com.tw.paintbots.Renderables.UITimer;
 import com.tw.paintbots.Renderables.StartTimer;
 import com.tw.paintbots.Renderables.UIPlayerBoard;
+import com.tw.paintbots.Renderables.UIResultBoard;
 import com.tw.paintbots.Renderables.UIMenuItem;
 import com.tw.paintbots.LevelLoader;
 import com.tw.paintbots.Items.Item;
@@ -194,6 +195,11 @@ public class GameManager {
       case GAME:
         updateGame();
         break;
+      // ---
+      case RESULT:
+        updateResultTable();
+        break;
+      // ---
       default:
         break;
     }
@@ -370,6 +376,89 @@ public class GameManager {
   }
 
   // --------------------------------------------------------------- //
+  private void updateResultTable() {
+    // --- exit on ESC or return
+    if (Gdx.input.isKeyPressed(Keys.ESCAPE)
+        || Gdx.input.isKeyPressed(Keys.ENTER))
+      exitGame();
+  }
+
+  // --------------------------------------------------------------- //
+  private void exitGame() {
+    System.out.println("-------------------------");
+    System.out.println("score:");
+    for (Player player : players) {
+      // --- do nothing if player is inactive
+      if (!player.isActive())
+        continue;
+      // --- print the bot name
+      if (player.getType() == PlayerType.HUMAN)
+        System.out.print("Human: ");
+      else
+        System.out.print(((AIPlayer) player).getBotName() + ": ");
+      // --- print score
+      System.out.println(player.getScore());
+    }
+    Gdx.app.exit();
+  }
+
+  // --------------------------------------------------------------- //
+  private void createResultTable() {
+    // --- background
+    SimpleRenderable result_background =
+        new SimpleRenderable("result", 31, "result_board.png");
+    // --- place at correct position
+    int cam_res_x = game_settings.cam_resolution[0];
+    int cam_res_y = game_settings.cam_resolution[1];
+    int width = (int) (cam_res_x * 0.6);
+    result_background.setRenderWidth(width);
+    int height = result_background.getRenderSize()[1];
+    int offset = (int) (cam_res_x * 0.2);
+    int pos_x = offset;
+    int pos_y = (cam_res_y - height) / 2;
+    result_background.setRenderPosition(Array.of(pos_x, pos_y));
+    // ---
+    addRenderable(result_background);
+    addEntity(result_background);
+    // --- create a score board for eacht player
+    int count = 0;
+    for (Player player : players) {
+      if (!player.isActive())
+        continue;
+      createPlayerResultUI(player, result_background, count);
+      count++;
+    }
+  }
+
+  // --------------------------------------------------------------- //
+  private void createPlayerResultUI(Player player, SimpleRenderable anker,
+      int idx) {
+    UIResultBoard result_board = new UIResultBoard(player);
+    // --- define position and size
+    result_board.setAnker(anker);
+    int[] anker_size = anker.getRenderSize();
+    int anker_width = anker_size[0];
+    int width = (int) (anker_width * 0.45);
+    result_board.setRenderWidth(width);
+    int height = result_board.getRenderSize()[1];
+    int offset_x = (int) (anker_width * 0.1 / 3);
+    int offset_y = height + (int) (anker_width * 0.05);
+    int pos_x = (idx % 2 == 1) ? width + 2 * offset_x : offset_x;
+    int pos_y =
+        (idx > 1) ? anker_size[1] - 2 * offset_y : anker_size[1] - offset_y;
+    result_board.setRenderPosition(Array.of(pos_x, pos_y));
+    // ---
+    addRenderable(result_board);
+    addEntity(result_board);
+  }
+
+  // --------------------------------------------------------------- //
+  private void showResultTable() {
+    createResultTable();
+    game_state = GameState.RESULT;
+  }
+
+  // --------------------------------------------------------------- //
  //@formatter:off
  /**
   * This method effectively runs the game and is called in each update loop.
@@ -390,12 +479,13 @@ public class GameManager {
         entity.update(secret_key);
     // ---
     moveAllPlayers();
-    if (timer.getTime() > 0) {
-      paintOnCanvas();
-      adjustScores();
-    }
+    paintOnCanvas();
+    adjustScores();
     // ---
     interactWithBoard();
+    // --- if the game is over show the result board
+    if (timer.getTime() <= 0)
+      showResultTable();
   }
 
   // --------------------------------------------------------------- //
@@ -534,6 +624,7 @@ public class GameManager {
       int pos_y = res_y - (height * (i + 2));
       select.setRenderPosition(Array.of(pos_x, pos_y));
 
+      // index 4 shows the level selection
       if (i == 4)
         select.setItemName("default", secret_key);
 
@@ -701,6 +792,7 @@ public class GameManager {
 
   // --------------------------------------------------------------- //
   private void initPlayerRenderables() {
+    int active_count = 0;
     for (Player player : players) {
       if (player.getType() == PlayerType.NONE)
         continue;
@@ -708,11 +800,12 @@ public class GameManager {
       player.setAnker(floor, secret_key);
       player_layer.add(player.getAnimation(secret_key));
       addRenderable(player.getIndicator(secret_key));
-      createPlayerUI(player);
+      createPlayerUI(player, active_count);
       // --- place renderable at correct location
       Vector2 pos = player.getPosition();
       player.getAnimation(secret_key)
           .setRenderPosition(Array.of((int) pos.x, (int) pos.y));
+      ++active_count;
     }
   }
 
@@ -738,9 +831,8 @@ public class GameManager {
   }
 
   // --------------------------------------------------------------- //
-  private void createPlayerUI(Player player) {
+  private void createPlayerUI(Player player, int idx) {
     UIPlayerBoard info_board = new UIPlayerBoard(player);
-    int player_id = player.getPaintColor().getColorID();
     // --- define position and size
     int[] anker = timer.getRenderPosition();
     int ui_width = game_settings.ui_width;
@@ -749,8 +841,8 @@ public class GameManager {
     int height = info_board.getRenderSize()[1];
     int offset_x = (int) (ui_width * 0.1 / 3);
     int offset_y = height + (int) (ui_width * 0.05);
-    int pos_x = (player_id % 2 == 1) ? offset_x : width + 2 * offset_x;
-    int pos_y = (player_id > 1) ? anker[1] - offset_y : anker[1] - 2 * offset_y;
+    int pos_x = (idx % 2 == 1) ? width + 2 * offset_x : offset_x;
+    int pos_y = (idx > 1) ? anker[1] - 2 * offset_y : anker[1] - offset_y;
     info_board.setRenderPosition(Array.of(pos_x, pos_y));
     // ---
     addRenderable(info_board);
