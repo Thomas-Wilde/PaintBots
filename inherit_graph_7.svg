@@ -9,9 +9,9 @@
 <g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 73.5)">
 <title>Graphical Class Hierarchy</title>
 <polygon fill="white" stroke="transparent" points="-4,4 -4,-73.5 260,-73.5 260,4 -4,4"/>
-<!-- Node29 -->
+<!-- Node30 -->
 <g id="node1" class="node">
-<title>Node29</title>
+<title>Node30</title>
 <g id="a_node1"><a xlink:title=" ">
 <polygon fill="white" stroke="#bfbfbf" points="0,-22.5 0,-41.5 59,-41.5 59,-22.5 0,-22.5"/>
 <text text-anchor="middle" x="29.5" y="-29.5" font-family="Helvetica,sans-Serif" font-size="10.00">Exception</text>
@@ -28,24 +28,24 @@
 </a>
 </g>
 </g>
-<!-- Node29&#45;&gt;Node0 -->
+<!-- Node30&#45;&gt;Node0 -->
 <g id="edge1" class="edge">
-<title>Node29&#45;&gt;Node0</title>
+<title>Node30&#45;&gt;Node0</title>
 <path fill="none" stroke="midnightblue" d="M69.19,-37.91C78.71,-39.37 89.23,-40.97 99.82,-42.59"/>
 <polygon fill="midnightblue" stroke="midnightblue" points="69.71,-34.45 59.29,-36.4 68.65,-41.37 69.71,-34.45"/>
 </g>
-<!-- Node31 -->
+<!-- Node32 -->
 <g id="node3" class="node">
-<title>Node31</title>
+<title>Node32</title>
 <g id="a_node3"><a xlink:href="classcom_1_1tw_1_1paintbots_1_1_player_exception.xhtml" target="_top" xlink:title=" ">
 <polygon fill="white" stroke="black" points="95,-0.5 95,-19.5 256,-19.5 256,-0.5 95,-0.5"/>
 <text text-anchor="middle" x="175.5" y="-7.5" font-family="Helvetica,sans-Serif" font-size="10.00">com.tw.paintbots.PlayerException</text>
 </a>
 </g>
 </g>
-<!-- Node29&#45;&gt;Node31 -->
+<!-- Node30&#45;&gt;Node32 -->
 <g id="edge2" class="edge">
-<title>Node29&#45;&gt;Node31</title>
+<title>Node30&#45;&gt;Node32</title>
 <path fill="none" stroke="midnightblue" d="M69.4,-26.06C82.56,-24.05 97.61,-21.75 112.13,-19.53"/>
 <polygon fill="midnightblue" stroke="midnightblue" points="68.65,-22.63 59.29,-27.6 69.71,-29.55 68.65,-22.63"/>
 </g>
