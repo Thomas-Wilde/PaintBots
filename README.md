@@ -25,14 +25,28 @@ is part of a programming contest. The contest is organized for the lecture
 [*Algorithmen & Datenstrukturen*][aud] at the Otto-von-Guericke University in
 Magdeburg in the summer term of 2022.
 
+## The Contest
+
+For some more information about the contest you can read the following documents
+(currently only available in German):
+
+- [The intro](docs/intro.md)
+- [Information about creating levels](docs/levels.md)
+- [Information about creating bots](docs/bot.md)
+
 ## Release & Documentation
 You can find the current release [here][paintbots-release]. The corresponding source
 code documentation is [here][doxygen-url].
 
-## The Contest
+## Compile the Project
+PaintBots uses the [gradle] build tool. Everything you should do is clone the 
+repository, build the code and run the game. The following lines should do the
+job:
 
-For some more information about the contest you can read
+```
+git clone git@github.com:Thomas-Wilde/PaintBots.git
+cd PaintBots
+./gradlew desktop:run
+```
 
-- [The intro (in german)](docs/intro.md)
-- [Information about creating levels](docs/levels.md)
-- [Information about creating bots](docs/bot.md)
+[gradle]: https://gradle.org
