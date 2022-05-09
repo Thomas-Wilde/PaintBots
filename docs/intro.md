@@ -1,10 +1,7 @@
 Paint Bots - Es geht los!
 ===
 
-Das Einreichen bei dieser Aufgabe ist freiwillig. Es gibt keine wirkliche Aufgabe aber Du kannst uns Feedback schicken.
-{: .p .information }
-
-![PaintBotsGame](./figures/PaintBots_game.png){:width="40%"}
+![PaintBotsGame](./figures/PaintBots_game.png)
 
 **Paint Bots** ist ein lokales Multiplayer Spiel, das sich am Klassiker
 **[Battle Painters]** orientiert. Bis zu vier Personen treten gegeneinander
@@ -115,7 +112,7 @@ Figuren und das Level einstellen kannst - nutze dazu die Cursor-Tasten. Im
 Grundzustand gibt es keine Bots und nur ein Level. Mit der Auswahl des *grünen
 Häkchens* und der Enter-Taste startet das Spiel.
 
-![PaintBotsMenu](./figures/PaintBots_menu.png){:width="40%"}
+![PaintBotsMenu](./figures/PaintBots_menu.png)
 
 ## Starten des Spiels unter Windows
 
@@ -154,43 +151,3 @@ Kommilitonen. Falls es dann immer noch Probleme gibt, schreibt Thomas eine Mail.
 
 ---
 
-{::comment}
-Auf dieser Seite könnt Ihr Euren Bot zum Programmierwettbewerb
-einreichen.
-
-Die Beschreibung zum Wettbewerb findet Ihr **[hier]**.
-
-Die Einreichung über dieses System bringt einige Vorteile und
-eine Einschränkung mit sich
-
-
-{::comment}
-
-## Vorteile
-
-- Euer Bot wird sofort getestet, so dass Ihr seht ob er die
-  Anforderungen für die **[Klausurzulassung]** erfüllt.
-- Wir können Eure Einreichungen auf diese Weise sehr einfach sammeln,
-  auf Plagiate prüfen und an *Dirk "Apo" Aporius* für den
-  eigentlichen Wettbewerb -- die "Kür", wo Eure Bots gegeneinander
-  antreten -- weiterreichen.
-
-## Einschränkung
-
-- Ihr müsst Euren Bot **in einer Datei** `MyBot.java` (und damit als
-  Klasse `MyBot`) implementieren.
-- Ihr könnt die Methode `public String getName()` überschreiben um den
-  Namen Eures Bots auszugeben.
-
-Bitte denkt daran den Abschnitt `@Student(author="N", matrikelnummer="M")` auszufüllen!
-{: .p .important}
-
-dabei stehen
-
-- `N`für Deinen Namen
-- `M` für Deine Matrikelnummer und
-
-**Wir wünschen Euch viel Spaß & Erfolg!**
-
-[hier]: /page/wettbewerb
-[Klausurzulassung]: /page/public/admission
