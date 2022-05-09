@@ -28,3 +28,11 @@ Magdeburg in the summer term of 2022.
 ## Release & Documentation
 You can find the current release [here][paintbots-release]. The corresponding source
 code documentation is [here][doxygen-url].
+
+## The Contest
+
+For some more information about the contest you can read
+
+- [The intro (in german)](docs/intro.md)
+- [Information about creating levels](docs/levels.md)
+- [Information about creating bots](docs/bot.md)
