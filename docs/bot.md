@@ -10,7 +10,7 @@ Spiel einmal, wie im [Intro] beschrieben!
 [API]: https://de.wikipedia.org/wiki/Programmierschnittstelle
 [aktuelle]: https://thomas-wilde.github.io/PaintBots/release/
 [git-Repository]: https://github.com/Thomas-Wilde/PaintBots
-[Intro]: https://github.com/Thomas-Wilde/PaintBots/docs/intro.md
+[Intro]: https://github.com/Thomas-Wilde/PaintBots/blob/docs/docs/intro.md
 
 
 ## Die Bot Klasse
