@@ -39,9 +39,15 @@ You can find the current release [here][paintbots-release]. The corresponding so
 code documentation is [here][doxygen-url].
 
 ## Compile the Project
-PaintBots uses the [gradle] build tool. Everything you should do is clone the 
-repository, build the code and run the game. The following lines should do the
-job:
+PaintBots uses [libGDX] a Java based game engine. To compile
+the project you have to install a Java SDK. [libGDX] is
+compatible with Java 13 or less -- there is a problem with
+newer version. The git-repository contains a automatic build
+pipeline using Java 11, so if everything else does not work,
+Java 11 should definitely do. PaintBots uses the [gradle] build
+tool. Everything you should do is clone the repository,
+build the code and run the game. The following lines should
+do the job:
 
 ```
 git clone git@github.com:Thomas-Wilde/PaintBots.git
@@ -50,3 +56,4 @@ cd PaintBots
 ```
 
 [gradle]: https://gradle.org
+[libGDX]: https://libgdx.com/
