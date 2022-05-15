@@ -47,6 +47,8 @@ public class GameManager {
    */
   public static final class SecretKey { private SecretKey() {} }
   private static final SecretKey secret_key = new SecretKey();
+  public static final class SecretLock { private SecretLock() {} }
+  private static final SecretLock secret_lock = new SecretLock();
   //@formatter:on
 
   // ======================== GameState enum ======================= //
@@ -590,7 +592,7 @@ public class GameManager {
         int pos_x = origin[0] + x;
         int pos_y = origin[1] + y;
         ItemType type = area.getType(x, y);
-        board.setType(pos_x, pos_y, type, secret_key);
+        board.setType(pos_x, pos_y, type, secret_lock);
       }
   }
 
@@ -991,7 +993,7 @@ public class GameManager {
 
   // --------------------------------------------------------------- //
   private void initCanvasRenderables() {
-    canvas.initCanvasRenderables(secret_key);
+    canvas.initCanvasRenderables(secret_lock);
     canvas.setAnker(floor);
     addRenderable(canvas);
   }
@@ -1007,10 +1009,10 @@ public class GameManager {
       Vector2 position = player_states.get(idx).new_pos;
       int radius = player.getPaintRadius();
       int used_paint = canvas.paint(position, player.getPaintColor(), radius,
-          board, secret_key);
+          board, secret_lock);
       player.decreasePaintAmount(used_paint, secret_key);
     }
-    canvas.sendPixmapToTexture(secret_key);
+    canvas.sendPixmapToTexture(secret_lock);
   }
 
   // --------------------------------------------------------------- //

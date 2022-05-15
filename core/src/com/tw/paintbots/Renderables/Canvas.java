@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
 import com.tw.paintbots.GameManager.SecretKey;
+import com.tw.paintbots.GameManager.SecretLock;
 import com.tw.paintbots.Items.ItemType;
 import com.tw.paintbots.PaintColor;
 import com.tw.paintbots.Board;
@@ -65,9 +66,10 @@ public class Canvas extends Renderable {
    * which color. Thie texture is initialized in this method. This method is
    * only available to the GameManager.
    *
-   * @param key SecretKey only available to the GameManager
+   * @param lock SecretLock only available to the GameManager
    */
-  public void initCanvasRenderables(SecretKey key) {
+  public void initCanvasRenderables(SecretLock lock) {
+    Objects.requireNonNull(lock);
     createPixmap();
     texture = new Texture(pixmap);
     initTextureRegion();
@@ -83,14 +85,14 @@ public class Canvas extends Renderable {
    * @param color The color used for the coloring process.
    * @param radius The radius of the colored circle in pixels/cells.
    * @param board The board, to check if the location is paintable.
-   * @param key SecretKey only available to the GameManager
+   * @param lock SecretKey only available to the GameManager
    * @return The number of pixels that were painted. This number corresponds to
    *         the amount of paint needed for the coloring.
    */
   public int paint(Vector2 position, PaintColor color, int radius, Board board,
-      SecretKey key) {
+      SecretLock lock) {
     // ---
-    Objects.requireNonNull(key);
+    Objects.requireNonNull(lock);
     // ---
     int paint = 0;
     pixmap.setColor(color.getColor());
@@ -167,7 +169,8 @@ public class Canvas extends Renderable {
    *
    * @param key SecretKey only available to the GameManager
    */
-  public void sendPixmapToTexture(SecretKey key) {
+  public void sendPixmapToTexture(SecretLock lock) {
+    Objects.requireNonNull(lock);
     texture.draw(pixmap, 0, 0);
   }
 
