@@ -63,7 +63,7 @@ public abstract class Player extends Entity {
    *
    * @return The ID of player.
    */
-  public int getPlayerID() {
+  final public int getPlayerID() {
     return player_id;
   }
 
@@ -72,37 +72,37 @@ public abstract class Player extends Entity {
    * @return The unique painting color of the player.
    * @see PaintColor
    */
-  public PaintColor getPaintColor() {
+  final public PaintColor getPaintColor() {
     return paint_colors[player_id];
   }
 
   // --------------------------------------------------------------- //
   /** @return The number of canvas pixels that still can get painted. */
-  public int getPaintAmount() {
+  final public int getPaintAmount() {
     return paint_amount;
   }
 
   // --------------------------------------------------------------- //
   /** @return The maximum paint the player can carry. */
-  public int getMaximumPaintAmount() {
+  final public int getMaximumPaintAmount() {
     return max_paint_amount;
   }
 
   // --------------------------------------------------------------- //
   /** @return The current score of the player as a value in [0, 99]. */
-  public int getScore() {
+  final public int getScore() {
     return score;
   }
 
   // --------------------------------------------------------------- //
   /** @return The radius of a single paint stroke/circle. */
-  public int getPaintRadius() {
+  final public int getPaintRadius() {
     return paint_radius;
   }
 
   // --------------------------------------------------------------- //
   /** @return The amount of paint refilled per second at a paint store. */
-  public int getRefillSpeed() {
+  final public int getRefillSpeed() {
     return refill_speed;
   }
 
@@ -124,7 +124,7 @@ public abstract class Player extends Entity {
    *
    * @param lock The SecretLock that is only available to the GameManager.
    */
-  public void initRenderables(SecretLock lock) {
+  final public void initRenderables(SecretLock lock) {
     Objects.requireNonNull(lock);
     loadAnimation();
     dir_indicator = new DirectionIndicator();
@@ -151,7 +151,7 @@ public abstract class Player extends Entity {
    *         player.
    * @see PlayerState
    */
-  public PlayerState getState() {
+  final public PlayerState getState() {
     PlayerState state = new PlayerState();
     state.player_id = this.player_id;
     state.paint_color = this.getPaintColor();
@@ -178,7 +178,7 @@ public abstract class Player extends Entity {
    * @param anker - The Renderable used for relative positioning.
    * @param lock The SecretLock that is only available to the GameManager.
    */
-  public void setAnker(Renderable anker, SecretLock lock) {
+  final public void setAnker(Renderable anker, SecretLock lock) {
     Objects.requireNonNull(lock);
     animation.setAnker(anker);
   }
@@ -190,7 +190,7 @@ public abstract class Player extends Entity {
    * @param amount - The maximum paint the player can hold.
    * @param lock The SecretLock that is only available to the GameManager.
    */
-  public void setMaximumPaintAmount(int amount, SecretLock lock) {
+  final public void setMaximumPaintAmount(int amount, SecretLock lock) {
     Objects.requireNonNull(lock);
     max_paint_amount = Math.max(0, amount);
   }
@@ -202,7 +202,7 @@ public abstract class Player extends Entity {
    * @param amount - The current paint the player holds.
    * @param lock The SecretLock that is only available to the GameManager.
    */
-  public void setPaintAmount(int amount, SecretLock lock) {
+  final public void setPaintAmount(int amount, SecretLock lock) {
     Objects.requireNonNull(lock);
     paint_amount = Math.max(0, amount);
     paint_amount = Math.min(amount, max_paint_amount);
@@ -215,7 +215,7 @@ public abstract class Player extends Entity {
    * @param plus - Increase the paint amount of the player by this value.
    * @param lock The SecretLock that is only available to the GameManager.
    */
-  public void increasePaintAmount(int plus, SecretLock lock) {
+  final public void increasePaintAmount(int plus, SecretLock lock) {
     Objects.requireNonNull(lock);
     setPaintAmount(paint_amount + plus, lock);
   }
@@ -227,7 +227,7 @@ public abstract class Player extends Entity {
    * @param minus - Decrease the paint amount of the player by this value.
    * @param lock The SecretLock that is only available to the GameManager.
    */
-  public void decreasePaintAmount(int minus, SecretLock lock) {
+  final public void decreasePaintAmount(int minus, SecretLock lock) {
     Objects.requireNonNull(lock);
     setPaintAmount(paint_amount - minus, lock);
   }
@@ -239,7 +239,7 @@ public abstract class Player extends Entity {
    * @param radius - The radius of this players paint circle.
    * @param lock The SecretLock that is only available to the GameManager.
    */
-  public void setPaintRadius(int radius, SecretLock lock) {
+  final public void setPaintRadius(int radius, SecretLock lock) {
     Objects.requireNonNull(lock);
     this.paint_radius = radius;
   }
@@ -252,7 +252,7 @@ public abstract class Player extends Entity {
    *        second if he is next to a paint store of its color.
    * @param lock The SecretLock that is only available to the GameManager.
    */
-  public void setRefillSpeed(int paint_per_second, SecretLock lock) {
+  final public void setRefillSpeed(int paint_per_second, SecretLock lock) {
     Objects.requireNonNull(lock);
     this.refill_speed = paint_per_second;
   }
@@ -264,7 +264,7 @@ public abstract class Player extends Entity {
    * @param points - Set the score of this player (cut to [0,100])
    * @param lock The SecretLock that is only available to the GameManager.
    */
-  public void setScore(int points, SecretLock lock) {
+  final public void setScore(int points, SecretLock lock) {
     Objects.requireNonNull(lock);
     score = Math.max(0, points);
     score = Math.min(points, 100);
@@ -292,7 +292,7 @@ public abstract class Player extends Entity {
 
   // ====================== Entity methods ====================== //
   @Override
-  public boolean setPosition(Vector2 position, SecretLock lock) {
+  final public boolean setPosition(Vector2 position, SecretLock lock) {
     old_position = this.getPosition();
     return super.setPosition(position, lock);
   }
