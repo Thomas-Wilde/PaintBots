@@ -2,7 +2,6 @@ package com.tw.paintbots;
 
 import java.util.Objects;
 
-import com.tw.paintbots.GameManager.SecretKey;
 import com.tw.paintbots.GameManager.SecretLock;
 import com.tw.paintbots.Items.ItemType;
 
@@ -107,7 +106,7 @@ public class Board {
    * @param x coordinate of the location
    * @param y coordinate of the location
    * @param type which the cell should be
-   * @param lock SecretKey only available to the GameManager
+   * @param lock SecretLock only available to the GameManager
    */
   public void setType(int x, int y, ItemType type, SecretLock lock) {
     Objects.requireNonNull(lock);

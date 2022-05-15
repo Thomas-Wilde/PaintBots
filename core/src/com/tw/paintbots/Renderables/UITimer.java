@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.tw.paintbots.Array;
 import com.tw.paintbots.GameManager;
 import com.tw.paintbots.GameManager.SecretKey;
+import com.tw.paintbots.GameManager.SecretLock;
 
 // =============================================================== //
 public class UITimer extends SimpleRenderable {
@@ -120,11 +121,11 @@ public class UITimer extends SimpleRenderable {
 
   // ======================== Entity methods ======================= //
   @Override
-  public void destroy(SecretKey key) {
-    Objects.requireNonNull(key);
+  public void destroy(SecretLock lock) {
+    Objects.requireNonNull(lock);
     for (UIDigit digit : digits)
-      digit.destroy(key);
-    super.destroy(key);
+      digit.destroy(lock);
+    super.destroy(lock);
   }
 
   // --------------------------------------------------------------- //

@@ -159,7 +159,7 @@ public class GameManager {
   public void destroy(GameKey key) {
     Objects.requireNonNull(key);
     for (Entity entity : entities)
-      entity.destroy(secret_key);
+      entity.destroy(secret_lock);
     entities.clear();
   }
 
@@ -276,7 +276,7 @@ public class GameManager {
    */
   private void changeSelectedBot() {
     UIMenuItem bot_select = menu_item.get(menu_select);
-    int bot_index = bot_select.getItemIndex(secret_key);
+    int bot_index = bot_select.getItemIndex(secret_lock);
     // ---
     if (Gdx.input.isKeyPressed(Keys.LEFT))
       bot_index -= 1;
@@ -288,7 +288,7 @@ public class GameManager {
     if (bot_index >= bot_names.size())
       bot_index = 0;
     // ---
-    bot_select.setItem(bot_names.get(bot_index), bot_index, secret_key);
+    bot_select.setItem(bot_names.get(bot_index), bot_index, secret_lock);
   }
 
   // --------------------------------------------------------------- //
@@ -298,7 +298,7 @@ public class GameManager {
    */
   private void changeSelectedLevel() {
     UIMenuItem level_select = menu_item.get(menu_select);
-    int level_index = level_select.getItemIndex(secret_key);
+    int level_index = level_select.getItemIndex(secret_lock);
     // ---
     if (Gdx.input.isKeyPressed(Keys.LEFT))
       level_index -= 1;
@@ -310,7 +310,8 @@ public class GameManager {
     if (level_index >= level_files.size())
       level_index = 0;
     // ---
-    level_select.setItem(level_files.get(level_index), level_index, secret_key);
+    level_select.setItem(level_files.get(level_index), level_index,
+        secret_lock);
   }
 
   // --------------------------------------------------------------- //
@@ -322,7 +323,7 @@ public class GameManager {
     // --- read bot settings from menu
     for (int i = 0; i < 4; ++i) {
       UIMenuItem bot_select = menu_item.get(i);
-      int bot_idx = bot_select.getItemIndex(secret_key);
+      int bot_idx = bot_select.getItemIndex(secret_lock);
       if (bot_idx == 0) {
         game_settings.player_types[i] = PlayerType.HUMAN;
         game_settings.bot_names[i] = "Human";
@@ -331,15 +332,15 @@ public class GameManager {
         game_settings.bot_names[i] = "---";
       } else {
         game_settings.player_types[i] = PlayerType.AI;
-        game_settings.bot_names[i] = bot_select.getItemName(secret_key);
+        game_settings.bot_names[i] = bot_select.getItemName(secret_lock);
       }
     }
     // --- read level settings from menu
     UIMenuItem level_select = menu_item.get(4);
     String level_file = "";
-    if (level_select.getItemIndex(secret_key) != 0)
+    if (level_select.getItemIndex(secret_lock) != 0)
       level_file = System.getProperty("user.dir") + "/levels/"
-          + level_select.getItemName(secret_key);
+          + level_select.getItemName(secret_lock);
     game_settings.level_file = level_file;
     // ---
     game_state = GameState.STARTTIMER;
@@ -628,7 +629,7 @@ public class GameManager {
 
       // index 4 shows the level selection
       if (i == 4)
-        select.setItemName("default", secret_key);
+        select.setItemName("default", secret_lock);
 
       addRenderable(select);
       addEntity(select);
@@ -693,7 +694,7 @@ public class GameManager {
     int width = game_settings.board_dimensions[0];
     int height = game_settings.board_dimensions[1];
     floor.setRenderSize(width, height);
-    Entity.setBoardDimensions(Array.of(width, height), secret_key);
+    Entity.setBoardDimensions(Array.of(width, height), secret_lock);
     // ---
     addRenderable(floor);
     addEntity(floor);
@@ -798,14 +799,14 @@ public class GameManager {
     for (Player player : players) {
       if (player.getType() == PlayerType.NONE)
         continue;
-      player.initRenderables(secret_key);
-      player.setAnker(floor, secret_key);
-      player_layer.add(player.getAnimation(secret_key));
-      addRenderable(player.getIndicator(secret_key));
+      player.initRenderables(secret_lock);
+      player.setAnker(floor, secret_lock);
+      player_layer.add(player.getAnimation(secret_lock));
+      addRenderable(player.getIndicator(secret_lock));
       createPlayerUI(player, active_count);
       // --- place renderable at correct location
       Vector2 pos = player.getPosition();
-      player.getAnimation(secret_key)
+      player.getAnimation(secret_lock)
           .setRenderPosition(Array.of((int) pos.x, (int) pos.y));
       ++active_count;
     }
@@ -824,12 +825,12 @@ public class GameManager {
     int start_paint = game_settings.start_paint_amount;
     int paint_radius = game_settings.paint_radius;
     int refill_speed = game_settings.refill_speed;
-    player.setPosition(pos, secret_key);
+    player.setPosition(pos, secret_lock);
     player.setInitialDirection(dir, secret_key);
-    player.setMaximumPaintAmount(max_paint, secret_key);
-    player.setPaintAmount(start_paint, secret_key);
-    player.setPaintRadius(paint_radius, secret_key);
-    player.setRefillSpeed(refill_speed, secret_key);
+    player.setMaximumPaintAmount(max_paint, secret_lock);
+    player.setPaintAmount(start_paint, secret_lock);
+    player.setPaintRadius(paint_radius, secret_lock);
+    player.setRefillSpeed(refill_speed, secret_lock);
   }
 
   // --------------------------------------------------------------- //
@@ -889,7 +890,7 @@ public class GameManager {
     clampPositionToBorder(new_pos);
     clampPositionToObstacles(new_pos, old_pos);
     // ---
-    player.setPosition(new_pos, secret_key);
+    player.setPosition(new_pos, secret_lock);
     player_states.get(player_idx).new_pos = new_pos;
   }
 
@@ -917,7 +918,7 @@ public class GameManager {
     if (cell_type == ItemType.REFILL) {
       int refill_speed = player.getRefillSpeed();
       int increase = (int) (refill_speed * delta_time);
-      player.increasePaintAmount(increase, secret_key);
+      player.increasePaintAmount(increase, secret_lock);
       return;
     }
 
@@ -930,7 +931,7 @@ public class GameManager {
     //@formatter:on
       int refill_speed = player.getRefillSpeed();
       int increase = (int) (refill_speed * delta_time);
-      player.increasePaintAmount(increase, secret_key);
+      player.increasePaintAmount(increase, secret_lock);
     }
   }
 
@@ -1010,7 +1011,7 @@ public class GameManager {
       int radius = player.getPaintRadius();
       int used_paint = canvas.paint(position, player.getPaintColor(), radius,
           board, secret_lock);
-      player.decreasePaintAmount(used_paint, secret_key);
+      player.decreasePaintAmount(used_paint, secret_lock);
     }
     canvas.sendPixmapToTexture(secret_lock);
   }
@@ -1026,7 +1027,7 @@ public class GameManager {
     Player player = players.get(player_idx);
     long pixels = canvas.getPaintCount()[player_idx];
     long score = pixels * 100 / (board.getPaintableArea() + 1); // max 99%
-    player.setScore((int) score, secret_key);
+    player.setScore((int) score, secret_lock);
   }
 
   // --------------------------------------------------------------- //
@@ -1044,7 +1045,7 @@ public class GameManager {
     // ---
     String level_file = game_settings.level_file;
     List<Item> level_items = new ArrayList<>();
-    Level level = new Level(level_file, secret_key);
+    Level level = new Level(level_file, secret_lock);
     level.loadLevel(level_items, game_settings);
     // ---
     for (Item item : level_items) {

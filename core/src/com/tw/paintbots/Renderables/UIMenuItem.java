@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 
 import com.tw.paintbots.GameManager.SecretKey;
+import com.tw.paintbots.GameManager.SecretLock;
 import com.tw.paintbots.Array;
 
 // =============================================================== //
@@ -127,31 +128,31 @@ public class UIMenuItem extends SimpleRenderable {
   }
 
   // --------------------------------------------------------------- //
-  public void setItem(String name, int index, SecretKey key) {
-    Objects.requireNonNull(key);
+  public void setItem(String name, int index, SecretLock lock) {
+    Objects.requireNonNull(lock);
     item_name = name;
     item_index = index;
     label.setText(name);
   }
 
   // --------------------------------------------------------------- //
-  public void setItemName(String text, SecretKey key) {
-    Objects.requireNonNull(key);
+  public void setItemName(String text, SecretLock lock) {
+    Objects.requireNonNull(lock);
     item_name = text;
     label.setText(text);
   }
 
   // --------------------------------------------------------------- //
   /** Get the name of the item. */
-  public String getItemName(SecretKey key) {
-    Objects.requireNonNull(key);
+  public String getItemName(SecretLock lock) {
+    Objects.requireNonNull(lock);
     return item_name;
   }
 
   // --------------------------------------------------------------- //
   /** Get the index of the bot in the list with the loaded bots. */
-  public int getItemIndex(SecretKey key) {
-    Objects.requireNonNull(key);
+  public int getItemIndex(SecretLock lock) {
+    Objects.requireNonNull(lock);
     return item_index;
   }
 
@@ -201,12 +202,12 @@ public class UIMenuItem extends SimpleRenderable {
 
   // --------------------------------------------------------------- //
   @Override
-  public void destroy(SecretKey key) {
-    Objects.requireNonNull(key);
+  public void destroy(SecretLock lock) {
+    Objects.requireNonNull(lock);
     // ---
     if (portrait != null)
-      portrait.destroy(key);
-    sword.destroy(key);
-    super.destroy(key);
+      portrait.destroy(lock);
+    sword.destroy(lock);
+    super.destroy(lock);
   }
 }

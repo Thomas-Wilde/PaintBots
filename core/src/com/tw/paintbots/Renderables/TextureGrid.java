@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import com.tw.paintbots.GameManager.SecretKey;
+import com.tw.paintbots.GameManager.SecretLock;
 
 // =============================================================== //
 public abstract class TextureGrid extends Renderable {
@@ -81,8 +82,8 @@ public abstract class TextureGrid extends Renderable {
 
   // ======================== Entity methods ======================= //
   @Override
-  public void destroy(SecretKey key) {
-    Objects.requireNonNull(key);
+  public void destroy(SecretLock lock) {
+    Objects.requireNonNull(lock);
     for (Texture texture : loaded_textures)
       texture.dispose();
   }

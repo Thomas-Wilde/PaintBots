@@ -5,6 +5,7 @@ import java.util.Objects;
 import com.badlogic.gdx.math.Vector2;
 
 import com.tw.paintbots.GameManager.SecretKey;
+import com.tw.paintbots.GameManager.SecretLock;
 import com.tw.paintbots.Renderables.DirectionIndicator;
 import com.tw.paintbots.Renderables.PlayerAnimation;
 import com.tw.paintbots.Renderables.Renderable;
@@ -34,11 +35,11 @@ public abstract class Player extends Entity {
    * Get the Renderable that draws the character. This method is only available
    * to the GameManager. *
    *
-   * @param key The SecretKey owned by the GameManager.
+   * @param lock The SecretLock owned by the GameManager.
    * @return The PlayerAnimation with the updated texture.
    */
-  public PlayerAnimation getAnimation(SecretKey key) {
-    Objects.requireNonNull(key);
+  public PlayerAnimation getAnimation(SecretLock lock) {
+    Objects.requireNonNull(lock);
     return animation;
   }
 
@@ -47,11 +48,11 @@ public abstract class Player extends Entity {
    * Get the Renderable that draws the direction indicator around the character.
    * This method is only available to the GameManager. *
    *
-   * @param key The SecretKey owned by the GameManager.
+   * @param lock The SecretLock owned by the GameManager.
    * @return A reference to the DirectionInidicator of this player.
    */
-  public DirectionIndicator getIndicator(SecretKey key) {
-    Objects.requireNonNull(key);
+  public DirectionIndicator getIndicator(SecretLock lock) {
+    Objects.requireNonNull(lock);
     return dir_indicator;
   }
 
@@ -121,10 +122,10 @@ public abstract class Player extends Entity {
    * Load and initialize the animation and the direction indicator. This method
    * is only availbale to the GameManager.
    *
-   * @param key The SecretKey that is only available to the GameManager.
+   * @param lock The SecretLock that is only available to the GameManager.
    */
-  public void initRenderables(SecretKey key) {
-    Objects.requireNonNull(key);
+  public void initRenderables(SecretLock lock) {
+    Objects.requireNonNull(lock);
     loadAnimation();
     dir_indicator = new DirectionIndicator();
     dir_indicator.setAnker(animation);
@@ -175,10 +176,10 @@ public abstract class Player extends Entity {
    * only availbale to the GameManager.
    *
    * @param anker - The Renderable used for relative positioning.
-   * @key The SecretKey that is only available to the GameManager.
+   * @param lock The SecretLock that is only available to the GameManager.
    */
-  public void setAnker(Renderable anker, SecretKey key) {
-    Objects.requireNonNull(key);
+  public void setAnker(Renderable anker, SecretLock lock) {
+    Objects.requireNonNull(lock);
     animation.setAnker(anker);
   }
 
@@ -187,10 +188,10 @@ public abstract class Player extends Entity {
    * This method is only availbale to the GameManager.
    *
    * @param amount - The maximum paint the player can hold.
-   * @key The SecretKey that is only available to the GameManager.
+   * @param lock The SecretLock that is only available to the GameManager.
    */
-  public void setMaximumPaintAmount(int amount, SecretKey key) {
-    Objects.requireNonNull(key);
+  public void setMaximumPaintAmount(int amount, SecretLock lock) {
+    Objects.requireNonNull(lock);
     max_paint_amount = Math.max(0, amount);
   }
 
@@ -199,10 +200,10 @@ public abstract class Player extends Entity {
    * This method is only availbale to the GameManager.
    *
    * @param amount - The current paint the player holds.
-   * @key The SecretKey that is only available to the GameManager.
+   * @param lock The SecretLock that is only available to the GameManager.
    */
-  public void setPaintAmount(int amount, SecretKey key) {
-    Objects.requireNonNull(key);
+  public void setPaintAmount(int amount, SecretLock lock) {
+    Objects.requireNonNull(lock);
     paint_amount = Math.max(0, amount);
     paint_amount = Math.min(amount, max_paint_amount);
   }
@@ -212,11 +213,11 @@ public abstract class Player extends Entity {
    * This method is only availbale to the GameManager.
    *
    * @param plus - Increase the paint amount of the player by this value.
-   * @key The SecretKey that is only available to the GameManager.
+   * @param lock The SecretLock that is only available to the GameManager.
    */
-  public void increasePaintAmount(int plus, SecretKey key) {
-    Objects.requireNonNull(key);
-    setPaintAmount(paint_amount + plus, key);
+  public void increasePaintAmount(int plus, SecretLock lock) {
+    Objects.requireNonNull(lock);
+    setPaintAmount(paint_amount + plus, lock);
   }
 
   // --------------------------------------------------------------- //
@@ -224,11 +225,11 @@ public abstract class Player extends Entity {
    * This method is only availbale to the GameManager.
    *
    * @param minus - Decrease the paint amount of the player by this value.
-   * @key The SecretKey that is only available to the GameManager.
+   * @param lock The SecretLock that is only available to the GameManager.
    */
-  public void decreasePaintAmount(int minus, SecretKey key) {
-    Objects.requireNonNull(key);
-    setPaintAmount(paint_amount - minus, key);
+  public void decreasePaintAmount(int minus, SecretLock lock) {
+    Objects.requireNonNull(lock);
+    setPaintAmount(paint_amount - minus, lock);
   }
 
   // --------------------------------------------------------------- //
@@ -236,10 +237,10 @@ public abstract class Player extends Entity {
    * This method is only availbale to the GameManager.
    *
    * @param radius - The radius of this players paint circle.
-   * @key The SecretKey that is only available to the GameManager.
+   * @param lock The SecretLock that is only available to the GameManager.
    */
-  public void setPaintRadius(int radius, SecretKey key) {
-    Objects.requireNonNull(key);
+  public void setPaintRadius(int radius, SecretLock lock) {
+    Objects.requireNonNull(lock);
     this.paint_radius = radius;
   }
 
@@ -249,10 +250,10 @@ public abstract class Player extends Entity {
    *
    * @param paint_per_second - The paint amount this player refills in one
    *        second if he is next to a paint store of its color.
-   * @key The SecretKey that is only available to the GameManager.
+   * @param lock The SecretLock that is only available to the GameManager.
    */
-  public void setRefillSpeed(int paint_per_second, SecretKey key) {
-    Objects.requireNonNull(key);
+  public void setRefillSpeed(int paint_per_second, SecretLock lock) {
+    Objects.requireNonNull(lock);
     this.refill_speed = paint_per_second;
   }
 
@@ -261,10 +262,10 @@ public abstract class Player extends Entity {
    * This method is only availbale to the GameManager.
    *
    * @param points - Set the score of this player (cut to [0,100])
-   * @key The SecretKey that is only available to the GameManager.
+   * @param lock The SecretLock that is only available to the GameManager.
    */
-  public void setScore(int points, SecretKey key) {
-    Objects.requireNonNull(key);
+  public void setScore(int points, SecretLock lock) {
+    Objects.requireNonNull(lock);
     score = Math.max(0, points);
     score = Math.min(points, 100);
   }
@@ -291,20 +292,20 @@ public abstract class Player extends Entity {
 
   // ====================== Entity methods ====================== //
   @Override
-  public boolean setPosition(Vector2 position, SecretKey key) {
+  public boolean setPosition(Vector2 position, SecretLock lock) {
     old_position = this.getPosition();
-    return super.setPosition(position, key);
+    return super.setPosition(position, lock);
   }
 
   // --------------------------------------------------------------- //
   @Override
-  public void destroy(SecretKey key) {
-    Objects.requireNonNull(key);
+  public void destroy(SecretLock lock) {
+    Objects.requireNonNull(lock);
     // ---
     if (animation != null)
-      animation.destroy(key);
+      animation.destroy(lock);
     if (dir_indicator != null)
-      dir_indicator.destroy(key);
+      dir_indicator.destroy(lock);
   }
 
   // --------------------------------------------------------------- //

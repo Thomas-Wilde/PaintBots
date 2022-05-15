@@ -6,6 +6,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
+import com.tw.paintbots.GameManager.SecretLock;
 import com.tw.paintbots.GameManager.SecretKey;
 
 /**
@@ -99,8 +100,8 @@ public class SimpleRenderable extends Renderable {
    * Free the memory for the texture. Only the GameManager can call this method.
    */
   @Override
-  public void destroy(SecretKey key) {
-    Objects.requireNonNull(key);
+  public void destroy(SecretLock lock) {
+    Objects.requireNonNull(lock);
     texture.dispose();
   }
 

@@ -9,7 +9,7 @@ import com.badlogic.gdx.math.Vector2;
 
 import com.tw.paintbots.Items.Item;
 import com.tw.paintbots.Items.RefillPlaceBase;
-import com.tw.paintbots.GameManager.SecretKey;
+import com.tw.paintbots.GameManager.SecretLock;
 import com.tw.paintbots.Items.ItemProperties;
 
 // --------------------------------------------------------------- //
@@ -17,13 +17,13 @@ public class Level {
   private static HashMap<String, ItemProperties> item_dict = null;
   private String file;
   private List<Item> items = null;
-  private SecretKey secret_key = null;
+  private SecretLock secret_lock = null;
   private GameSettings settings = null;
 
   // --------------------------------------------------------------- //
-  public Level(String file, SecretKey secret_key) {
+  public Level(String file, SecretLock secret_lock) {
     this.file = file;
-    this.secret_key = secret_key;
+    this.secret_lock = secret_lock;
     if (item_dict == null)
       initItemDictionary();
   }
@@ -113,7 +113,7 @@ public class Level {
     // ---
     Item item = new Item(props.name, props.tex_file, props.area_file,
         Array.of(sx, sy), props.occ_depth);
-    item.setPosition(new Vector2(x, y), secret_key);
+    item.setPosition(new Vector2(x, y), secret_lock);
     item.setRenderPosition(Array.of(x, y));
     item.init();
     items.add(item);
@@ -127,7 +127,7 @@ public class Level {
     float sy = Float.parseFloat(data[4]);
     // ---
     Item item = new RefillPlaceBase(Array.of(sx,sy));
-    item.setPosition(new Vector2(x, y), secret_key);
+    item.setPosition(new Vector2(x, y), secret_lock);
     item.setRenderPosition(Array.of(x, y));
     item.init();
     items.add(item);

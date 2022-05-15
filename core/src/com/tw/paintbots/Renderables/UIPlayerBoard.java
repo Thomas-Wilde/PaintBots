@@ -5,6 +5,7 @@ import java.util.Objects;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import com.tw.paintbots.GameManager.SecretKey;
+import com.tw.paintbots.GameManager.SecretLock;
 import com.tw.paintbots.Player;
 import com.tw.paintbots.Array;
 
@@ -153,13 +154,13 @@ public class UIPlayerBoard extends SimpleRenderable {
 
   // --------------------------------------------------------------- //
   @Override
-  public void destroy(SecretKey key) {
-    Objects.requireNonNull(key);
+  public void destroy(SecretLock lock) {
+    Objects.requireNonNull(lock);
     // ---
-    paintbar.destroy(key);
+    paintbar.destroy(lock);
     for (UIDigit digit : score)
-      digit.destroy(key);
-    portrait.destroy(key);
-    super.destroy(key);
+      digit.destroy(lock);
+    portrait.destroy(lock);
+    super.destroy(lock);
   }
 }

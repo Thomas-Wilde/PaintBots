@@ -167,7 +167,7 @@ public class Canvas extends Renderable {
    * The players draw into an internal pixmap. This methods converts the Pixmap
    * to a texture. This method is only available to the GameManager.
    *
-   * @param key SecretKey only available to the GameManager
+   * @param lock SecretLock only available to the GameManager
    */
   public void sendPixmapToTexture(SecretLock lock) {
     Objects.requireNonNull(lock);
@@ -207,8 +207,8 @@ public class Canvas extends Renderable {
    * Free the memory for the texture. Only the GameManager can call this method.
    */
   @Override
-  public void destroy(SecretKey key) {
-    Objects.requireNonNull(key);
+  public void destroy(SecretLock lock) {
+    Objects.requireNonNull(lock);
     texture.dispose();
   }
 

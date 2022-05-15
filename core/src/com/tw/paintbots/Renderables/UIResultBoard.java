@@ -5,6 +5,7 @@ import java.util.Objects;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import com.tw.paintbots.GameManager.SecretKey;
+import com.tw.paintbots.GameManager.SecretLock;
 import com.tw.paintbots.Player;
 import com.tw.paintbots.Array;
 
@@ -122,11 +123,11 @@ public class UIResultBoard extends SimpleRenderable {
 
   // --------------------------------------------------------------- //
   @Override
-  public void destroy(SecretKey key) {
-    Objects.requireNonNull(key);
+  public void destroy(SecretLock lock) {
+    Objects.requireNonNull(lock);
     // ---
     if (portrait != null)
-      portrait.destroy(key);
-    super.destroy(key);
+      portrait.destroy(lock);
+    super.destroy(lock);
   }
 }
