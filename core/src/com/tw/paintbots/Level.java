@@ -9,20 +9,22 @@ import com.badlogic.gdx.math.Vector2;
 
 import com.tw.paintbots.Items.Item;
 import com.tw.paintbots.Items.RefillPlaceBase;
+import com.tw.paintbots.LevelLoader.LevelInfo;
 import com.tw.paintbots.GameManager.SecretLock;
 import com.tw.paintbots.Items.ItemProperties;
+import com.tw.paintbots.LevelLoader;
 
 // --------------------------------------------------------------- //
 public class Level {
   private static HashMap<String, ItemProperties> item_dict = null;
-  private String file;
+  private LevelInfo level;
   private List<Item> items = null;
   private SecretLock secret_lock = null;
   private GameSettings settings = null;
 
   // --------------------------------------------------------------- //
-  public Level(String file, SecretLock secret_lock) {
-    this.file = file;
+  public Level(LevelInfo level, SecretLock secret_lock) {
+    this.level = level;
     this.secret_lock = secret_lock;
     if (item_dict == null)
       initItemDictionary();
@@ -64,15 +66,23 @@ public class Level {
     this.items = items;
     this.settings = settings;
     // --- try to load file from settings
-    FileHandle file_handle = new FileHandle(file);
+    String file_path = null;
+    FileHandle file_handle = null;
+    if (level.internal) {
+      file_handle = Gdx.files.internal("levels/" + level.file_name);
+    } else {
+      file_path = System.getProperty("user.dir") + "/levels/" + level.file_name;
+      file_handle = new FileHandle(file_path);
+    }
     // --- load default level if level file was not opened
     if (!file_handle.exists()) {
-      if (file.length() == 0)
+      if (level.file_name.length() == 0)
         System.out.println("No level selected.");
       else
-        System.out.println("Level file '" + file + "'does not exists.");
+        System.out
+            .println("Level file '" + level.file_name + "'does not exists.");
       System.out.println("Load default level.");
-      file_handle = Gdx.files.internal("level.lvl");
+      file_handle = Gdx.files.internal("levels/level.lvl");
       if (!file_handle.exists()) {
         System.out.println("Default level could not be loaded.");
         return;

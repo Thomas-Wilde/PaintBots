@@ -28,6 +28,7 @@ import com.tw.paintbots.LevelLoader;
 import com.tw.paintbots.Items.Item;
 import com.tw.paintbots.Items.ItemArea;
 import com.tw.paintbots.Items.ItemType;
+import com.tw.paintbots.LevelLoader.LevelInfo;
 import com.tw.paintbots.NonePlayer;
 
 // =============================================================== //
@@ -83,7 +84,7 @@ public class GameManager {
   private ArrayList<String> bot_names = new ArrayList<>();
   private int menu_select = 0;
   private boolean read_menu_key = true;
-  private ArrayList<String> level_files = new ArrayList<>();
+  private ArrayList<LevelInfo> levels = new ArrayList<>();
 
   // --- List of Entities needed to create other ones
   private SimpleRenderable floor = null;
@@ -143,8 +144,10 @@ public class GameManager {
    */
   private void loadLevels() {
     LevelLoader level_loader = new LevelLoader();
-    level_files = level_loader.loadLevelFiles();
-    level_files.add(0, "default");
+    levels = level_loader.loadLevelFiles();
+    // ---
+    levels.add(0, new LevelInfo("level.lvl", "Nothing Special", true));
+    levels.add(1, new LevelInfo("blocked.lvl", "Blocked Corners", true));
   }
 
   // --------------------------------------------------------------- //
@@ -306,11 +309,11 @@ public class GameManager {
       level_index += 1;
     // --- clamp to entry count
     if (level_index < 0)
-      level_index = level_files.size() - 1;
-    if (level_index >= level_files.size())
+      level_index = levels.size() - 1;
+    if (level_index >= levels.size())
       level_index = 0;
     // ---
-    level_select.setItem(level_files.get(level_index), level_index,
+    level_select.setItem(levels.get(level_index).level_name, level_index,
         secret_lock);
   }
 
@@ -337,11 +340,8 @@ public class GameManager {
     }
     // --- read level settings from menu
     UIMenuItem level_select = menu_item.get(4);
-    String level_file = "";
-    if (level_select.getItemIndex(secret_lock) != 0)
-      level_file = System.getProperty("user.dir") + "/levels/"
-          + level_select.getItemName(secret_lock);
-    game_settings.level_file = level_file;
+    int level_idx = level_select.getItemIndex(secret_lock);
+    game_settings.level = levels.get(level_idx);
     // ---
     game_state = GameState.STARTTIMER;
     elapsed_time = 0.0;
@@ -629,7 +629,7 @@ public class GameManager {
 
       // index 4 shows the level selection
       if (i == 4)
-        select.setItemName("default", secret_lock);
+        select.setItemName(levels.get(0).level_name, secret_lock);
 
       addRenderable(select);
       addEntity(select);
@@ -1044,9 +1044,9 @@ public class GameManager {
     if (render_layers.get(20) == null)
       render_layers.put(20, new ArrayList<Renderable>());
     // ---
-    String level_file = game_settings.level_file;
+    LevelInfo level_info = game_settings.level;
     List<Item> level_items = new ArrayList<>();
-    Level level = new Level(level_file, secret_lock);
+    Level level = new Level(level_info, secret_lock);
     level.loadLevel(level_items, game_settings);
     // ---
     for (Item item : level_items) {

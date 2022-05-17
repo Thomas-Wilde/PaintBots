@@ -1,6 +1,8 @@
 package com.tw.paintbots;
 
 import com.badlogic.gdx.math.Vector2;
+import com.tw.paintbots.LevelLoader;
+import com.tw.paintbots.LevelLoader.LevelInfo;
 
 public class GameSettings {
   public PlayerType[] player_types =
@@ -15,7 +17,7 @@ public class GameSettings {
 
   public String back_texture = "plank_background.png";
   public String floor_texture = "floor_stone_medium.png";
-  public String level_file = "";
+  public LevelInfo level = new LevelInfo("level.lvl", "Nothing Special", true);
   public int[] board_dimensions = {1000, 1000};
   public int[] board_border = {100, 100};
   public int ui_width = 600;
