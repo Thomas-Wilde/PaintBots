@@ -210,6 +210,7 @@ public class Canvas extends Renderable {
   public void destroy(SecretLock lock) {
     Objects.requireNonNull(lock);
     texture.dispose();
+    pixmap.dispose();
   }
 
   // --------------------------------------------------------------- //
