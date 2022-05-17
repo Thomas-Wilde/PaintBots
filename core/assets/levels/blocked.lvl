@@ -1,0 +1,64 @@
+# This is a simple level file.
+# Comments start with a '#' and are ignored.
+# ---
+#
+# To place objects, use the following syntax:
+#
+# T,x,y,sx,sy
+#
+# T     - object type (possible types are listed below)
+#
+# x,y   - position of the object in x and y coordinates
+#       - 0 <= [x,y] < 1000
+#       - [x,y] of type int
+#       - 0,0 is bottom left
+#
+# sx,sy - scale factors in x and y direction, used to scale the graphics
+#       - [sx,sy] of type float
+#       - if the object is a player its initial direction
+#
+# --- list of items ---
+# Currently the following items are available:
+#
+# P*  - player; with position and initial direction; * in [0,...,3]
+# PB  - paint stand; a stand where all players can refill paint
+# RO  - refill orange; a stand where orange can refill
+# RG  - refill green; a stand where green can refill
+# RB  - refill blue; a stand where blue can refill
+# RP  - refill purple; a stand where purple can refill
+# FH  - fence horizontal
+# FV  - fence vertical
+# TS  - tree small
+# TM  - tree medium
+# TL  - tree large
+# BSH - barrel stack horizontal
+# PGH - pole green; a horizontal pole that is passable by green
+# PPH - pole purple; a horizontal pole that is passable by purple
+# PBH - pole blue; a horizontal pole that is passable by blue
+# POH - pole orange; a horizontal pole that is passable by orange
+# PGV - pole green; a vertical pole that is passable by green
+# PPV - pole purple; a vertical pole that is passable by purple
+# PBV - pole blue; a vertical pole that is passable by blue
+# POV - pole orange; a vertical pole that is passable by orange
+#
+# ---
+#
+# That is it. Hopefully, we have time to add some more items.
+# If you have any ideas for items, send an eMail!
+#
+# The lines below define the level and its objects.
+#
+P0,145,400,0.0,1.0
+P1,385,400,0.0,1.0
+P2,615,400,0.0,1.0
+P3,855,400,0.0,1.0
+#
+# paint refill
+# ---
+RG,120,120,0.35,0.35
+RB,120,920,0.35,0.35
+RO,890,120,0.35,0.35
+RP,890,920,0.35,0.35
+#
+# ---
+TM,490,490,1.00,1.00
