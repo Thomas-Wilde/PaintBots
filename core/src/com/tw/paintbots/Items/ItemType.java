@@ -1,5 +1,8 @@
 package com.tw.paintbots.Items;
 
+import com.tw.paintbots.Player;
+import com.tw.paintbots.PaintColor;
+
 // =============================================================== //
 /**
  * The ItemType defines which interactions a player can perform on a specific
@@ -17,7 +20,11 @@ public enum ItemType {
   REFILL_GREEN(11),  ///< Only green can refill here.
   REFILL_PURPLE(12), ///< Only purple can refill here.
   REFILL_BLUE(13),   ///< Only blue can refill here.
-  REFILL_ORANGE(14); ///< Only orange can refill here.
+  REFILL_ORANGE(14), ///< Only orange can refill here.
+  POLE_GREEN(21),    ///< Only green can pass.
+  POLE_PURPLE(22),   ///< Only purple can pass.
+  POLE_BLUE(23),     ///< Only blue can pass.
+  POLE_ORANGE(24);   ///< Only orange can pass.
   //@formatter:on
 
   private final int type_id;
@@ -52,9 +59,13 @@ public enum ItemType {
   public boolean isPaintable() {
     //@formatter:off
     switch (this) {
-      case NONE:     return true;
-      case OBSTACLE: return true;
-      case REFILL:   return true;
+      case NONE:        return true;
+      case OBSTACLE:    return true;
+      case REFILL:      return true;
+      case POLE_GREEN:  return true;
+      case POLE_PURPLE: return true;
+      case POLE_BLUE:   return true;
+      case POLE_ORANGE: return true;
       default:       return false;
     }
     //@formatter:on
@@ -70,11 +81,16 @@ public enum ItemType {
    * - false otherwise
    */
   //@formatter:on
-  public boolean isPassable() {
+  public boolean isPassable(Player player) {
+    PaintColor player_color = player.getPaintColor();
     //@formatter:off
     switch (this) {
       case OBSTACLE: return false;
       case BLOCKED:  return false;
+      case POLE_GREEN:  return player_color == PaintColor.GREEN;
+      case POLE_PURPLE: return player_color == PaintColor.PURPLE;
+      case POLE_BLUE:   return player_color == PaintColor.BLUE;
+      case POLE_ORANGE: return player_color == PaintColor.ORANGE;
       default:       return true;
     }
     //@formatter:on

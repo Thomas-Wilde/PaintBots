@@ -46,6 +46,16 @@ public class Level {
     item_dict.put("TL", new ItemProperties("TL", "TreeL",  "tree_l.png", "tree_l_area.png", 150));
 
     item_dict.put("BSH", new ItemProperties("BSH", "BarrelStack",  "barrel_stack_h.png", "barrel_stack_h_area.png", 100));
+
+    item_dict.put("PGH", new ItemProperties("PGH", "PoleGreenH",  "pole_green.png", "pole_green.png",  200));
+    item_dict.put("PPH", new ItemProperties("PPH", "PolePurpleH", "pole_purple.png","pole_purple.png", 200));
+    item_dict.put("PBH", new ItemProperties("PBH", "PoleBlueH",   "pole_blue.png",  "pole_blue.png",   200));
+    item_dict.put("POH", new ItemProperties("POH", "PoleOrangeH", "pole_blue.png",  "pole_blue.png",   200));
+
+    item_dict.put("PGV", new ItemProperties("PGV", "PoleGreenV",  "pole_vert_green.png", "pole_vert_green.png",  100));
+    item_dict.put("PPV", new ItemProperties("PPV", "PolePurpleV", "pole_vert_purple.png","pole_vert_purple.png", 100));
+    item_dict.put("PBV", new ItemProperties("PBV", "PoleBlueV",   "pole_vert_blue.png",  "pole_vert_blue.png",   100));
+    item_dict.put("POV", new ItemProperties("POV", "PoleOrangeV", "pole_vert_blue.png",  "pole_vert_blue.png",   100));
     //@formatter:on
   }
 
