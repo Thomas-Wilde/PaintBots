@@ -11,6 +11,17 @@ public class LevelLoader {
   private String run_dir = "";
   private String levels_dir = "";
 
+  static public class LevelInfo {
+    public LevelInfo(String file, String level, boolean internal) {
+      file_name = file;
+      level_name = level;
+      this.internal = internal;
+    }
+
+    String file_name = "";
+    String level_name = "";
+    boolean internal = false;
+  }
   // --------------------------------------------------------------- //
   public LevelLoader() {
     run_dir = System.getProperty("user.dir");
