@@ -6,9 +6,7 @@ import com.tw.paintbots.PaintColor;
 // =============================================================== //
 /**
  * The ItemType defines which interactions a player can perform on a specific
- * location at the game board.
- *
- * \see Board, Canvas, PaintColor
+ * location at the game board. \see Board, Canvas, PaintColor
  */
 // =============================================================== //
 public enum ItemType {
