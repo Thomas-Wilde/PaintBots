@@ -5,6 +5,11 @@ import java.util.Objects;
 import com.tw.paintbots.GameManager.SecretLock;
 import com.tw.paintbots.Items.ItemType;
 
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.graphics.PixmapIO;
+
 /**
  * The Board represents the area on which the players move around, i.e. the game
  * board. It contains different areas and gives information, e.g. about
@@ -120,5 +125,21 @@ public class Board {
     int idx = x + width * y;
     if (cells[idx] == ItemType.NONE) // do not overwrite earlier entries
       cells[idx] = type;
+  }
+
+  // --------------------------------------------------------------- //
+  public void saveToFile(SecretLock lock) {
+    Objects.requireNonNull(lock);
+    Pixmap pixmap = new Pixmap(width, height, Format.RGBA8888);
+    pixmap.setColor(1.0f, 1.0f, 1.0f, 0.0f);
+    for (int x = 0; x < width; ++x)
+      for (int y = 0; y < height; ++y) {
+        float type = (float) getType(x, y).getTypeID();
+        pixmap.setColor(type / 255.0f, type / 255.0f, type / 255.0f, 1.0f);
+        pixmap.drawPixel(x, height - y);
+      }
+    FileHandle fh = new FileHandle("board.png");
+    PixmapIO.writePNG(fh, pixmap);
+    pixmap.dispose();
   }
 }

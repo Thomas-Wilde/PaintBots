@@ -1058,6 +1058,8 @@ public class GameManager {
     // ---
     List<Renderable> items_list = render_layers.get(20);
     items_list.sort(new RenderDepthComparator());
+    // ---
+    board.saveToFile(secret_lock);
   }
 
   // --------------------------------------------------------------- //
