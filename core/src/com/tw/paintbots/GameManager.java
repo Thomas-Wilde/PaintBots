@@ -30,6 +30,8 @@ import com.tw.paintbots.Items.ItemArea;
 import com.tw.paintbots.Items.ItemType;
 import com.tw.paintbots.LevelLoader.LevelInfo;
 import com.tw.paintbots.NonePlayer;
+import com.tw.paintbots.Items.PowerUp;
+import com.tw.paintbots.Items.PowerUpType;
 
 // =============================================================== //
 /**
@@ -92,9 +94,13 @@ public class GameManager {
   private StartTimer start_timer = null;
   private ArrayList<Player> players = new ArrayList<>();
   private ArrayList<PlayerState> player_states = new ArrayList<>();
+  private ArrayList<Player> move_order = new ArrayList<>();
   private Canvas canvas = null;
   private Board board = null;
   private HashMap<String, Class<?>> bots = null;
+  private ArrayList<PowerUp> power_ups = new ArrayList<>();
+  private ArrayList<PowerUp> power_ups_spawned = new ArrayList<>();
+  private Entity power_up_statue = null;
 
   // ===================== GameManager methods ===================== //
   /**
@@ -195,6 +201,7 @@ public class GameManager {
       // ---
       case MENU: {
         updateMenu();
+        // startGame();
       }
         break;
       // ---
@@ -349,14 +356,15 @@ public class GameManager {
     int level_idx = level_select.getItemIndex(secret_lock);
     game_settings.level = levels.get(level_idx);
     // ---
-    game_state = GameState.STARTTIMER;
-    elapsed_time = 0.0;
-    hideMenu();
     try {
       loadMap();
     } catch (GameMangerException e) {
       e.printStackTrace();
     }
+    // ---
+    game_state = GameState.STARTTIMER;
+    elapsed_time = 0.0;
+    hideMenu();
   }
 
   // --------------------------------------------------------------- //
@@ -487,7 +495,9 @@ public class GameManager {
       if (entity.isActive())
         entity.update(secret_key);
     // ---
+    updateMoveOrder();
     moveAllPlayers();
+    handlePowerUps();
     paintOnCanvas();
     adjustScores();
     // ---
@@ -504,6 +514,31 @@ public class GameManager {
         continue;
       savePlayerState(idx);
     }
+  }
+
+  // --------------------------------------------------------------- //
+  private void updateMoveOrder() {
+    Player first = move_order.get(0);
+    move_order.remove(first);
+    move_order.add(first);
+  }
+
+  // --------------------------------------------------------------- //
+  /**
+   * In each turn the move order is cycled. E.g. if four players take part at
+   * the game in the 1st turn the order is (0,1,2,3) in the 2nd turn (1,2,3,0)
+   * in the 3rd turn (2,3,0,1) and so on. With this method you can get the order
+   * in which the players are handled. This is especially relevant for painting
+   * at the canvas (the last one decides the final color) and collecting power
+   * ups (the first one gets the power up).
+   *
+   * @return An ArrayList with the indexes of the players in their move order.
+   */
+  public ArrayList<Integer> getMoveOder() {
+    ArrayList<Integer> order = new ArrayList<>();
+    for (Player player : move_order)
+      order.add(player.getPlayerID());
+    return order;
   }
 
   // --------------------------------------------------------------- //
@@ -652,6 +687,7 @@ public class GameManager {
     initCanvasRenderables();
     createBoard();
     loadLevelContent();
+    generatePowerUps(14);
     // --- players have to be loaded after the level
     sanityCheckPlayerSettings(); // throws an exception if something is wrong
     createPlayers();
@@ -767,6 +803,7 @@ public class GameManager {
         initPlayer(player);
         addEntity(player);
         players.add(player);
+        move_order.add(player);
         player_states.add(new PlayerState());
         savePlayerState(i);
       } catch (Exception e) {
@@ -831,12 +868,14 @@ public class GameManager {
     int start_paint = game_settings.start_paint_amount;
     int paint_radius = game_settings.paint_radius;
     int refill_speed = game_settings.refill_speed;
+    int walk_speed = game_settings.walk_speed;
     player.setPosition(pos, secret_lock);
     player.setInitialDirection(dir, secret_key);
     player.setMaximumPaintAmount(max_paint, secret_lock);
     player.setPaintAmount(start_paint, secret_lock);
     player.setPaintRadius(paint_radius, secret_lock);
     player.setRefillSpeed(refill_speed, secret_lock);
+    player.setWalkSpeed(walk_speed, secret_lock);
   }
 
   // --------------------------------------------------------------- //
@@ -856,6 +895,7 @@ public class GameManager {
     // ---
     addRenderable(info_board);
     addEntity(info_board);
+    player.setUIBoard(info_board, secret_lock);
   }
 
   // --------------------------------------------------------------- //
@@ -892,7 +932,8 @@ public class GameManager {
     move_dir.setLength(1.0f);
     // ---
     Vector2 new_pos = old_pos.cpy();
-    new_pos.add(move_dir.scl(200.0f * (float) delta_time)); // scale
+    int walk_speed = player.getWalkSpeed();
+    new_pos.add(move_dir.scl(walk_speed * (float) delta_time)); // scale
     clampPositionToBorder(new_pos);
     clampPositionToObstacles(player, new_pos, old_pos);
     // ---
@@ -992,6 +1033,166 @@ public class GameManager {
   }
 
   // --------------------------------------------------------------- //
+  private void handlePowerUps() {
+    if (checkPowerUpSpawn())
+      spawnPowerUp();
+    checkPowerUpDeath();
+    // ---
+    ArrayList<PowerUp.Info> list = getActivePowerUps();
+    for (PowerUp.Info info : list)
+      System.out.println(info);
+    // ---
+    collectPowerUps();
+  }
+
+  // --------------------------------------------------------------- //
+  /**
+   * If there is one more PowerUp in the spawn list, check its spawn time and
+   * return true, if it should be spawned.
+   */
+  private boolean checkPowerUpSpawn() {
+    if (power_ups.isEmpty())
+      return false;
+    float spawn_time = power_ups.get(0).getSpawnTime();
+    return spawn_time < elapsed_time;
+  }
+
+  // --------------------------------------------------------------- //
+  /** Spawn the next power up fom the list. */
+  private void spawnPowerUp() {
+    PowerUp buff = power_ups.remove(0);
+    power_ups_spawned.add(buff);
+    addEntity(buff);
+    addRenderable(buff);
+  }
+
+  // --------------------------------------------------------------- //
+  /**
+   * PowerUps have a specific (random) life time. Check if PowerUps that
+   * currently lie around should be removed.
+   */
+  private void checkPowerUpDeath() {
+    for (PowerUp buff : power_ups_spawned) {
+      if (!buff.isActive())
+        continue;
+      if (buff.getDeathTime() < elapsed_time) {
+        buff.setActive(false);
+        buff.setVisible(false);
+      }
+    }
+  }
+
+  // --------------------------------------------------------------- //
+  /** Check if one of the players collides with the power ups. */
+  private void collectPowerUps() {
+    for (Player player : move_order) {
+      Vector2 player_pos = player.getPosition();
+      player_pos.add(0.0f, -25.0f);
+      for (PowerUp buff : power_ups_spawned) {
+        // --- if the power up was aleready collected do nothing
+        if (!buff.isActive())
+          continue;
+        // --- check distance to power up
+        Vector2 buff_pos = buff.getPosition();
+        double dist = buff_pos.sub(player_pos).len();
+        if (dist > 50.0f)
+          continue;
+        // --- if player is close, try to collect it
+        if (!collectPowerUp(buff, player))
+          continue;
+        // --- if the power up is collected, remove it from the board
+        buff.setActive(false);
+      }
+    }
+  }
+
+  // --------------------------------------------------------------- //
+  /** The specified player collects the specified power up. */
+  private boolean collectPowerUp(PowerUp buff, Player player) {
+    // --- activate instant items
+    if (!buff.getType().isCollectible())
+      return activatePowerUp(buff, player);
+    // --- check if the player has maximum power ups
+    if (player.getPowerUpCount() >= 2)
+      return false;
+    // --- if he has still space give him the power up
+    player.givePowerUp(buff, secret_lock);
+    activatePermanentPowerUp(buff, player);
+    return true;
+  }
+
+  // --------------------------------------------------------------- //
+  private void activatePermanentPowerUp(PowerUp buff, Player player) {
+    switch (buff.getType()) {
+      // --- increase the walk speed by 15%
+      case SPEED: {
+        int speed = player.getWalkSpeed();
+        speed *= 1.15f;
+        player.setWalkSpeed(speed, secret_lock);
+      }
+        break;
+      // --- increase the paint radius by 15%
+      case PAINT_RADIUS: {
+        int radius = player.getPaintRadius();
+        radius *= 1.50f;
+        player.setPaintRadius(radius, secret_lock);
+      }
+        break;
+      // --- increase the maximum paint amount radius by 15%
+      case PAINT_AMOUNT: {
+        int amount = player.getMaximumPaintAmount();
+        amount *= 1.20f;
+        player.setMaximumPaintAmount(amount, secret_lock);
+      }
+        break;
+      // --- increase the refill speed by 15%
+      case REFILL_SPEED: {
+        int refill = player.getRefillSpeed();
+        refill *= 1.50f;
+        player.setRefillSpeed(refill, secret_lock);
+      }
+        break;
+      // ---
+      default:
+        break;
+    }
+  }
+
+  // --------------------------------------------------------------- //
+  private boolean activatePowerUp(PowerUp buff, Player player) {
+    switch (buff.getType()) {
+      // --- refill the paint
+      case INSTANT_REFILL: {
+        int refill = player.getMaximumPaintAmount();
+        player.setPaintAmount(refill, secret_lock);
+      }
+        break;
+      // --- place 1 big color blob
+      case PAINT_EXPLOSION_I: {
+        Vector2 pos = player.getPosition();
+        PaintColor color = player.getPaintColor();
+        canvas.paint(pos, color, 250, board, secret_lock);
+      }
+        break;
+      // --- place 10 random color blobs
+      case PAINT_EXPLOSION_II: {
+        PaintColor color = player.getPaintColor();
+        for (int i = 0; i < 20; ++i) {
+          int[] rnd_pos = generatePowerUpPosition();
+          Vector2 pos = new Vector2(rnd_pos[0], rnd_pos[1]);
+          int rnd_size = (int) ((Math.random() * 0.5 + 0.25) * 100);
+          canvas.paint(pos, color, rnd_size, board, secret_lock);
+        }
+      }
+        break;
+      default:
+        break;
+    }
+    buff.setVisible(false);
+    return true;
+  }
+
+  // --------------------------------------------------------------- //
   private void createCanvas() {
     int width = game_settings.board_dimensions[0];
     int height = game_settings.board_dimensions[1];
@@ -1008,12 +1209,10 @@ public class GameManager {
 
   // --------------------------------------------------------------- //
   private void paintOnCanvas() {
-    for (int idx = 0; idx < players.size(); ++idx) {
-      Player player = players.get(idx);
-      if (player.getType() == PlayerType.NONE)
-        continue;
+    for (Player player : move_order) {
       if ((player.getPaintAmount() <= 0.0))
         continue;
+      int idx = player.getPlayerID();
       Vector2 position = player_states.get(idx).new_pos;
       int radius = player.getPaintRadius();
       int used_paint = canvas.paint(position, player.getPaintColor(), radius,
@@ -1069,6 +1268,52 @@ public class GameManager {
   }
 
   // --------------------------------------------------------------- //
+  private void generatePowerUps(int count) {
+    int game_time = game_settings.game_length;
+    int spawn_delta = game_time / (count + 2); // time between two spawns
+    // ---
+    int spawn_time = 0;
+    for (int i = 0; i < count; ++i) {
+      spawn_time += spawn_delta;
+      // --- random time
+      int time_off = (int) (((Math.random() * spawn_delta) - spawn_delta) / 2);
+      int life_time = (int) (((Math.random() * spawn_delta) + spawn_delta));
+      // --- random type
+      int rnd_idx = (int) (Math.random() * PowerUpType.getTypeCount());
+      PowerUpType type = PowerUpType.idxToType(rnd_idx);
+      // --- create the power up
+      PowerUp power_up = new PowerUp(type, spawn_time + time_off, life_time);
+      power_up.setAnker(floor);
+      // --- random position
+      int[] pos = generatePowerUpPosition();
+      power_up.setPosition(new Vector2(pos[0], pos[1]), secret_lock);
+      power_up.setRenderPosition(pos);
+      // ---
+      power_ups.add(power_up);
+    }
+  }
+
+  // --------------------------------------------------------------- //
+  /**
+   * PowerUps are generated at positions, that are passable. Note: this method
+   * does not check if the location is reachable.
+   *
+   * @return An array with the location on the board, that is passable.
+   */
+  private int[] generatePowerUpPosition() {
+    int brd_width = game_settings.board_dimensions[0];
+    int brd_height = game_settings.board_dimensions[1];
+    int offset = 100;
+    int rnd_x = 0;
+    int rnd_y = 0;
+    do {
+      rnd_x = (int) (Math.random() * (brd_width - offset) + offset / 2);
+      rnd_y = (int) (Math.random() * (brd_height - offset) + offset / 2);
+    } while (board.getType(rnd_x, rnd_y) != ItemType.NONE);
+    return Array.of(rnd_x, rnd_y);
+  }
+
+  // --------------------------------------------------------------- //
   // ============ public methods to acces game content ============= //
 
   // --------------------------------------------------------------- //
@@ -1102,7 +1347,6 @@ public class GameManager {
    */
   public double getDeltaTime() { return delta_time; }
 
-
   // --------------------------------------------------------------- //
   /**
    * Access the game board - the game board represents the current level. The
@@ -1127,6 +1371,20 @@ public class GameManager {
    * @see GameManager::getBoard()
    */
   public Canvas getCanvas() { return canvas; }
+
+  // --------------------------------------------------------------- //
+  /** Get a list with the current active power ups that are placed at the board.
+   * */
+  public ArrayList<PowerUp.Info> getActivePowerUps() {
+    ArrayList<PowerUp.Info> list = new ArrayList<>();
+    for (PowerUp buff : power_ups_spawned) {
+      if (!buff.isActive())
+        continue;
+      PowerUp.Info info = buff.getInfo();
+      list.add(info);
+    }
+    return list;
+  }
 
   //@formatter:on
 }
