@@ -1038,10 +1038,6 @@ public class GameManager {
       spawnPowerUp();
     checkPowerUpDeath();
     // ---
-    ArrayList<PowerUp.Info> list = getActivePowerUps();
-    for (PowerUp.Info info : list)
-      System.out.println(info);
-    // ---
     collectPowerUps();
   }
 
@@ -1210,6 +1206,8 @@ public class GameManager {
   // --------------------------------------------------------------- //
   private void paintOnCanvas() {
     for (Player player : move_order) {
+      if (!player.isActive())
+        continue;
       if ((player.getPaintAmount() <= 0.0))
         continue;
       int idx = player.getPlayerID();
@@ -1279,7 +1277,7 @@ public class GameManager {
       int time_off = (int) (((Math.random() * spawn_delta) - spawn_delta) / 2);
       int life_time = (int) (((Math.random() * spawn_delta) + spawn_delta));
       // --- random type
-      int rnd_idx = (int) (Math.random() * PowerUpType.getTypeCount());
+      int rnd_idx = (int) (Math.random() * (PowerUpType.getTypeCount() + 1));
       PowerUpType type = PowerUpType.idxToType(rnd_idx);
       // --- create the power up
       PowerUp power_up = new PowerUp(type, spawn_time + time_off, life_time);
