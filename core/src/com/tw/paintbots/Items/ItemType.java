@@ -79,17 +79,37 @@ public enum ItemType {
    * - false otherwise
    */
   //@formatter:on
-  public boolean isPassable(Player player) {
-    PaintColor player_color = player.getPaintColor();
+  public boolean isPassable() {
     //@formatter:off
     switch (this) {
       case OBSTACLE: return false;
       case BLOCKED:  return false;
+      default:       return true;
+    }
+    //@formatter:on
+  }
+
+  // --------------------------------------------------------------- //
+  //@formatter:off
+  /**
+   * Some items can only be passed by a specific player. With this
+   * method you can check if the location is passable by the given player.
+   * @param player The player that should pass this location.
+   * @return
+   * - true if the player can walk at this location
+   * - false otherwise
+   */
+  //@formatter:on
+
+  public boolean isPassable(Player player) {
+    PaintColor player_color = player.getPaintColor();
+    //@formatter:off
+    switch (this) {
       case POLE_GREEN:  return player_color == PaintColor.GREEN;
       case POLE_PURPLE: return player_color == PaintColor.PURPLE;
       case POLE_BLUE:   return player_color == PaintColor.BLUE;
       case POLE_ORANGE: return player_color == PaintColor.ORANGE;
-      default:       return true;
+      default:          return isPassable();
     }
     //@formatter:on
   }
