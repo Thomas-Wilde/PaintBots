@@ -1,5 +1,6 @@
 package com.tw.paintbots;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 import com.badlogic.gdx.math.Vector2;
@@ -9,6 +10,9 @@ import com.tw.paintbots.GameManager.SecretLock;
 import com.tw.paintbots.Renderables.DirectionIndicator;
 import com.tw.paintbots.Renderables.PlayerAnimation;
 import com.tw.paintbots.Renderables.Renderable;
+import com.tw.paintbots.Items.PowerUp;
+import com.tw.paintbots.Items.PowerUpType;
+import com.tw.paintbots.Renderables.UIPlayerBoard;
 
 // =============================================================== //
 public abstract class Player extends Entity {
@@ -26,7 +30,10 @@ public abstract class Player extends Entity {
   private int score = 0;
   private int paint_radius = 40;
   private int refill_speed = 50000;
+  private int walk_speed = 200;
   private Vector2 old_position = new Vector2(-1.0f, -1.0f);
+  private ArrayList<PowerUp> power_ups = new ArrayList<>();
+  private UIPlayerBoard board = null;
 
   // ======================== Getter/Setter ======================== //
 
@@ -104,6 +111,33 @@ public abstract class Player extends Entity {
   /** @return The amount of paint refilled per second at a paint store. */
   final public int getRefillSpeed() {
     return refill_speed;
+  }
+
+  // --------------------------------------------------------------- //
+  /** @return The distance a player walks in one update step. */
+  final public int getWalkSpeed() {
+    return walk_speed;
+  }
+
+  // --------------------------------------------------------------- //
+  /**
+   * @return An ArrayList with the types of the collected power ups.
+   * @see PowerUp, PowerUpType
+   */
+  final public ArrayList<PowerUpType> getPowerUps() {
+    ArrayList<PowerUpType> list = new ArrayList<>();
+    for (PowerUp buff : power_ups)
+      list.add(buff.getType());
+    return list;
+  }
+
+  // --------------------------------------------------------------- //
+  /**
+   * @return The current number of collected power ups.
+   * @see PowerUp, PowerUpType
+   */
+  final public int getPowerUpCount() {
+    return power_ups.size();
   }
 
   // ======================= Player methods ======================== //
@@ -185,6 +219,19 @@ public abstract class Player extends Entity {
 
   // --------------------------------------------------------------- //
   /**
+   * Set the UIPlayerBoard for this player. This is needed to correctly display
+   * the selected icons.
+   *
+   * @param board - The UI element that shows the player stats.
+   * @param lock The SecretLock that is only available to the GameManager.
+   */
+  final public void setUIBoard(UIPlayerBoard board, SecretLock lock) {
+    Objects.requireNonNull(lock);
+    this.board = board;
+  }
+
+  // --------------------------------------------------------------- //
+  /**
    * This method is only availbale to the GameManager.
    *
    * @param amount - The maximum paint the player can hold.
@@ -261,6 +308,18 @@ public abstract class Player extends Entity {
   /**
    * This method is only availbale to the GameManager.
    *
+   * @param walk_speed - The distance a player moves in one update step.
+   * @param lock The SecretLock that is only available to the GameManager.
+   */
+  final public void setWalkSpeed(int walk_speed, SecretLock lock) {
+    Objects.requireNonNull(lock);
+    this.walk_speed = walk_speed;
+  }
+
+  // --------------------------------------------------------------- //
+  /**
+   * This method is only availbale to the GameManager.
+   *
    * @param points - Set the score of this player (cut to [0,100])
    * @param lock The SecretLock that is only available to the GameManager.
    */
@@ -268,6 +327,30 @@ public abstract class Player extends Entity {
     Objects.requireNonNull(lock);
     score = Math.max(0, points);
     score = Math.min(points, 100);
+  }
+
+  // --------------------------------------------------------------- //
+  /**
+   * Give the power up to this player. It gives him a permanent boost.
+   *
+   * @param buff - The power up
+   * @param lock The SecretLock that is only available to the GameManager.
+   * @see PowerUp, PowerUpType
+   */
+  final public void givePowerUp(PowerUp buff, SecretLock lock) {
+    Objects.requireNonNull(lock);
+    if (getPowerUpCount() >= 2)
+      return;
+    power_ups.add(buff);
+    // --- set size and position of poower up item
+    buff.setAnker(board);
+    buff.setScale(Array.of(0.13f, 0.13f));
+    int w = buff.getRenderSize()[0];
+    int idx = getPowerUpCount() - 1;
+    int[] size = board.getRenderSize();
+    int pos_x0 = (int) ((size[0] - w) * (0.32 + idx * 0.355));
+    int pos_y = (int) (size[1] * 0.33);
+    buff.setRenderPosition(Array.of(pos_x0, pos_y));
   }
 
   // --------------------------------------------------------------- //
