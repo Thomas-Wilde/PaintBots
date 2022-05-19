@@ -12,7 +12,7 @@ import com.badlogic.gdx.graphics.Color;
  */
 // =============================================================== //
 public enum PaintColor {
-  GREEN(0), PURPLE(1), BLUE(2), ORANGE(3), BLACK(4);
+  GREEN(0), PURPLE(1), BLUE(2), ORANGE(3), BLACK(4), NONE(-1);
 
   private final int color_id;
   private final Color color;
