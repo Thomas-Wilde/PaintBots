@@ -100,7 +100,8 @@ public class GameManager {
   private HashMap<String, Class<?>> bots = null;
   private ArrayList<PowerUp> power_ups = new ArrayList<>();
   private ArrayList<PowerUp> power_ups_spawned = new ArrayList<>();
-  private Entity power_up_statue = null;
+
+  // ---
 
   // ===================== GameManager methods ===================== //
   /**
