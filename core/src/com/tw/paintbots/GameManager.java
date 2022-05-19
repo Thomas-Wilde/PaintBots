@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
+import java.util.concurrent.*;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -100,7 +101,9 @@ public class GameManager {
   private HashMap<String, Class<?>> bots = null;
   private ArrayList<PowerUp> power_ups = new ArrayList<>();
   private ArrayList<PowerUp> power_ups_spawned = new ArrayList<>();
-
+  private ArrayList<ExecutorService> executors = new ArrayList<>();
+  private final int max_update_time = 5;
+  private final int max_init_time = 500;
   // ---
 
   // ===================== GameManager methods ===================== //
@@ -183,6 +186,9 @@ public class GameManager {
       player.destroy(secret_lock);
     players.clear();
     move_order.clear();
+    // ---
+    for (ExecutorService executor : executors)
+      executor.shutdownNow();
   }
 
   // --------------------------------------------------------------- //
@@ -535,9 +541,37 @@ public class GameManager {
   // --------------------------------------------------------------- //
   private void updatePlayers() {
     for (Player player : move_order) {
+      // --- inactive players are ignored
       if (!player.isActive())
         continue;
-      player.update(secret_key);
+      // --- update active players in a own thread to limit processing time
+      int player_id = player.getPlayerID();
+      ExecutorService executor = executors.get(player_id);
+      // ---
+      Runnable update_task = () -> {
+        player.update(secret_key);
+      };
+      Future future = executor.submit(update_task);
+      try {
+        future.get(max_update_time, TimeUnit.MILLISECONDS);
+      } catch (Exception e) {
+        // ---
+        if (player.getType() == PlayerType.AI)
+          System.out.print("Bot " + ((AIPlayer) player).getBotName());
+        else
+          System.out.print("Player " + player.getPlayerID());
+        // ---
+        if (e instanceof TimeoutException)
+          System.out.println(" took too long for update and is disqualified.");
+        else
+          System.out.println(" threw an exception and is disqualified.");
+        // ---
+        player.setActive(false);
+        player.getAnimation(secret_lock).setVisible(false);
+        player.getIndicator(secret_lock).setVisible(false);
+        future.cancel(true);
+        executor.shutdown();
+      }
     }
   }
 
@@ -613,7 +647,8 @@ public class GameManager {
           item.render(batch, 20);
         ++idx_item;
       } else {
-        player.render(batch, 20);
+        if (player.isVisible())
+          player.render(batch, 20);
         ++idx_player;
       }
     }
@@ -710,6 +745,7 @@ public class GameManager {
     sanityCheckPlayerSettings(); // throws an exception if something is wrong
     createPlayers();
     initPlayerRenderables();
+    createExecutors();
   }
 
   // --------------------------------------------------------------- //
@@ -819,6 +855,8 @@ public class GameManager {
         }
         // ---
         initPlayer(player);
+        if (player.getType() == PlayerType.AI)
+          initBot((AIPlayer) player);
         players.add(player);
         move_order.add(player);
         player_states.add(new PlayerState());
@@ -854,6 +892,37 @@ public class GameManager {
   }
 
   // --------------------------------------------------------------- //
+  /** The bot has 1000ms to initialize */
+  private void initBot(AIPlayer bot) {
+    // --- update active players in a own thread to limit processing time
+    int player_id = bot.getPlayerID();
+    ExecutorService executor = executors.get(player_id);
+    // ---
+    Runnable update_task = () -> {
+      bot.initBot();
+    };
+    Future future = executor.submit(update_task);
+    try {
+      future.get(max_init_time, TimeUnit.MILLISECONDS);
+    } catch (Exception e) {
+      // ---
+      System.out.print("Bot " + bot.getBotName());
+      if (e instanceof TimeoutException)
+        System.out
+            .println(" took too long for initialization and is disqualified.");
+      else
+        System.out.println(
+            " threw an exception during initialization and is disqualified.");
+      // ---
+      bot.setActive(false);
+      bot.getAnimation(secret_lock).setVisible(false);
+      bot.getIndicator(secret_lock).setVisible(false);
+      future.cancel(true);
+      executor.shutdown();
+    }
+  }
+
+  // --------------------------------------------------------------- //
   private void initPlayerRenderables() {
     int active_count = 0;
     for (Player player : players) {
@@ -870,6 +939,22 @@ public class GameManager {
           .setRenderPosition(Array.of((int) pos.x, (int) pos.y));
       ++active_count;
     }
+  }
+
+  // --------------------------------------------------------------- //
+  /**
+   * Create executors as daemin threads, which allow the application
+   * to close even if the thread was interrupted.
+   */
+  private void createExecutors() {
+    for (int i = 0; i < 4; ++i)
+      executors.add(Executors.newFixedThreadPool(1, new ThreadFactory() {
+        public Thread newThread(Runnable r) {
+          Thread t = Executors.defaultThreadFactory().newThread(r);
+          t.setDaemon(true);
+          return t;
+        }
+      }));
   }
 
   // --------------------------------------------------------------- //
