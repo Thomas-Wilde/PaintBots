@@ -101,6 +101,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a3f30eb3e6e422c1c090768ad0f4d011d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aafebc5e84cce27b641e14b098b03de84"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcom_1_1tw_1_1paintbots_1_1_renderables_1_1_canvas.xhtml#aafebc5e84cce27b641e14b098b03de84">getTotalArea</a> ()</td></tr>
 <tr class="separator:aafebc5e84cce27b641e14b098b03de84"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa837442e15b0496ced7603ce141df06d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="enumcom_1_1tw_1_1paintbots_1_1_paint_color.xhtml">PaintColor</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcom_1_1tw_1_1paintbots_1_1_renderables_1_1_canvas.xhtml#aa837442e15b0496ced7603ce141df06d">getColor</a> (int x, int y)</td></tr>
+<tr class="separator:aa837442e15b0496ced7603ce141df06d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0df99859f42c676814cb9716034fd95f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcom_1_1tw_1_1paintbots_1_1_renderables_1_1_canvas.xhtml#a0df99859f42c676814cb9716034fd95f">destroy</a> (SecretKey key)</td></tr>
 <tr class="separator:a0df99859f42c676814cb9716034fd95f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab7754e83dddb66353666cbfc25f93f3a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcom_1_1tw_1_1paintbots_1_1_renderables_1_1_canvas.xhtml#ab7754e83dddb66353666cbfc25f93f3a">update</a> (SecretKey key)</td></tr>
@@ -223,6 +225,50 @@ int[]&#160;</td><td class="memItemRight" valign="bottom"><b>resolution</b> = nul
 <p >Free the memory for the texture. Only the <a class="el" href="classcom_1_1tw_1_1paintbots_1_1_game_manager.xhtml">GameManager</a> can call this method. </p>
 
 <p>Reimplemented from <a class="el" href="classcom_1_1tw_1_1paintbots_1_1_entity.xhtml#ae5ade485f56b8343779f5dec7c17ddf9">com.tw.paintbots.Entity</a>.</p>
+
+</div>
+</div>
+<a id="aa837442e15b0496ced7603ce141df06d" name="aa837442e15b0496ced7603ce141df06d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa837442e15b0496ced7603ce141df06d">&#9670;&nbsp;</a></span>getColor()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="enumcom_1_1tw_1_1paintbots_1_1_paint_color.xhtml">PaintColor</a> com.tw.paintbots.Renderables.Canvas.getColor </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>y</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >Return the information about the current color state at the asked location. If the location was not painted yet or is out of the board dimensions PaintColor.NONE is returned. The canvas has the same dimension as the board. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">x</td><td>- x-coordinate of the location of interest </td></tr>
+    <tr><td class="paramname">y</td><td>- y-coordinate of the location of interest </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The color at the corresponding location or PaintColor.NONE. </dd></dl>
 
 </div>
 </div>
