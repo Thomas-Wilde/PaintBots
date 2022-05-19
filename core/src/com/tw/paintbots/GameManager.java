@@ -173,9 +173,15 @@ public class GameManager {
    */
   public void destroy(GameKey key) {
     Objects.requireNonNull(key);
+    // ---
     for (Entity entity : entities)
       entity.destroy(secret_lock);
     entities.clear();
+    // ---
+    for (Player player : players)
+      player.destroy(secret_lock);
+    players.clear();
+    move_order.clear();
   }
 
   // --------------------------------------------------------------- //
@@ -496,6 +502,8 @@ public class GameManager {
         entity.update(secret_key);
     // ---
     updateMoveOrder();
+    updatePlayers();
+    // ---
     moveAllPlayers();
     handlePowerUps();
     paintOnCanvas();
@@ -521,6 +529,15 @@ public class GameManager {
     Player first = move_order.get(0);
     move_order.remove(first);
     move_order.add(first);
+  }
+
+  // --------------------------------------------------------------- //
+  private void updatePlayers() {
+    for (Player player : move_order) {
+      if (!player.isActive())
+        continue;
+      player.update(secret_key);
+    }
   }
 
   // --------------------------------------------------------------- //
@@ -801,7 +818,6 @@ public class GameManager {
         }
         // ---
         initPlayer(player);
-        addEntity(player);
         players.add(player);
         move_order.add(player);
         player_states.add(new PlayerState());
