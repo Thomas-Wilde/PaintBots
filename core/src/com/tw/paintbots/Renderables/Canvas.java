@@ -186,6 +186,34 @@ public class Canvas extends Renderable {
     return resolution[0] * resolution[1];
   }
 
+  // --------------------------------------------------------------- //
+  /**
+   * Return the information about the current color state at the asked
+   * location. If the location was not painted yet or is out of the board
+   * dimensions PaintColor.NONE is returned. The canvas has the same dimension
+   * as the board.
+   * @param x - x-coordinate of the location of interest
+   * @param y - y-coordinate of the location of interest
+   * @return The color at the corresponding location or PaintColor.NONE. */
+  public PaintColor getColor(int x, int y) {
+    // ---
+    if (x < 0 || x >= width || y < 0 || y >= height)
+      return PaintColor.NONE;
+    // ---
+    int idx = x + y * width;
+    byte color_id = picture[idx];
+    //@formatter:off
+    switch (color_id) {
+      case 0: return PaintColor.GREEN;
+      case 1: return PaintColor.PURPLE;
+      case 2: return PaintColor.BLUE;
+      case 3: return PaintColor.ORANGE;
+      default: break;
+    }
+    //@formatter:on
+    return PaintColor.NONE;
+  }
+
   // ===================== Renderable methods ===================== //
   @Override
   protected void initResolution() {
