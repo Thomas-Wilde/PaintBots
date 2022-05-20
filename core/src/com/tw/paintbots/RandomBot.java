@@ -2,7 +2,7 @@ package com.tw.paintbots; // !! Do NOT change this package name !!
 
 import java.util.ArrayList;
 import java.util.Objects;
-
+import java.util.Random;
 import com.badlogic.gdx.math.Vector2;
 
 import com.tw.paintbots.PlayerException;
@@ -19,6 +19,9 @@ class RandomBot extends AIPlayer {
   private double angle = 0.0;
   private double add = 1.0;
   private double next_switch = 0.0;
+  private Random random = null;
+  private long update_count = 0;
+  private long seed = 0;
 
   // ======================= Player methods ===================== //
   /**
@@ -80,21 +83,23 @@ class RandomBot extends AIPlayer {
   @Override
   public void initBot() {
     System.out.println("Init me for the win!");
+    seed = GameSettings.random_seed * 1337 * (getPlayerID() + 1);
+    System.out.println("seed " + seed);
+    random = new Random(seed);
   }
 
   // --------------------------------------------------------------- //
   /** This is a helper method called in the update method. */
   public void myUpdate() {
     GameManager mgr = GameManager.get();
-
     // --- switch direction every two seconds
     if (mgr.getElapsedTime() > next_switch) {
-      double rnd_time = Math.random() * 2.0 + 0.5;
+      double rnd_time = random.nextDouble() * 2.0 + 0.5;
       next_switch += rnd_time;
       add *= -1.0;
     }
     // --- scale the rotation speed randomly
-    double speed_scale = Math.random() * 0.5 + 0.75;
+    double speed_scale = random.nextDouble() * 0.5 + 0.75;
     // --- increase/decrease the orientation
     angle += 360.0 * mgr.getDeltaTime() * add * speed_scale / 2.5;
     double angle_rad = angle * Math.PI / 180.0;
