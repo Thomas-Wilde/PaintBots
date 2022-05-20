@@ -73,7 +73,7 @@ public class GameManager {
   // GameManager uses singleton pattern
   private static GameManager instance = null;
   private double elapsed_time = 0.0;
-  private double delta_time = 0.0;
+  private double delta_time = 1.0 / 30.0;
   private GameState game_state = GameState.MENU;
 
   // --- RenderLayer 20 is reserved for game board elements, e.g. objects.
@@ -215,7 +215,6 @@ public class GameManager {
       // ---
       case MENU: {
         updateMenu();
-        // startGame();
       }
         break;
       // ---
@@ -1486,6 +1485,5 @@ public class GameManager {
     }
     return list;
   }
-
   //@formatter:on
 }

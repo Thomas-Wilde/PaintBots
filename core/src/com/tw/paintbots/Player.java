@@ -413,11 +413,12 @@ public abstract class Player extends Entity {
     // compute how far we have walked ...
     Vector2 temp = old_position;
     temp.sub(getPosition());
-    // ... use the walk distance to scale the animation speed
-    float dist = (float) temp.len();
-    float old_time = animation.getAnimationTime();
     float delta_time = (float) GameManager.get().getDeltaTime();
-    float new_time = old_time + (delta_time) * dist / 3.0f;
+    // use walk distance and fps (60fps asumed) to scale animation speed
+    float scale_dist = (float) temp.len() / 3.0f;
+    float scale_fps = 60.0f * delta_time;
+    float old_time = animation.getAnimationTime();
+    float new_time = old_time + delta_time * scale_dist / scale_fps;
     animation.setAnimationTime(new_time);
     animation.updateFrameTexture();
     //
