@@ -30,4 +30,6 @@ public class GameSettings {
   public int paint_radius = 40;
   public int refill_speed = 100000;
   public int walk_speed = 200;
+  public static int random_seed = 1337;
+  public static int fps = 30;
 }
