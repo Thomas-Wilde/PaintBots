@@ -85,15 +85,35 @@ public class DesktopLauncher {
   public static void main(String[] arg) {
     // ---
     parseArguments(arg);
-    // ---
     int fps = GameSettings.fps;
     // ---
-    Lwjgl3ApplicationConfiguration config =
-        new Lwjgl3ApplicationConfiguration();
-    config.setWindowedMode(1500, 1000);
-    config.setIdleFPS(fps);
-    config.setForegroundFPS(fps);
-    // config.setInitialVisible(false);
-    new Lwjgl3Application(new PaintBotsGame(), config);
+    if (argContains(arg, "-admission")) {
+      loadAdmissionMode();
+    } else {
+      Lwjgl3ApplicationConfiguration config =
+          new Lwjgl3ApplicationConfiguration();
+      config.setWindowedMode(1500, 1000);
+      config.setIdleFPS(fps);
+      config.setForegroundFPS(fps);
+      // config.setInitialVisible(false);
+      new Lwjgl3Application(new PaintBotsGame(), config);
+    }
+  }
+
+  // --------------------------------------------------------------- //
+  public static void loadAdmissionMode() {
+    System.out.println("run admission mode");
+    GameManager mgr = GameManager.get();
+    GameSettings settings = new GameSettings();
+    // --- we run in admission mode
+    settings.headless = true;
+    // --- we only use bots
+    for (int i = 0; i < settings.player_types.length; ++i) {
+      settings.player_types[i] = PlayerType.AI;
+      settings.bot_names[i] = "RandomBot";
+    }
+    // --- we load a specific admission level
+    settings.level = new LevelInfo(null, "admission", false);
+    mgr.loadGameHeadless(settings);
   }
 }
