@@ -742,10 +742,10 @@ public class GameManager {
     loadLevelContent();
     generatePowerUps(14);
     // --- players have to be loaded after the level
+    createExecutors();
     sanityCheckPlayerSettings(); // throws an exception if something is wrong
     createPlayers();
     initPlayerRenderables();
-    createExecutors();
   }
 
   // --------------------------------------------------------------- //
