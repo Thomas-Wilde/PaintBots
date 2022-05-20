@@ -95,7 +95,8 @@ public class Canvas extends Renderable {
     Objects.requireNonNull(lock);
     // ---
     int paint = 0;
-    pixmap.setColor(color.getColor());
+    if (pixmap != null) // null in headless mode
+      pixmap.setColor(color.getColor());
     int ctr_x = (int) position.x;
     int ctr_y = (int) position.y;
 
@@ -123,6 +124,8 @@ public class Canvas extends Renderable {
 
   // --------------------------------------------------------------- //
   private void updatePixmap(int x, int y) {
+    if (pixmap == null) // is null in headless mode
+      return;
     pixmap.drawPixel(x, y);
   }
 

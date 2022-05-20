@@ -1359,6 +1359,10 @@ public class GameManager {
           && ((AIPlayer) player).getBotName().equals("RandomBot"))
         player.increasePaintAmount(used_paint, secret_lock);
     }
+    // ---
+    if (GameSettings.headless)
+      return;
+    // ---
     canvas.sendPixmapToTexture(secret_lock);
   }
 

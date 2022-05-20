@@ -342,6 +342,9 @@ public abstract class Player extends Entity {
     if (getPowerUpCount() >= 2)
       return;
     power_ups.add(buff);
+    // ---
+    if (GameSettings.headless)
+      return;
     // --- set size and position of poower up item
     buff.setAnker(board);
     buff.setScale(Array.of(0.13f, 0.13f));
