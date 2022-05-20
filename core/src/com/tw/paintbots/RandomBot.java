@@ -82,9 +82,7 @@ class RandomBot extends AIPlayer {
    */
   @Override
   public void initBot() {
-    System.out.println("Init me for the win!");
     seed = GameSettings.random_seed * 1337 * (getPlayerID() + 1);
-    System.out.println("seed " + seed);
     random = new Random(seed);
   }
 
