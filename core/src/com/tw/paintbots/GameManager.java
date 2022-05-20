@@ -1008,12 +1008,14 @@ public class GameManager {
   }
 
   // --------------------------------------------------------------- //
-  /** Calls 'movePlayer(int idx)' for each player */
+  /** Calls 'movePlayer(int idx)' for each player if the player is active. */
   private void moveAllPlayers() {
-    for (int player_idx = 0; player_idx < players.size(); ++player_idx) {
-      if (players.get(player_idx).getType() == PlayerType.NONE)
+    for (Player player : players) {
+      if (player.getType() == PlayerType.NONE)
         continue;
-      movePlayer(player_idx);
+      if (!player.isActive())
+        continue;
+      movePlayer(player.getPlayerID());
     }
   }
 
@@ -1055,10 +1057,12 @@ public class GameManager {
 
   // --------------------------------------------------------------- //
   private void interactWithBoard() {
-    for (int player_idx = 0; player_idx < players.size(); ++player_idx) {
-      if (players.get(player_idx).getType() == PlayerType.NONE)
+    for (Player player : players) {
+      if (player.getType() == PlayerType.NONE)
         continue;
-      interactWithBoard(player_idx);
+      if (!player.isActive())
+        continue;
+      interactWithBoard(player.getPlayerID());
     }
   }
 
