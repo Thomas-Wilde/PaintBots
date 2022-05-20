@@ -24,7 +24,7 @@ public class GameSettings {
   public int[] cam_resolution =
       {(board_dimensions[0] + 2 * board_border[0] + ui_width),
           (board_dimensions[1] + 2 * board_border[1])};
-  public int game_length = 150;
+  public static int game_length = 150;
   public int max_paint_amount = 250000;
   public int start_paint_amount = 250000;
   public int paint_radius = 40;

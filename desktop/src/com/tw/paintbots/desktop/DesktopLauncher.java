@@ -32,6 +32,24 @@ public class DesktopLauncher {
       }
     }
     System.out.println("random seed: " + GameSettings.random_seed);
+
+    // --- check for game time seed
+    if (argContains(arg, "-time")) {
+      int idx = getArgIndex(arg, "-time");
+      int time_idx = idx + 1;
+      if (arg.length <= time_idx)
+        System.out.println("parameter -time was found but no value");
+      else {
+        int time = 0;
+        try {
+          time = Integer.valueOf(arg[time_idx]).intValue();
+          GameSettings.game_length = time;
+          System.out.println("game length set to: " + GameSettings.game_length);
+        } catch (Exception e) {
+          System.out.println("game length could not be extracted");
+        }
+      }
+    }
   }
 
   // --------------------------------------------------------------- //
