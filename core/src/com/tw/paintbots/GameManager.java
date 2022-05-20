@@ -762,12 +762,14 @@ public class GameManager {
   }
 
   // --------------------------------------------------------------- //
+  //@formatter:off
   /**
    * Check the game settings for correctness. If something is wrong, throw an
-   * exceptions. Things that may be wrong are: - the number of players is not in
-   * [1,4] - not each player gets a start position - not each player gets a
-   * start direction
-   */
+   * exceptions. Things that may be wrong are:
+   *   - the number of players is not in [1,4]
+   *   - not each player gets a start position
+   *   - not each player gets a start direction
+   */ //@formatter:on
   private void sanityCheckPlayerSettings() throws GameMangerException {
     // --- sanity check
     int player_count = game_settings.player_types.length;
