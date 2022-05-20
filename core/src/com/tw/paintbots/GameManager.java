@@ -427,20 +427,7 @@ public class GameManager {
 
   // --------------------------------------------------------------- //
   private void exitGame() {
-    System.out.println("-------------------------");
-    System.out.println("score:");
-    for (Player player : players) {
-      // --- do nothing if player is inactive
-      if (!player.isActive())
-        continue;
-      // --- print the bot name
-      if (player.getType() == PlayerType.HUMAN)
-        System.out.print("Human: ");
-      else
-        System.out.print(((AIPlayer) player).getBotName() + ": ");
-      // --- print score
-      System.out.println(player.getScore());
-    }
+    printScore();
     Gdx.app.exit();
   }
 
@@ -1585,5 +1572,24 @@ public class GameManager {
       for (int y = 409; y < 597; ++y)
         board.setType(x, y, ItemType.OBSTACLE, secret_lock);
     // board.saveToFile(secret_lock);
+  }
+  // --------------------------------------------------------------- //
+  private void printScore() {
+    System.out.println("-------------------------");
+    System.out.println("score:");
+    for (Player player : players) {
+      // --- print the bot name
+      if (player.getType() == PlayerType.HUMAN)
+        System.out.print("Human: ");
+      else
+        System.out.print(((AIPlayer) player).getBotName() + ": ");
+      // --- print inactive?
+      if (!player.isActive()) {
+        System.out.println("inactive/disqualified");
+        continue;
+      }
+      // --- print score
+      System.out.println(player.getScore());
+    }
   }
 }
