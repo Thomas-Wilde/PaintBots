@@ -1027,8 +1027,15 @@ public class GameManager {
     Vector2 old_pos = player_states.get(player_idx).old_pos;
     Player player = players.get(player_idx);
     Vector2 move_dir = player.getDirection();
-    move_dir.setLength(1.0f);
+    // --- check for correct direction
+    if (move_dir.len2() < 0.00000001) {
+      System.out.println("Player " + player_idx
+          + " returned direction with length 0 and is disqualified.");
+      disqualifyPlayer(player);
+      return;
+    }
     // ---
+    move_dir.setLength(1.0f);
     Vector2 new_pos = old_pos.cpy();
     int walk_speed = player.getWalkSpeed();
     new_pos.add(move_dir.scl(walk_speed * (float) delta_time)); // scale
