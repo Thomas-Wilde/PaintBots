@@ -1553,12 +1553,16 @@ public class GameManager {
       createPlayers();
     } catch (GameMangerException e) {
       e.printStackTrace();
+      return;
     }
     for (Player player : move_order) {
       AIPlayer bot = (AIPlayer) player;
       System.out
           .println("Player " + bot.getPlayerID() + ": " + bot.getBotName());
     }
+    // ---
+    simulateGame();
+    printScore();
   }
 
   // --------------------------------------------------------------- //
@@ -1573,6 +1577,34 @@ public class GameManager {
         board.setType(x, y, ItemType.OBSTACLE, secret_lock);
     // board.saveToFile(secret_lock);
   }
+
+  // --------------------------------------------------------------- //
+  private void simulateGame() {
+    elapsed_time = 0.0;
+    while (elapsed_time < GameSettings.game_length) {
+      elapsed_time += delta_time;
+      updateGameHeadless();
+    }
+  }
+
+  // --------------------------------------------------------------- //
+  private void updateGameHeadless() {
+    preUpdate();
+    for (Entity entity : entities)
+      if (entity.isActive())
+        entity.update(secret_key);
+    // ---
+    updateMoveOrder();
+    updatePlayers();
+    // ---
+    moveAllPlayers();
+    handlePowerUps();
+    paintOnCanvas();
+    adjustScores();
+    // ---
+    interactWithBoard();
+  }
+
   // --------------------------------------------------------------- //
   private void printScore() {
     System.out.println("-------------------------");
