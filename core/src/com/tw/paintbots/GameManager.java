@@ -3,6 +3,7 @@ package com.tw.paintbots;
 import java.lang.reflect.Constructor;
 
 import java.util.Objects;
+import java.util.Random;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -104,6 +105,7 @@ public class GameManager {
   private ArrayList<ExecutorService> executors = new ArrayList<>();
   private final int max_update_time = 8;
   private final int max_init_time = 500;
+  private Random rnd = null;
   // ---
 
   // ===================== GameManager methods ===================== //
@@ -119,11 +121,19 @@ public class GameManager {
 
   // --------------------------------------------------------------- //
   /**
-   * Constructor is private due to the sigleton pattern.
+   * Constructor is private due to the singleton pattern.
    */
   private GameManager() {
+    initRandomSeed();
     loadBots();
     loadLevels();
+  }
+
+  // --------------------------------------------------------------- //
+  private void initRandomSeed() {
+    int seed = GameSettings.random_seed;
+    rnd = new Random(seed);
+    delta_time = 1.0 / GameSettings.fps;
   }
 
   // --------------------------------------------------------------- //
@@ -210,7 +220,7 @@ public class GameManager {
   //@formatter:on
   public void update(GameKey key) {
     Objects.requireNonNull(key);
-    delta_time = Gdx.graphics.getDeltaTime();
+    // delta_time = Gdx.graphics.getDeltaTime();
     elapsed_time += delta_time;
     // ---
     switch (game_state) {
@@ -1303,7 +1313,7 @@ public class GameManager {
         for (int i = 0; i < 20; ++i) {
           int[] rnd_pos = generatePowerUpPosition();
           Vector2 pos = new Vector2(rnd_pos[0], rnd_pos[1]);
-          int rnd_size = (int) ((Math.random() * 0.5 + 0.25) * 100);
+          int rnd_size = (int) ((rnd.nextDouble() * 0.5 + 0.25) * 100);
           canvas.paint(pos, color, rnd_size, board, secret_lock);
         }
       }
@@ -1404,10 +1414,12 @@ public class GameManager {
     for (int i = 0; i < count; ++i) {
       spawn_time += spawn_delta;
       // --- random time
-      int time_off = (int) (((Math.random() * spawn_delta) - spawn_delta) / 2);
-      int life_time = (int) (((Math.random() * spawn_delta) + spawn_delta));
+      int time_off =
+          (int) (((rnd.nextDouble() * spawn_delta) - spawn_delta) / 2);
+      int life_time = (int) (((rnd.nextDouble() * spawn_delta) + spawn_delta));
+      life_time = Math.max(life_time, 15);
       // --- random type
-      int rnd_idx = (int) (Math.random() * (PowerUpType.getTypeCount() + 1));
+      int rnd_idx = (int) (rnd.nextDouble() * (PowerUpType.getTypeCount() + 1));
       PowerUpType type = PowerUpType.idxToType(rnd_idx);
       // --- create the power up
       PowerUp power_up = new PowerUp(type, spawn_time + time_off, life_time);
@@ -1435,8 +1447,8 @@ public class GameManager {
     int rnd_x = 0;
     int rnd_y = 0;
     do {
-      rnd_x = (int) (Math.random() * (brd_width - offset) + offset / 2);
-      rnd_y = (int) (Math.random() * (brd_height - offset) + offset / 2);
+      rnd_x = (int) (rnd.nextDouble() * (brd_width - offset) + offset / 2);
+      rnd_y = (int) (rnd.nextDouble() * (brd_height - offset) + offset / 2);
     } while (board.getType(rnd_x, rnd_y) != ItemType.NONE);
     return Array.of(rnd_x, rnd_y);
   }
