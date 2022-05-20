@@ -2,8 +2,11 @@ package com.tw.paintbots.desktop;
 
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
+import com.tw.paintbots.GameManager;
 import com.tw.paintbots.GameSettings;
 import com.tw.paintbots.PaintBotsGame;
+import com.tw.paintbots.PlayerType;
+import com.tw.paintbots.LevelLoader.LevelInfo;
 
 public class DesktopLauncher {
   // --------------------------------------------------------------- //
