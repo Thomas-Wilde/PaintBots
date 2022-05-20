@@ -566,9 +566,7 @@ public class GameManager {
         else
           System.out.println(" threw an exception and is disqualified.");
         // ---
-        player.setActive(false);
-        player.getAnimation(secret_lock).setVisible(false);
-        player.getIndicator(secret_lock).setVisible(false);
+        disqualifyPlayer(player);
         future.cancel(true);
         executor.shutdown();
       }
@@ -914,9 +912,7 @@ public class GameManager {
         System.out.println(
             " threw an exception during initialization and is disqualified.");
       // ---
-      bot.setActive(false);
-      bot.getAnimation(secret_lock).setVisible(false);
-      bot.getIndicator(secret_lock).setVisible(false);
+      disqualifyPlayer(bot);
       future.cancel(true);
       executor.shutdown();
     }
@@ -1041,6 +1037,13 @@ public class GameManager {
     // ---
     player.setPosition(new_pos, secret_lock);
     player_states.get(player_idx).new_pos = new_pos;
+  }
+
+  // --------------------------------------------------------------- //
+  private void disqualifyPlayer(Player player) {
+    player.setActive(false);
+    player.getAnimation(secret_lock).setVisible(false);
+    player.getIndicator(secret_lock).setVisible(false);
   }
 
   // --------------------------------------------------------------- //
