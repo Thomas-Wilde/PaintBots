@@ -566,7 +566,10 @@ public class GameManager {
         else
           System.out.println(" threw an exception and is disqualified.");
         // ---
-        disqualifyPlayer(player);
+        if (player.getType() == PlayerType.AI) {
+          disqualifyPlayer(player);
+          hidePlayer(player);
+        }
         future.cancel(true);
         executor.shutdown();
       }
@@ -840,7 +843,7 @@ public class GameManager {
         // --- load bot
         if (game_settings.player_types[i] == PlayerType.AI) {
           player = createBot(i);
-          if (player == null)
+          if (player == null) // something went wrong during load
             continue;
         }
         // --- load human player
@@ -923,6 +926,8 @@ public class GameManager {
     int active_count = 0;
     for (Player player : players) {
       if (player.getType() == PlayerType.NONE)
+        continue;
+      if (!player.isActive())
         continue;
       player.initRenderables(secret_lock);
       player.setAnker(floor, secret_lock);
@@ -1051,6 +1056,10 @@ public class GameManager {
   // --------------------------------------------------------------- //
   private void disqualifyPlayer(Player player) {
     player.setActive(false);
+  }
+
+  // --------------------------------------------------------------- //
+  private void hidePlayer(Player player) {
     player.getAnimation(secret_lock).setVisible(false);
     player.getIndicator(secret_lock).setVisible(false);
   }
