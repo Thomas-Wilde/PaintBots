@@ -1531,4 +1531,55 @@ public class GameManager {
     return list;
   }
   //@formatter:on
+
+  // --------------------------------------------------------------- //
+  public void loadGameHeadless(GameSettings settings) {
+    System.out.println("\n--== Load Admission in GameManager ==--\n");
+    game_settings = settings;
+    // ---
+    int width = game_settings.board_dimensions[0];
+    int height = game_settings.board_dimensions[1];
+    Entity.setBoardDimensions(Array.of(width, height), secret_lock);
+    // ---
+    System.out.println("create canvas");
+    createCanvas();
+    // ---
+    System.out.println("create board");
+    createBoard();
+    // ---
+    System.out.println("load admission board");
+    loadAdmissionBoard();
+    // ---
+    System.out.println("generate power ups");
+    generatePowerUps(14);
+    // ---
+    System.out.println("create executors");
+    createExecutors();
+    // ---
+    try {
+      System.out.println("create players");
+      sanityCheckPlayerSettings();
+      createPlayers();
+    } catch (GameMangerException e) {
+      e.printStackTrace();
+    }
+    for (Player player : move_order) {
+      AIPlayer bot = (AIPlayer) player;
+      System.out
+          .println("Player " + bot.getPlayerID() + ": " + bot.getBotName());
+    }
+  }
+
+  // --------------------------------------------------------------- //
+  public void loadAdmissionBoard() {
+    // --- load the refill areas
+    for (int x = 402; x < 604; ++x)
+      for (int y = 409; y < 561; ++y)
+        board.setType(x, y, ItemType.REFILL, secret_lock);
+    // --- load the fences
+    for (int x = 313; x < 693; ++x)
+      for (int y = 409; y < 597; ++y)
+        board.setType(x, y, ItemType.OBSTACLE, secret_lock);
+    // board.saveToFile(secret_lock);
+  }
 }
