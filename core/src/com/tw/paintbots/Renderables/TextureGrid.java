@@ -31,6 +31,9 @@ public abstract class TextureGrid extends Renderable {
     this.columns = columns;
     this.rows = rows;
     // ---
+    if (GameSettings.headless)
+      return;
+    // ---
     if (!isInitialized()) {
       setGridIndex(texture_grid_counter++);
       setInitialized();

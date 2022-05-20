@@ -17,6 +17,10 @@ public class PowerUp extends TextureGrid {
     this.type = type;
     this.spawn_time = spawn_time;
     this.death_time = spawn_time + life_time;
+    // ---
+    if (GameSettings.headless)
+      return;
+    // ---
     setTextureIndex(type.getTypeID(), 0);
     setScale(Array.of(0.25f, 0.25f));
   }

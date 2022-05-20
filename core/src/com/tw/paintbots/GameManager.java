@@ -1425,13 +1425,16 @@ public class GameManager {
       PowerUpType type = PowerUpType.idxToType(rnd_idx);
       // --- create the power up
       PowerUp power_up = new PowerUp(type, spawn_time + time_off, life_time);
-      power_up.setAnker(floor);
       // --- random position
       int[] pos = generatePowerUpPosition();
       power_up.setPosition(new Vector2(pos[0], pos[1]), secret_lock);
-      power_up.setRenderPosition(pos);
-      // ---
       power_ups.add(power_up);
+      // --- load headless
+      if (GameSettings.headless)
+        return;
+      // ---
+      power_up.setAnker(floor);
+      power_up.setRenderPosition(pos);
     }
   }
 
