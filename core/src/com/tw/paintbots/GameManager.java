@@ -139,6 +139,7 @@ public class GameManager {
     // ---
     bot_names.add("Human");
     bot_names.add("---");
+    bot_names.add("RandomBot");
     // ---
     Set<String> loaded_names = bots.keySet();
     for (String name : loaded_names)
@@ -146,6 +147,7 @@ public class GameManager {
     // ---
     bots.put("Human", HumanPlayer.class);
     bots.put("---", null);
+    bots.put("RandomBot", RandomBot.class);
   }
 
   // --------------------------------------------------------------- //
