@@ -26,6 +26,7 @@
 # RG  - refill green; a stand where green can refill
 # RB  - refill blue; a stand where blue can refill
 # RP  - refill purple; a stand where purple can refill
+# RA  - refill all; an area where all colors can refill
 # FH  - fence horizontal
 # FV  - fence vertical
 # TS  - tree small
