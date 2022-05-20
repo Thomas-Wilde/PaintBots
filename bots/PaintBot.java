@@ -75,8 +75,5 @@ class RandomBot extends AIPlayer {
   /** This is a helper method called in the update method. */
   public void myUpdate() {
     // ToDo: implement a method, called in each update loop
-    // System.out.println("Random for the win.")
-    float sign = (Math.random() - 0.5) > 0 ? 1.0f : -1.0f;
-    dir.rotateDeg(5.0f * sign);
   }
 }
