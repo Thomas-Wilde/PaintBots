@@ -38,6 +38,7 @@ public class Level {
     item_dict.put("RG", new ItemProperties("RG", "RefillGreen",  "refill_green.png",  "refill_green_area.png", 200));
     item_dict.put("RO", new ItemProperties("RO", "RefillOrange", "refill_orange.png", "refill_orange_area.png", 200));
     item_dict.put("RP", new ItemProperties("RP", "RefillPurple", "refill_purple.png", "refill_purple_area.png", 200));
+    item_dict.put("RA", new ItemProperties("RA", "RefillAll", "refill_all.png", "refill_all_area.png", 280));
 
     item_dict.put("PB", new ItemProperties("PB", "PaintBooth", "paint_booth.png", "paint_booth_area.png", 120));
 

@@ -157,12 +157,13 @@ public class GameManager {
     levels = level_loader.loadLevelFiles();
     // ---
     //@formatter:off
-    levels.add(0, new LevelInfo("level.lvl",   "Nothing Special", true));
-    levels.add(1, new LevelInfo("blocked.lvl", "Blocked Corners", true));
-    levels.add(2, new LevelInfo("olivia.lvl",  "Amazing Maze by Olivia", true));
-    levels.add(3, new LevelInfo("dario.lvl",   "Happy Face by Dario", true));
-    levels.add(4, new LevelInfo("daniel.lvl",  "Symmetric Corners by Daniel", true));
-    levels.add(5, new LevelInfo("maurice.lvl", "Tree Scale = 1.0 by Maurice", true));
+    levels.add(0, new LevelInfo("level.lvl",     "Nothing Special", true));
+    levels.add(1, new LevelInfo("admission.lvl", "Admission", true));
+    levels.add(2, new LevelInfo("blocked.lvl",   "Blocked Corners", true));
+    levels.add(3, new LevelInfo("olivia.lvl",    "Amazing Maze by Olivia", true));
+    levels.add(4, new LevelInfo("dario.lvl",     "Happy Face by Dario", true));
+    levels.add(5, new LevelInfo("daniel.lvl",    "Symmetric Corners by Daniel", true));
+    levels.add(6, new LevelInfo("maurice.lvl",   "Tree Scale = 1.0 by Maurice", true));
     //@formatter:on
   }
 
@@ -943,8 +944,8 @@ public class GameManager {
 
   // --------------------------------------------------------------- //
   /**
-   * Create executors as daemin threads, which allow the application
-   * to close even if the thread was interrupted.
+   * Create executors as daemin threads, which allow the application to close
+   * even if the thread was interrupted.
    */
   private void createExecutors() {
     for (int i = 0; i < 4; ++i)
