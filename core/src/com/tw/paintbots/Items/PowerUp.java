@@ -1,6 +1,7 @@
 package com.tw.paintbots.Items;
 
 import com.tw.paintbots.Array;
+import com.tw.paintbots.GameSettings;
 import com.tw.paintbots.Renderables.TextureGrid;
 
 public class PowerUp extends TextureGrid {
