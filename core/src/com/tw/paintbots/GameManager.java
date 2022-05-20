@@ -1206,8 +1206,8 @@ public class GameManager {
           continue;
         // --- check distance to power up
         Vector2 buff_pos = buff.getPosition();
-        double dist = buff_pos.sub(player_pos).len();
-        if (dist > 50.0f)
+        double dist = buff_pos.sub(player_pos).len2();
+        if (dist > 2500.0f)
           continue;
         // --- if player is close, try to collect it
         if (!collectPowerUp(buff, player))
@@ -1456,8 +1456,8 @@ public class GameManager {
 
   // --------------------------------------------------------------- //
   /**
-   * Get the time between the current and the last update step.
-   * Note: This value is fixed to 1/60s for the programming contest.
+   * Get the time between the current and the last update step in seconds.
+   * Note: This value is fixed to 1/30s for the programming contest.
    */
   public double getDeltaTime() { return delta_time; }
 
