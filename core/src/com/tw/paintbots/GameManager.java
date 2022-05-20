@@ -1341,6 +1341,9 @@ public class GameManager {
       int used_paint = canvas.paint(position, player.getPaintColor(), radius,
           board, secret_lock);
       player.decreasePaintAmount(used_paint, secret_lock);
+      if ((player.getType() == PlayerType.AI)
+          && ((AIPlayer) player).getBotName().equals("RandomBot"))
+        player.increasePaintAmount(used_paint, secret_lock);
     }
     canvas.sendPixmapToTexture(secret_lock);
   }
