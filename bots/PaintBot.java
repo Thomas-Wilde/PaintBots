@@ -36,7 +36,6 @@ class RandomBot extends AIPlayer {
   public RandomBot(String name) throws PlayerException {
     /* do not change this */
     super("AI-" + name);
-    initBot();
   }
 
   // ======================= AIPlayer methods ====================== //
