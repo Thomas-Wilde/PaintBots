@@ -32,4 +32,5 @@ public class GameSettings {
   public int walk_speed = 200;
   public static int random_seed = 1337;
   public static int fps = 30;
+  public static boolean headless = false;
 }
