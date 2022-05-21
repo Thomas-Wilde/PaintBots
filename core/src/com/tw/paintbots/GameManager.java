@@ -1532,7 +1532,35 @@ public class GameManager {
   //@formatter:on
 
   // --------------------------------------------------------------- //
-  public void loadGameHeadless(GameSettings settings) {
+  private void printScore() {
+    System.out.println("-------------------------");
+    System.out.println("score:");
+    for (Player player : players) {
+      // ---
+      if (player.getType() == PlayerType.NONE)
+        continue;
+      // ---
+      System.out.print("P" + player.getPlayerID() + ": ");
+      // --- no score if inactive/disqualified
+      if (!player.isActive()) {
+        System.out.println("inactive/disqualified");
+        continue;
+      }
+      // --- print score
+      int score = player.getScore();
+      System.out.print(score < 10 ? " " : "");
+      System.out.print(score);
+      // --- print the bot name
+      if (player.getType() == PlayerType.HUMAN)
+        System.out.print(" Human");
+      else
+        System.out.print(" " + ((AIPlayer) player).getBotName());
+      System.out.println("");
+    }
+  }
+
+  // --------------------------------------------------------------- //
+  public void runAdmissionMode(GameSettings settings, boolean verbose) {
     System.out.println("\n--== Load Admission in GameManager ==--\n");
     game_settings = settings;
     // ---
@@ -1611,33 +1639,5 @@ public class GameManager {
     adjustScores();
     // ---
     interactWithBoard();
-  }
-
-  // --------------------------------------------------------------- //
-  private void printScore() {
-    System.out.println("-------------------------");
-    System.out.println("score:");
-    for (Player player : players) {
-      // ---
-      if (player.getType() == PlayerType.NONE)
-        continue;
-      // ---
-      System.out.print("P" + player.getPlayerID() + ": ");
-      // --- no score if inactive/disqualified
-      if (!player.isActive()) {
-        System.out.println("inactive/disqualified");
-        continue;
-      }
-      // --- print score
-      int score = player.getScore();
-      System.out.print(score < 10 ? " " : "");
-      System.out.print(score);
-      // --- print the bot name
-      if (player.getType() == PlayerType.HUMAN)
-        System.out.print(" Human");
-      else
-        System.out.print(" " + ((AIPlayer) player).getBotName());
-      System.out.println("");
-    }
   }
 }

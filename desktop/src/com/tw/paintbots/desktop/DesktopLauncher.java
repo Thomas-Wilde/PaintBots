@@ -88,7 +88,7 @@ public class DesktopLauncher {
     int fps = GameSettings.fps;
     // ---
     if (argContains(arg, "-admission")) {
-      loadAdmissionMode();
+      runAdmissionMode(arg);
     } else {
       Lwjgl3ApplicationConfiguration config =
           new Lwjgl3ApplicationConfiguration();
@@ -101,7 +101,7 @@ public class DesktopLauncher {
   }
 
   // --------------------------------------------------------------- //
-  public static void loadAdmissionMode() {
+  public static void runAdmissionMode(String[] arg) {
     System.out.println("run admission mode");
     GameManager mgr = GameManager.get();
     GameSettings settings = new GameSettings();
@@ -114,6 +114,6 @@ public class DesktopLauncher {
     }
     // --- we load a specific admission level
     settings.level = new LevelInfo(null, "admission", false);
-    mgr.loadGameHeadless(settings);
+    mgr.runAdmissionMode(settings);
   }
 }
