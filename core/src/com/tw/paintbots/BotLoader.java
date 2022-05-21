@@ -121,6 +121,15 @@ public class BotLoader extends ClassLoader {
         Constructor<?> constructor = bot_class.getConstructor();
         constructor.setAccessible(true);
         AIPlayer bot_obj = (AIPlayer) constructor.newInstance();
+        // --- check if the bot name is forbidden
+        String bot_name = bot_obj.getBotName();
+        if (bot_name.equals("PaintBot") || bot_name.equals("RandomBot")
+            || bot_name.equals("RenameMeBot")) {
+          System.out
+              .println(bot_name + " is a forbidden name and is not loaded.");
+          continue;
+        }
+        // --- ... if not add it to the bod list
         bots.put(bot_obj.getBotName(), bot_class);
       } catch (Exception e) {
         System.out.println(
