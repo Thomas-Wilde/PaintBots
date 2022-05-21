@@ -84,7 +84,8 @@ class RandomBot extends AIPlayer {
     angle = 0.0;
     add = 1.0;
     next_switch = 0.0;
-    seed = GameSettings.random_seed * 1337 * (getPlayerID() + 1);
+    Vector2 pos = getPosition();
+    seed = (long) (GameSettings.random_seed * 13 * (pos.x + pos.y));
     random = new Random(seed);
   }
 

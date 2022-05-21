@@ -1700,6 +1700,7 @@ public class GameManager {
     resetPlayers();
     setMoveOrder(run);
     setAdmissionPosition(run);
+    initPlayersForAdmission();
   }
 
   // --------------------------------------------------------------- //
@@ -1734,6 +1735,16 @@ public class GameManager {
       return false;
     }
     return true;
+  }
+
+  // --------------------------------------------------------------- //
+  private void initPlayersForAdmission() {
+    for (Player player : players) {
+      if (!player.isActive())
+        continue;
+      if (player.getType() == PlayerType.AI)
+        initBot((AIPlayer) player);
+    }
   }
 
   // --------------------------------------------------------------- //
