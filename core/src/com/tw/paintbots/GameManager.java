@@ -126,6 +126,7 @@ public class GameManager {
   private GameManager() {
     initRandomSeed();
     loadBots();
+    extendBotList();
     loadLevels();
   }
 
@@ -147,13 +148,20 @@ public class GameManager {
     BotLoader bot_loader = new BotLoader();
     bots = bot_loader.loadBots();
     // ---
-    bot_names.add("Human");
-    bot_names.add("---");
-    bot_names.add("RandomBot");
-    // ---
     Set<String> loaded_names = bots.keySet();
     for (String name : loaded_names)
       bot_names.add(name);
+  }
+
+  // --------------------------------------------------------------- //
+  /**
+   * Add HUMAN, NONE and RandomBot to the selection list for the deskop game.
+   */
+  private void extendBotList() {
+    // ---
+    bot_names.add("Human");
+    bot_names.add("---");
+    bot_names.add("RandomBot");
     // ---
     bots.put("Human", HumanPlayer.class);
     bots.put("---", null);
