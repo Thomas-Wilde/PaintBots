@@ -122,17 +122,30 @@ public class DesktopLauncher {
       return;
     }
     // ---
-    for (int j = 0; j < 2; ++j) {
+    int runs = 0;
+    int wins = 0;
+    for (int j = 0; j < 3; ++j) {
       for (int i = 0; i < 4; ++i) {
-        System.out.print("seed: " + settings.random_seed);
+        System.out.print("\nseed: " + settings.random_seed);
         System.out.println(" start pos: " + (3 + i) % 4);
         mgr.resetAdmissionMode(i);
         mgr.runAdmissionMode();
-        System.out.println();
-        checkForWin(settings);
+        wins += checkForWin(settings) ? 1 : 0;
+        ++runs;
       }
       settings.random_seed += 1337;
     }
+
+    // ---
+    System.out.println("========================");
+    String bot = settings.bot_names[3];
+    System.out.println(bot + " won " + wins + " out of " + runs + " rounds");
+    float rate = (float) (wins) / (float) (runs);
+    System.out.println("Win rate: " + rate);
+    if (rate > 0.625)
+      System.out.println("PASS");
+    else
+      System.out.println("FAIL");
   }
 
   // --------------------------------------------------------------- //
@@ -153,12 +166,23 @@ public class DesktopLauncher {
     PlayerState[] states = new PlayerState[4];
     for (int i = 0; i < 4; ++i)
       states[i] = mgr.getPlayerState(i);
-    // ---
+    // --- inactive
     String bot = settings.bot_names[3];
     if (!states[3].is_active) {
       System.out.println(bot + " is inactive/disqualified and lost");
       return false;
     }
-    return false;
+    // --- not the highest score
+    int score0 = states[0].score;
+    int score1 = states[1].score;
+    int score2 = states[2].score;
+    int score3 = states[3].score;
+    if (score3 < score0 || score3 < score1 || score3 < score2) {
+      System.out.println(bot + " lost");
+      return false;
+    }
+    // --- highest score
+    System.out.println(bot + " won");
+    return true;
   }
 }
