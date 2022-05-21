@@ -1618,18 +1618,26 @@ public class GameManager {
     System.out.println("-------------------------");
     System.out.println("score:");
     for (Player player : players) {
-      // --- print the bot name
-      if (player.getType() == PlayerType.HUMAN)
-        System.out.print("Human: ");
-      else
-        System.out.print(((AIPlayer) player).getBotName() + ": ");
-      // --- print inactive?
+      // ---
+      if (player.getType() == PlayerType.NONE)
+        continue;
+      // ---
+      System.out.print("P" + player.getPlayerID() + ": ");
+      // --- no score if inactive/disqualified
       if (!player.isActive()) {
         System.out.println("inactive/disqualified");
         continue;
       }
       // --- print score
-      System.out.println(player.getScore());
+      int score = player.getScore();
+      System.out.print(score < 10 ? " " : "");
+      System.out.print(score);
+      // --- print the bot name
+      if (player.getType() == PlayerType.HUMAN)
+        System.out.print(" Human");
+      else
+        System.out.print(" " + ((AIPlayer) player).getBotName());
+      System.out.println("");
     }
   }
 }
