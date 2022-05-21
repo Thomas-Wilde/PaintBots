@@ -1625,6 +1625,16 @@ public class GameManager {
     for (int x = 313; x < 693; ++x)
       for (int y = 409; y < 597; ++y)
         board.setType(x, y, ItemType.OBSTACLE, secret_lock);
+    // --- set the positions of the players
+    game_settings.start_positions[0] = new Vector2(100.0f, 100.0f);
+    game_settings.start_positions[1] = new Vector2(100.0f, 900.0f);
+    game_settings.start_positions[2] = new Vector2(900.0f, 100.0f);
+    game_settings.start_positions[3] = new Vector2(900.0f, 900.0f);
+    // ---
+    game_settings.start_directions[0] = new Vector2(1.0f, 1.0f);
+    game_settings.start_directions[1] = new Vector2(1.0f, -1.0f);
+    game_settings.start_directions[2] = new Vector2(-1.0f, 1.0f);
+    game_settings.start_directions[3] = new Vector2(-1.0f, -1.0f);
     // board.saveToFile(secret_lock);
   }
 
