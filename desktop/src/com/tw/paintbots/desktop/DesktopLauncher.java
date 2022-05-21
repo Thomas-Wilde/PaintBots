@@ -5,6 +5,7 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.tw.paintbots.GameManager;
 import com.tw.paintbots.GameSettings;
 import com.tw.paintbots.PaintBotsGame;
+import com.tw.paintbots.PlayerState;
 import com.tw.paintbots.PlayerType;
 import com.tw.paintbots.LevelLoader.LevelInfo;
 
@@ -95,7 +96,6 @@ public class DesktopLauncher {
       config.setWindowedMode(1500, 1000);
       config.setIdleFPS(fps);
       config.setForegroundFPS(fps);
-      // config.setInitialVisible(false);
       new Lwjgl3Application(new PaintBotsGame(), config);
     }
   }
@@ -103,6 +103,8 @@ public class DesktopLauncher {
   // --------------------------------------------------------------- //
   public static void runAdmissionMode(String[] arg) {
     System.out.println("run admission mode");
+    String bot_name = extractBotName(arg);
+    // ---
     GameManager mgr = GameManager.get();
     GameSettings settings = new GameSettings();
     // --- we run in admission mode
@@ -112,8 +114,51 @@ public class DesktopLauncher {
       settings.player_types[i] = PlayerType.AI;
       settings.bot_names[i] = "RandomBot";
     }
+    settings.bot_names[3] = bot_name;
     // --- we load a specific admission level
     settings.level = new LevelInfo(null, "admission", false);
-    mgr.runAdmissionMode(settings);
+    if (!mgr.initAdmissionMode(settings, true)) {
+      System.out.println("Admission FAILED");
+      return;
+    }
+    // ---
+    for (int j = 0; j < 2; ++j) {
+      for (int i = 0; i < 4; ++i) {
+        System.out.print("seed: " + settings.random_seed);
+        System.out.println(" start pos: " + (3 + i) % 4);
+        mgr.resetAdmissionMode(i);
+        mgr.runAdmissionMode();
+        System.out.println();
+        checkForWin(settings);
+      }
+      settings.random_seed += 1337;
+    }
+  }
+
+  // --------------------------------------------------------------- //
+  private static String extractBotName(String[] arg) {
+    if (!argContains(arg, "-bot"))
+      return null;
+    int idx = getArgIndex(arg, "-bot") + 1;
+    if (arg.length <= idx) {
+      System.out.println("parameter -bot was found but no value");
+      return null;
+    }
+    return arg[idx];
+  }
+
+  // --------------------------------------------------------------- //
+  private static boolean checkForWin(GameSettings settings) {
+    GameManager mgr = GameManager.get();
+    PlayerState[] states = new PlayerState[4];
+    for (int i = 0; i < 4; ++i)
+      states[i] = mgr.getPlayerState(i);
+    // ---
+    String bot = settings.bot_names[3];
+    if (!states[3].is_active) {
+      System.out.println(bot + " is inactive/disqualified and lost");
+      return false;
+    }
+    return false;
   }
 }
