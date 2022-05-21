@@ -393,9 +393,20 @@ public abstract class Player extends Entity {
     return tmp_deg;
   }
 
+  // --------------------------------------------------------------- //
+  /**
+   * If something went wrong during bot loading, we have to decrease the id
+   * counter.
+   *
+   * @param lock The SecretLock that is only available to the GameManager.
+   */
+  public static final void decreaseIDCounter(SecretLock lock) {
+    --id_counter;
+  }
+
   // ====================== Entity methods ====================== //
   @Override
-  final public boolean setPosition(Vector2 position, SecretLock lock) {
+  public final boolean setPosition(Vector2 position, SecretLock lock) {
     old_position = this.getPosition();
     return super.setPosition(position, lock);
   }

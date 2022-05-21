@@ -864,6 +864,7 @@ public class GameManager {
         if (game_settings.player_types[i] == PlayerType.AI) {
           player = createBot(i);
           if (player == null) { // something went wrong during load
+            Player.decreaseIDCounter(secret_lock);
             String bot_name = game_settings.bot_names[i];
             System.out.println("Replace " + bot_name + " with inactive player");
             game_settings.player_types[i] = PlayerType.NONE;
