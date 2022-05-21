@@ -49,10 +49,6 @@ public class BotLoader extends ClassLoader {
       System.out.println(
           "Could not load bots from './bots' directory: " + e.getMessage());
     }
-    // ---
-    System.out.println("loaded bots:");
-    for (String bot_name : bots.keySet())
-      System.out.println(bot_name);
     return bots;
   }
 
