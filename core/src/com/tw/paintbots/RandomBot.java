@@ -20,7 +20,6 @@ class RandomBot extends AIPlayer {
   private double add = 1.0;
   private double next_switch = 0.0;
   private Random random = null;
-  private long update_count = 0;
   private long seed = 0;
 
   // ======================= Player methods ===================== //
@@ -82,6 +81,9 @@ class RandomBot extends AIPlayer {
    */
   @Override
   public void initBot() {
+    angle = 0.0;
+    add = 1.0;
+    next_switch = 0.0;
     seed = GameSettings.random_seed * 1337 * (getPlayerID() + 1);
     random = new Random(seed);
   }
