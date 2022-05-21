@@ -1574,45 +1574,65 @@ public class GameManager {
   }
 
   // --------------------------------------------------------------- //
-  public void runAdmissionMode(GameSettings settings, boolean verbose) {
-    System.out.println("\n--== Load Admission in GameManager ==--\n");
+  public void initAdmissionMode(GameSettings settings) {
+    initAdmissionMode(settings, false);
+  }
+
+  // --------------------------------------------------------------- //
+  public boolean initAdmissionMode(GameSettings settings, boolean verbose) {
+    System.out.print(verbose ? "\n--== Init Admission ==--\n" : "");
+    // ---
+    loadBots();
+    if (bots.isEmpty()) {
+      System.out.println("no bots loaded - stop admission");
+      return false;
+    }
+    // --- print to console
+    Set<String> loaded_names = bots.keySet();
+    if (verbose) {
+      System.out.println("loaded bots:");
+      for (String name : loaded_names)
+        System.out.println(name);
+    }
+    if (settings.bot_names[3] == null) {
+      settings.bot_names[3] = loaded_names.iterator().next();
+    }
+    bots.put("RandomBot", RandomBot.class);
+    // ---
     game_settings = settings;
     // ---
     int width = game_settings.board_dimensions[0];
     int height = game_settings.board_dimensions[1];
     Entity.setBoardDimensions(Array.of(width, height), secret_lock);
     // ---
-    System.out.println("create canvas");
+    System.out.print(verbose ? "create canvas\n" : "");
     createCanvas();
     // ---
-    System.out.println("create board");
+    System.out.print(verbose ? "create board\n" : "");
     createBoard();
     // ---
-    System.out.println("load admission board");
+    System.out.print(verbose ? "load admission board\n" : "");
     loadAdmissionBoard();
     // ---
-    System.out.println("generate power ups");
-    generatePowerUps(14);
-    // ---
-    System.out.println("create executors");
+    System.out.print(verbose ? "create executors\n" : "");
     createExecutors();
     // ---
     try {
-      System.out.println("create players");
+      System.out.print(verbose ? "create players\n" : "");
       sanityCheckPlayerSettings();
       createPlayers();
     } catch (GameMangerException e) {
       e.printStackTrace();
-      return;
+      return false;
     }
-    for (Player player : move_order) {
-      AIPlayer bot = (AIPlayer) player;
-      System.out
-          .println("Player " + bot.getPlayerID() + ": " + bot.getBotName());
-    }
+    if (verbose)
+      for (Player player : move_order) {
+        AIPlayer bot = (AIPlayer) player;
+        System.out
+            .println("Player " + bot.getPlayerID() + ": " + bot.getBotName());
+      }
     // ---
-    simulateGame();
-    printScore();
+    return true;
   }
 
   // --------------------------------------------------------------- //
@@ -1663,5 +1683,80 @@ public class GameManager {
     adjustScores();
     // ---
     interactWithBoard();
+  }
+
+  // --------------------------------------------------------------- //
+  public void resetAdmissionMode(int run) {
+    initRandomSeed();
+    resetPowerUps();
+    resetCanvas();
+    resetPlayers();
+    setMoveOrder(run);
+    setAdmissionPosition(run);
+  }
+
+  // --------------------------------------------------------------- //
+  private void resetPowerUps() {
+    // --- power ups
+    for (PowerUp buff : power_ups) {
+      buff.setActive(false);
+      buff.setVisible(false);
+    }
+    for (PowerUp buff : power_ups_spawned) {
+      buff.setActive(false);
+      buff.setVisible(false);
+    }
+    power_ups.clear();
+    power_ups_spawned.clear();
+    // ---
+    generatePowerUps(14);
+  }
+
+  // --------------------------------------------------------------- //
+  private boolean resetPlayers() {
+    try {
+      for (Player player : players) {
+        if (!player.isActive())
+          continue;
+        initPlayer(player);
+        if (player.getType() == PlayerType.AI)
+          initBot((AIPlayer) player);
+      }
+    } catch (Exception e) {
+      System.out.println(e.getMessage());
+      return false;
+    }
+    return true;
+  }
+
+  // --------------------------------------------------------------- //
+  private void resetCanvas() {
+    createCanvas();
+  }
+
+  // --------------------------------------------------------------- //
+  private void setMoveOrder(int shift) {
+    move_order.clear();
+    for (Player player : players)
+      move_order.add(player);
+    for (int i = 0; i < shift; ++i)
+      updateMoveOrder();
+  }
+
+  // --------------------------------------------------------------- //
+  private void setAdmissionPosition(int run) {
+    for (Player player : move_order) {
+      int idx = (player.getPlayerID() + run) % move_order.size();
+      Vector2 pos = game_settings.start_positions[idx];
+      Vector2 dir = game_settings.start_directions[idx].setLength(1.0f);
+      player.setPosition(pos, secret_lock);
+      player.setInitialDirection(dir, secret_key);
+    }
+  }
+
+  // --------------------------------------------------------------- //
+  public void runAdmissionMode() {
+    simulateGame();
+    printScore();
   }
 }
