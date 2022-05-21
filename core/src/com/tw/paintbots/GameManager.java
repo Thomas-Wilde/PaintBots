@@ -998,6 +998,8 @@ public class GameManager {
     player.setPaintRadius(paint_radius, secret_lock);
     player.setRefillSpeed(refill_speed, secret_lock);
     player.setWalkSpeed(walk_speed, secret_lock);
+    player.setScore(0, secret_lock);
+    player.removePowerUps(secret_lock);
   }
 
   // --------------------------------------------------------------- //
