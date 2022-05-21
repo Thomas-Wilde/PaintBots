@@ -119,7 +119,7 @@ public class DesktopLauncher {
     settings.level = new LevelInfo(null, "admission", false);
     if (!mgr.initAdmissionMode(settings, true)) {
       System.out.println("Admission FAILED");
-      System.out.println("FAIL");
+      System.out.println("NICHT BESTANDEN");
       return;
     }
     // ---
@@ -144,9 +144,9 @@ public class DesktopLauncher {
     float rate = (float) (wins) / (float) (runs);
     System.out.println("Win rate: " + rate);
     if (rate > 0.625)
-      System.out.println("PASS");
+      System.out.println("BESTANDEN");
     else
-      System.out.println("FAIL");
+      System.out.println("NICHT BESTANDEN");
   }
 
   // --------------------------------------------------------------- //
