@@ -123,18 +123,32 @@ public class GameManager {
   /**
    * Constructor is private due to the singleton pattern.
    */
-  private GameManager() {
-    initRandomSeed();
-    loadBots();
-    extendBotList();
-    loadLevels();
-  }
+  private GameManager() {}
 
   // --------------------------------------------------------------- //
   private void initRandomSeed() {
     int seed = GameSettings.random_seed;
     rnd = new Random(seed);
     delta_time = 1.0 / GameSettings.fps;
+  }
+
+  // --------------------------------------------------------------- //
+  public void initDesktopGame(GameKey key) {
+    Objects.requireNonNull(key);
+    // ---
+    initRandomSeed();
+    // ---
+    loadBots();
+    extendBotList();
+    // ---
+    System.out.println("loaded bots:");
+    Set<String> loaded_names = bots.keySet();
+    for (String name : loaded_names) {
+      bot_names.add(name);
+      System.out.println(name);
+    }
+    // ---
+    loadLevels();
   }
 
   // --------------------------------------------------------------- //
@@ -147,10 +161,6 @@ public class GameManager {
     // --- load some bots
     BotLoader bot_loader = new BotLoader();
     bots = bot_loader.loadBots();
-    // ---
-    Set<String> loaded_names = bots.keySet();
-    for (String name : loaded_names)
-      bot_names.add(name);
   }
 
   // --------------------------------------------------------------- //
