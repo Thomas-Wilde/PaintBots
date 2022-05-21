@@ -119,6 +119,7 @@ public class DesktopLauncher {
     settings.level = new LevelInfo(null, "admission", false);
     if (!mgr.initAdmissionMode(settings, true)) {
       System.out.println("Admission FAILED");
+      System.out.println("FAIL");
       return;
     }
     // ---
