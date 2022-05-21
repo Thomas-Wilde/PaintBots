@@ -139,7 +139,6 @@ public class GameManager {
     initRandomSeed();
     // ---
     loadBots();
-    extendBotList();
     // ---
     System.out.println("loaded bots:");
     Set<String> loaded_names = bots.keySet();
@@ -147,6 +146,8 @@ public class GameManager {
       bot_names.add(name);
       System.out.println(name);
     }
+    // ---
+    extendBotList();
     // ---
     loadLevels();
   }
@@ -169,9 +170,9 @@ public class GameManager {
    */
   private void extendBotList() {
     // ---
-    bot_names.add("Human");
-    bot_names.add("---");
-    bot_names.add("RandomBot");
+    bot_names.add(0, "Human");
+    bot_names.add(1, "---");
+    bot_names.add(2, "RandomBot");
     // ---
     bots.put("Human", HumanPlayer.class);
     bots.put("---", null);
