@@ -1444,7 +1444,7 @@ public class GameManager {
       power_ups.add(power_up);
       // --- load headless
       if (GameSettings.headless)
-        return;
+        continue;
       // ---
       power_up.setAnker(floor);
       power_up.setRenderPosition(pos);
