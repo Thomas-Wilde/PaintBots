@@ -201,6 +201,8 @@ public abstract class Player extends Entity {
     state.max_paint_amount = this.getMaximumPaintAmount();
     state.refill_speed = this.getRefillSpeed();
 
+    state.is_active = this.isActive();
+
     return state;
   }
 
