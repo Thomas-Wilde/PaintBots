@@ -1079,6 +1079,8 @@ public class GameManager {
 
   // --------------------------------------------------------------- //
   private void hidePlayer(Player player) {
+    if (game_settings.headless)
+      return;
     player.getAnimation(secret_lock).setVisible(false);
     player.getIndicator(secret_lock).setVisible(false);
   }
