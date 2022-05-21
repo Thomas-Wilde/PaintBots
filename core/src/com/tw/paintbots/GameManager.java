@@ -862,8 +862,11 @@ public class GameManager {
         // --- load bot
         if (game_settings.player_types[i] == PlayerType.AI) {
           player = createBot(i);
-          if (player == null) // something went wrong during load
-            continue;
+          if (player == null) { // something went wrong during load
+            String bot_name = game_settings.bot_names[i];
+            System.out.println("Replace " + bot_name + " with inactive player");
+            game_settings.player_types[i] = PlayerType.NONE;
+          }
         }
         // --- load human player
         if (game_settings.player_types[i] == PlayerType.HUMAN)
