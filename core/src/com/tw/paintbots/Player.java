@@ -360,6 +360,21 @@ public abstract class Player extends Entity {
 
   // --------------------------------------------------------------- //
   /**
+   * Remove the power ups. This method is relevant for admission mode.
+   *
+   * @param lock The SecretLock that is only available to the GameManager.
+   */
+  final public void removePowerUps(SecretLock lock) {
+    Objects.requireNonNull(lock);
+    for (PowerUp buff : power_ups) {
+      buff.setActive(false);
+      buff.setVisible(false);
+    }
+    power_ups.clear();
+  }
+
+  // --------------------------------------------------------------- //
+  /**
    * Map the direction vector to a rotation degree. The direction vector needs
    * to be normalized. This method is used to turn the direction indicator and
    * the players avatar.
