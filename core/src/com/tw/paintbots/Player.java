@@ -45,7 +45,7 @@ public abstract class Player extends Entity {
    * @param lock The SecretLock owned by the GameManager.
    * @return The PlayerAnimation with the updated texture.
    */
-  public PlayerAnimation getAnimation(SecretLock lock) {
+  final public PlayerAnimation getAnimation(SecretLock lock) {
     Objects.requireNonNull(lock);
     return animation;
   }
@@ -58,7 +58,7 @@ public abstract class Player extends Entity {
    * @param lock The SecretLock owned by the GameManager.
    * @return A reference to the DirectionInidicator of this player.
    */
-  public DirectionIndicator getIndicator(SecretLock lock) {
+  final public DirectionIndicator getIndicator(SecretLock lock) {
     Objects.requireNonNull(lock);
     return dir_indicator;
   }
