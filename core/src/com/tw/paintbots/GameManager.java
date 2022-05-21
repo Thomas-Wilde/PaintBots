@@ -1630,9 +1630,13 @@ public class GameManager {
     }
     if (verbose)
       for (Player player : move_order) {
+        System.out.print("Player " + player.getPlayerID() + ": ");
+        if (!player.isActive()) {
+          System.out.println("inactive");
+          continue;
+        }
         AIPlayer bot = (AIPlayer) player;
-        System.out
-            .println("Player " + bot.getPlayerID() + ": " + bot.getBotName());
+        System.out.println(bot.getBotName());
       }
     // ---
     return true;
