@@ -579,17 +579,17 @@ public class GameManager {
         else
           System.out.print("Player " + player.getPlayerID());
         // ---
+        System.out.println(" threw an exception and is disqualified.");
         if (e instanceof TimeoutException)
-          System.out.println(" took too long for update and is disqualified.");
-        else
-          System.out.println(" threw an exception and is disqualified.");
+          System.out.println("It took too long for update.");
+        System.out.println("Message: " + e.getMessage());
         // ---
         if (player.getType() == PlayerType.AI) {
           disqualifyPlayer(player);
           hidePlayer(player);
         }
-        future.cancel(true);
-        executor.shutdown();
+        // future.cancel(true);
+        // executor.shutdown();
       }
     }
   }
@@ -940,8 +940,8 @@ public class GameManager {
             " threw an exception during initialization and is disqualified.");
       // ---
       disqualifyPlayer(bot);
-      future.cancel(true);
-      executor.shutdown();
+      // future.cancel(true);
+      // executor.shutdown();
     }
   }
 
@@ -1726,11 +1726,10 @@ public class GameManager {
   private boolean resetPlayers() {
     try {
       for (Player player : players) {
-        if (!player.isActive())
+        if (player.getType() == PlayerType.NONE)
           continue;
+        player.setActive(true);
         initPlayer(player);
-        if (player.getType() == PlayerType.AI)
-          initBot((AIPlayer) player);
       }
     } catch (Exception e) {
       System.out.println(e.getMessage());
