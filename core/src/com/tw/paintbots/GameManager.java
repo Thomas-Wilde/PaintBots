@@ -1058,7 +1058,7 @@ public class GameManager {
    * the borders of the board.
    */
   private void movePlayer(int player_idx) {
-    Vector2 old_pos = player_states.get(player_idx).old_pos;
+    Vector2 old_pos = player_states.get(player_idx).pos;
     Player player = players.get(player_idx);
     Vector2 move_dir = player.getDirection();
     // --- check for correct direction
@@ -1077,7 +1077,7 @@ public class GameManager {
     clampPositionToObstacles(player, new_pos, old_pos);
     // ---
     player.setPosition(new_pos, secret_lock);
-    player_states.get(player_idx).new_pos = new_pos;
+    player_states.get(player_idx).pos = new_pos;
   }
 
   // --------------------------------------------------------------- //
@@ -1107,7 +1107,7 @@ public class GameManager {
   // --------------------------------------------------------------- //
   private void interactWithBoard(int player_idx) {
     Player player = players.get(player_idx);
-    Vector2 pos = player_states.get(player_idx).new_pos;
+    Vector2 pos = player_states.get(player_idx).pos;
     int x = (int) pos.x;
     int y = (int) pos.y;
     ItemType cell_type = board.getType(x, y);
@@ -1365,7 +1365,7 @@ public class GameManager {
       if ((player.getPaintAmount() <= 0.0))
         continue;
       int idx = player.getPlayerID();
-      Vector2 position = player_states.get(idx).new_pos;
+      Vector2 position = player_states.get(idx).pos;
       int radius = player.getPaintRadius();
       int used_paint = canvas.paint(position, player.getPaintColor(), radius,
           board, secret_lock);

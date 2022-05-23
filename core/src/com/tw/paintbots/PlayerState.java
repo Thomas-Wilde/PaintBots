@@ -9,8 +9,7 @@ public class PlayerState {
   public PaintColor paint_color = PaintColor.BLACK;
   public PlayerType type = PlayerType.NONE;
 
-  public Vector2 old_pos = new Vector2(0.0f, 0.0f);
-  public Vector2 new_pos = new Vector2(0.0f, 0.0f);
+  public Vector2 pos = new Vector2(0.0f, 0.0f);
   public Vector2 dir = new Vector2(0.0f, 0.0f);
 
   public int score = -1;

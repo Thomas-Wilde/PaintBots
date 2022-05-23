@@ -191,8 +191,7 @@ public abstract class Player extends Entity {
     state.paint_color = this.getPaintColor();
     state.type = this.getType();
 
-    state.old_pos = this.getPosition();
-    state.new_pos = this.getPosition();
+    state.pos = this.getPosition();
     state.dir = this.getDirection().cpy();
 
     state.score = this.getScore();
