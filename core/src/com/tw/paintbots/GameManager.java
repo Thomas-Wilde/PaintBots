@@ -1582,13 +1582,32 @@ public class GameManager {
     }
   }
 
-  // --------------------------------------------------------------- //
+  // =============================================================== //
+  //                         Admission Mode                          //
+  // =============================================================== //
   public void initAdmissionMode(GameSettings settings) {
     initAdmissionMode(settings, false);
   }
 
   // --------------------------------------------------------------- //
+  /** @return true if the game runs in admission mode. */
+  public boolean admissionMode() {
+    return game_settings.headless;
+  }
+
+  // --------------------------------------------------------------- //
+  /** @return the random seed used for random values. */
+  public int randomSeed() {
+    return game_settings.random_seed;
+  }
+
+  // --------------------------------------------------------------- //
   public boolean initAdmissionMode(GameSettings settings, boolean verbose) {
+    if (game_settings != null) {
+      System.out.print("desktop game is running");
+      return false;
+    }
+    // ---
     System.out.print(verbose ? "\n--== Init Admission ==--\n" : "");
     // ---
     loadBots();
