@@ -10,7 +10,6 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.List;
-// import java.lang.module.ModuleDescriptor.Modifier;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
@@ -50,10 +49,6 @@ public class BotLoader extends ClassLoader {
       System.out.println(
           "Could not load bots from './bots' directory: " + e.getMessage());
     }
-    // ---
-    System.out.println("loaded bots:");
-    for (String bot_name : bots.keySet())
-      System.out.println(bot_name);
     return bots;
   }
 
@@ -126,6 +121,15 @@ public class BotLoader extends ClassLoader {
         Constructor<?> constructor = bot_class.getConstructor();
         constructor.setAccessible(true);
         AIPlayer bot_obj = (AIPlayer) constructor.newInstance();
+        // --- check if the bot name is forbidden
+        String bot_name = bot_obj.getBotName();
+        if (bot_name.equals("PaintBot") || bot_name.equals("RandomBot")
+            || bot_name.equals("RenameMeBot")) {
+          System.out
+              .println(bot_name + " is a forbidden name and is not loaded.");
+          continue;
+        }
+        // --- ... if not add it to the bod list
         bots.put(bot_obj.getBotName(), bot_class);
       } catch (Exception e) {
         System.out.println(

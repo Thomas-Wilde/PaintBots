@@ -60,6 +60,10 @@ public class ItemArea {
       case 12: type = ItemType.REFILL_PURPLE; break;
       case 13: type = ItemType.REFILL_BLUE; break;
       case 14: type = ItemType.REFILL_ORANGE; break;
+      case 21: type = ItemType.POLE_GREEN; break;
+      case 22: type = ItemType.POLE_PURPLE; break;
+      case 23: type = ItemType.POLE_BLUE; break;
+      case 24: type = ItemType.POLE_ORANGE; break;
       default: type = ItemType.NONE; break;
     }
     //@formatter:on

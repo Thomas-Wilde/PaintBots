@@ -11,6 +11,18 @@ public class LevelLoader {
   private String run_dir = "";
   private String levels_dir = "";
 
+  static public class LevelInfo {
+    public LevelInfo(String file, String level, boolean internal) {
+      file_name = file;
+      level_name = level;
+      this.internal = internal;
+    }
+
+    String file_name = "";
+    String level_name = "";
+    boolean internal = false;
+  }
+
   // --------------------------------------------------------------- //
   public LevelLoader() {
     run_dir = System.getProperty("user.dir");
@@ -20,16 +32,16 @@ public class LevelLoader {
 
   // --------------------------------------------------------------- //
   /** ToDo: comment */
-  public ArrayList<String> loadLevelFiles() {
-    ArrayList<String> levels = new ArrayList<>();
+  public ArrayList<LevelInfo> loadLevelFiles() {
+    ArrayList<LevelInfo> levels = new ArrayList<>();
     // --- check if the level folder exists
     if (!checkLevelsDirectory() && !createLevelsDirectory())
       return levels;
     // ---
     levels = readLevelFilenames();
     System.out.println("level files:");
-    for (String level_name : levels)
-      System.out.println(level_name);
+    for (LevelInfo level : levels)
+      System.out.println(level.file_name);
     return levels;
   }
 
@@ -69,17 +81,20 @@ public class LevelLoader {
   /**
    * @return A list with all 'lvl' files int the './levels' subdirectory.
    */
-  private ArrayList<String> readLevelFilenames() {
+  private ArrayList<LevelInfo> readLevelFilenames() {
     System.out.println("load level files from: " + levels_dir);
     // ---
     File tmp = new File(levels_dir);
     String[] files = tmp.list();
-    ArrayList<String> level_files = new ArrayList<>();
+    ArrayList<LevelInfo> levels = new ArrayList<>();
     // ---
     for (String file : files) {
-      if (file.endsWith(".lvl"))
-        level_files.add(file);
+      if (file.endsWith(".lvl")) {
+        LevelInfo info =
+            new LevelInfo(file, file.substring(0, file.indexOf(".lvl")), false);
+        levels.add(info);
+      }
     }
-    return level_files;
+    return levels;
   }
 }

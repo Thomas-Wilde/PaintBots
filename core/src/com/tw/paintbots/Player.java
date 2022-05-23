@@ -1,13 +1,18 @@
 package com.tw.paintbots;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 import com.badlogic.gdx.math.Vector2;
 
 import com.tw.paintbots.GameManager.SecretKey;
+import com.tw.paintbots.GameManager.SecretLock;
 import com.tw.paintbots.Renderables.DirectionIndicator;
 import com.tw.paintbots.Renderables.PlayerAnimation;
 import com.tw.paintbots.Renderables.Renderable;
+import com.tw.paintbots.Items.PowerUp;
+import com.tw.paintbots.Items.PowerUpType;
+import com.tw.paintbots.Renderables.UIPlayerBoard;
 
 // =============================================================== //
 public abstract class Player extends Entity {
@@ -25,7 +30,10 @@ public abstract class Player extends Entity {
   private int score = 0;
   private int paint_radius = 40;
   private int refill_speed = 50000;
+  private int walk_speed = 200;
   private Vector2 old_position = new Vector2(-1.0f, -1.0f);
+  private ArrayList<PowerUp> power_ups = new ArrayList<>();
+  private UIPlayerBoard board = null;
 
   // ======================== Getter/Setter ======================== //
 
@@ -34,11 +42,11 @@ public abstract class Player extends Entity {
    * Get the Renderable that draws the character. This method is only available
    * to the GameManager. *
    *
-   * @param key The SecretKey owned by the GameManager.
+   * @param lock The SecretLock owned by the GameManager.
    * @return The PlayerAnimation with the updated texture.
    */
-  public PlayerAnimation getAnimation(SecretKey key) {
-    Objects.requireNonNull(key);
+  final public PlayerAnimation getAnimation(SecretLock lock) {
+    Objects.requireNonNull(lock);
     return animation;
   }
 
@@ -47,11 +55,11 @@ public abstract class Player extends Entity {
    * Get the Renderable that draws the direction indicator around the character.
    * This method is only available to the GameManager. *
    *
-   * @param key The SecretKey owned by the GameManager.
+   * @param lock The SecretLock owned by the GameManager.
    * @return A reference to the DirectionInidicator of this player.
    */
-  public DirectionIndicator getIndicator(SecretKey key) {
-    Objects.requireNonNull(key);
+  final public DirectionIndicator getIndicator(SecretLock lock) {
+    Objects.requireNonNull(lock);
     return dir_indicator;
   }
 
@@ -62,7 +70,7 @@ public abstract class Player extends Entity {
    *
    * @return The ID of player.
    */
-  public int getPlayerID() {
+  final public int getPlayerID() {
     return player_id;
   }
 
@@ -71,38 +79,65 @@ public abstract class Player extends Entity {
    * @return The unique painting color of the player.
    * @see PaintColor
    */
-  public PaintColor getPaintColor() {
+  final public PaintColor getPaintColor() {
     return paint_colors[player_id];
   }
 
   // --------------------------------------------------------------- //
   /** @return The number of canvas pixels that still can get painted. */
-  public int getPaintAmount() {
+  final public int getPaintAmount() {
     return paint_amount;
   }
 
   // --------------------------------------------------------------- //
   /** @return The maximum paint the player can carry. */
-  public int getMaximumPaintAmount() {
+  final public int getMaximumPaintAmount() {
     return max_paint_amount;
   }
 
   // --------------------------------------------------------------- //
   /** @return The current score of the player as a value in [0, 99]. */
-  public int getScore() {
+  final public int getScore() {
     return score;
   }
 
   // --------------------------------------------------------------- //
   /** @return The radius of a single paint stroke/circle. */
-  public int getPaintRadius() {
+  final public int getPaintRadius() {
     return paint_radius;
   }
 
   // --------------------------------------------------------------- //
   /** @return The amount of paint refilled per second at a paint store. */
-  public int getRefillSpeed() {
+  final public int getRefillSpeed() {
     return refill_speed;
+  }
+
+  // --------------------------------------------------------------- //
+  /** @return The distance a player walks in one update step. */
+  final public int getWalkSpeed() {
+    return walk_speed;
+  }
+
+  // --------------------------------------------------------------- //
+  /**
+   * @return An ArrayList with the types of the collected power ups.
+   * @see PowerUp, PowerUpType
+   */
+  final public ArrayList<PowerUpType> getPowerUps() {
+    ArrayList<PowerUpType> list = new ArrayList<>();
+    for (PowerUp buff : power_ups)
+      list.add(buff.getType());
+    return list;
+  }
+
+  // --------------------------------------------------------------- //
+  /**
+   * @return The current number of collected power ups.
+   * @see PowerUp, PowerUpType
+   */
+  final public int getPowerUpCount() {
+    return power_ups.size();
   }
 
   // ======================= Player methods ======================== //
@@ -121,10 +156,10 @@ public abstract class Player extends Entity {
    * Load and initialize the animation and the direction indicator. This method
    * is only availbale to the GameManager.
    *
-   * @param key The SecretKey that is only available to the GameManager.
+   * @param lock The SecretLock that is only available to the GameManager.
    */
-  public void initRenderables(SecretKey key) {
-    Objects.requireNonNull(key);
+  final public void initRenderables(SecretLock lock) {
+    Objects.requireNonNull(lock);
     loadAnimation();
     dir_indicator = new DirectionIndicator();
     dir_indicator.setAnker(animation);
@@ -150,14 +185,13 @@ public abstract class Player extends Entity {
    *         player.
    * @see PlayerState
    */
-  public PlayerState getState() {
+  final public PlayerState getState() {
     PlayerState state = new PlayerState();
     state.player_id = this.player_id;
     state.paint_color = this.getPaintColor();
     state.type = this.getType();
 
-    state.old_pos = this.getPosition();
-    state.new_pos = this.getPosition();
+    state.pos = this.getPosition();
     state.dir = this.getDirection().cpy();
 
     state.score = this.getScore();
@@ -165,6 +199,8 @@ public abstract class Player extends Entity {
     state.paint_amount = this.getPaintAmount();
     state.max_paint_amount = this.getMaximumPaintAmount();
     state.refill_speed = this.getRefillSpeed();
+
+    state.is_active = this.isActive();
 
     return state;
   }
@@ -175,11 +211,24 @@ public abstract class Player extends Entity {
    * only availbale to the GameManager.
    *
    * @param anker - The Renderable used for relative positioning.
-   * @key The SecretKey that is only available to the GameManager.
+   * @param lock The SecretLock that is only available to the GameManager.
    */
-  public void setAnker(Renderable anker, SecretKey key) {
-    Objects.requireNonNull(key);
+  final public void setAnker(Renderable anker, SecretLock lock) {
+    Objects.requireNonNull(lock);
     animation.setAnker(anker);
+  }
+
+  // --------------------------------------------------------------- //
+  /**
+   * Set the UIPlayerBoard for this player. This is needed to correctly display
+   * the selected icons.
+   *
+   * @param board - The UI element that shows the player stats.
+   * @param lock The SecretLock that is only available to the GameManager.
+   */
+  final public void setUIBoard(UIPlayerBoard board, SecretLock lock) {
+    Objects.requireNonNull(lock);
+    this.board = board;
   }
 
   // --------------------------------------------------------------- //
@@ -187,10 +236,10 @@ public abstract class Player extends Entity {
    * This method is only availbale to the GameManager.
    *
    * @param amount - The maximum paint the player can hold.
-   * @key The SecretKey that is only available to the GameManager.
+   * @param lock The SecretLock that is only available to the GameManager.
    */
-  public void setMaximumPaintAmount(int amount, SecretKey key) {
-    Objects.requireNonNull(key);
+  final public void setMaximumPaintAmount(int amount, SecretLock lock) {
+    Objects.requireNonNull(lock);
     max_paint_amount = Math.max(0, amount);
   }
 
@@ -199,10 +248,10 @@ public abstract class Player extends Entity {
    * This method is only availbale to the GameManager.
    *
    * @param amount - The current paint the player holds.
-   * @key The SecretKey that is only available to the GameManager.
+   * @param lock The SecretLock that is only available to the GameManager.
    */
-  public void setPaintAmount(int amount, SecretKey key) {
-    Objects.requireNonNull(key);
+  final public void setPaintAmount(int amount, SecretLock lock) {
+    Objects.requireNonNull(lock);
     paint_amount = Math.max(0, amount);
     paint_amount = Math.min(amount, max_paint_amount);
   }
@@ -212,11 +261,11 @@ public abstract class Player extends Entity {
    * This method is only availbale to the GameManager.
    *
    * @param plus - Increase the paint amount of the player by this value.
-   * @key The SecretKey that is only available to the GameManager.
+   * @param lock The SecretLock that is only available to the GameManager.
    */
-  public void increasePaintAmount(int plus, SecretKey key) {
-    Objects.requireNonNull(key);
-    setPaintAmount(paint_amount + plus, key);
+  final public void increasePaintAmount(int plus, SecretLock lock) {
+    Objects.requireNonNull(lock);
+    setPaintAmount(paint_amount + plus, lock);
   }
 
   // --------------------------------------------------------------- //
@@ -224,11 +273,11 @@ public abstract class Player extends Entity {
    * This method is only availbale to the GameManager.
    *
    * @param minus - Decrease the paint amount of the player by this value.
-   * @key The SecretKey that is only available to the GameManager.
+   * @param lock The SecretLock that is only available to the GameManager.
    */
-  public void decreasePaintAmount(int minus, SecretKey key) {
-    Objects.requireNonNull(key);
-    setPaintAmount(paint_amount - minus, key);
+  final public void decreasePaintAmount(int minus, SecretLock lock) {
+    Objects.requireNonNull(lock);
+    setPaintAmount(paint_amount - minus, lock);
   }
 
   // --------------------------------------------------------------- //
@@ -236,10 +285,10 @@ public abstract class Player extends Entity {
    * This method is only availbale to the GameManager.
    *
    * @param radius - The radius of this players paint circle.
-   * @key The SecretKey that is only available to the GameManager.
+   * @param lock The SecretLock that is only available to the GameManager.
    */
-  public void setPaintRadius(int radius, SecretKey key) {
-    Objects.requireNonNull(key);
+  final public void setPaintRadius(int radius, SecretLock lock) {
+    Objects.requireNonNull(lock);
     this.paint_radius = radius;
   }
 
@@ -249,10 +298,10 @@ public abstract class Player extends Entity {
    *
    * @param paint_per_second - The paint amount this player refills in one
    *        second if he is next to a paint store of its color.
-   * @key The SecretKey that is only available to the GameManager.
+   * @param lock The SecretLock that is only available to the GameManager.
    */
-  public void setRefillSpeed(int paint_per_second, SecretKey key) {
-    Objects.requireNonNull(key);
+  final public void setRefillSpeed(int paint_per_second, SecretLock lock) {
+    Objects.requireNonNull(lock);
     this.refill_speed = paint_per_second;
   }
 
@@ -260,13 +309,67 @@ public abstract class Player extends Entity {
   /**
    * This method is only availbale to the GameManager.
    *
-   * @param points - Set the score of this player (cut to [0,100])
-   * @key The SecretKey that is only available to the GameManager.
+   * @param walk_speed - The distance a player moves in one update step.
+   * @param lock The SecretLock that is only available to the GameManager.
    */
-  public void setScore(int points, SecretKey key) {
-    Objects.requireNonNull(key);
+  final public void setWalkSpeed(int walk_speed, SecretLock lock) {
+    Objects.requireNonNull(lock);
+    this.walk_speed = walk_speed;
+  }
+
+  // --------------------------------------------------------------- //
+  /**
+   * This method is only availbale to the GameManager.
+   *
+   * @param points - Set the score of this player (cut to [0,100])
+   * @param lock The SecretLock that is only available to the GameManager.
+   */
+  final public void setScore(int points, SecretLock lock) {
+    Objects.requireNonNull(lock);
     score = Math.max(0, points);
     score = Math.min(points, 100);
+  }
+
+  // --------------------------------------------------------------- //
+  /**
+   * Give the power up to this player. It gives him a permanent boost.
+   *
+   * @param buff - The power up
+   * @param lock The SecretLock that is only available to the GameManager.
+   * @see PowerUp, PowerUpType
+   */
+  final public void givePowerUp(PowerUp buff, SecretLock lock) {
+    Objects.requireNonNull(lock);
+    if (getPowerUpCount() >= 2)
+      return;
+    power_ups.add(buff);
+    // ---
+    if (GameManager.get().admissionMode())
+      return;
+    // --- set size and position of poower up item
+    buff.setAnker(board);
+    buff.setScale(Array.of(0.13f, 0.13f));
+    int w = buff.getRenderSize()[0];
+    int idx = getPowerUpCount() - 1;
+    int[] size = board.getRenderSize();
+    int pos_x0 = (int) ((size[0] - w) * (0.32 + idx * 0.355));
+    int pos_y = (int) (size[1] * 0.33);
+    buff.setRenderPosition(Array.of(pos_x0, pos_y));
+  }
+
+  // --------------------------------------------------------------- //
+  /**
+   * Remove the power ups. This method is relevant for admission mode.
+   *
+   * @param lock The SecretLock that is only available to the GameManager.
+   */
+  final public void removePowerUps(SecretLock lock) {
+    Objects.requireNonNull(lock);
+    for (PowerUp buff : power_ups) {
+      buff.setActive(false);
+      buff.setVisible(false);
+    }
+    power_ups.clear();
   }
 
   // --------------------------------------------------------------- //
@@ -289,22 +392,33 @@ public abstract class Player extends Entity {
     return tmp_deg;
   }
 
+  // --------------------------------------------------------------- //
+  /**
+   * If something went wrong during bot loading, we have to decrease the id
+   * counter.
+   *
+   * @param lock The SecretLock that is only available to the GameManager.
+   */
+  public static final void decreaseIDCounter(SecretLock lock) {
+    --id_counter;
+  }
+
   // ====================== Entity methods ====================== //
   @Override
-  public boolean setPosition(Vector2 position, SecretKey key) {
+  public final boolean setPosition(Vector2 position, SecretLock lock) {
     old_position = this.getPosition();
-    return super.setPosition(position, key);
+    return super.setPosition(position, lock);
   }
 
   // --------------------------------------------------------------- //
   @Override
-  public void destroy(SecretKey key) {
-    Objects.requireNonNull(key);
+  public void destroy(SecretLock lock) {
+    Objects.requireNonNull(lock);
     // ---
     if (animation != null)
-      animation.destroy(key);
+      animation.destroy(lock);
     if (dir_indicator != null)
-      dir_indicator.destroy(key);
+      dir_indicator.destroy(lock);
   }
 
   // --------------------------------------------------------------- //
@@ -329,11 +443,12 @@ public abstract class Player extends Entity {
     // compute how far we have walked ...
     Vector2 temp = old_position;
     temp.sub(getPosition());
-    // ... use the walk distance to scale the animation speed
-    float dist = (float) temp.len();
-    float old_time = animation.getAnimationTime();
     float delta_time = (float) GameManager.get().getDeltaTime();
-    float new_time = old_time + (delta_time) * dist / 3.0f;
+    // use walk distance and fps (60fps asumed) to scale animation speed
+    float scale_dist = (float) temp.len() / 3.0f;
+    float scale_fps = 60.0f * delta_time;
+    float old_time = animation.getAnimationTime();
+    float new_time = old_time + delta_time * scale_dist / scale_fps;
     animation.setAnimationTime(new_time);
     animation.updateFrameTexture();
     //

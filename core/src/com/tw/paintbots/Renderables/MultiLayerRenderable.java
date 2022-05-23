@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import com.tw.paintbots.GameManager.SecretKey;
+import com.tw.paintbots.GameManager.SecretLock;
 
 // =============================================================== //
 public class MultiLayerRenderable extends Renderable {
@@ -88,8 +89,8 @@ public class MultiLayerRenderable extends Renderable {
    * Free the memory of the textures. Only the GameManager can call this method.
    */
   @Override
-  public void destroy(SecretKey key) {
-    Objects.requireNonNull(key);
+  public void destroy(SecretLock lock) {
+    Objects.requireNonNull(lock);
     // ---
     for (Texture texture : textures)
       texture.dispose();

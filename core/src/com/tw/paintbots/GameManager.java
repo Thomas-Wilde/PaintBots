@@ -3,10 +3,12 @@ package com.tw.paintbots;
 import java.lang.reflect.Constructor;
 
 import java.util.Objects;
+import java.util.Random;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
+import java.util.concurrent.*;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -28,7 +30,10 @@ import com.tw.paintbots.LevelLoader;
 import com.tw.paintbots.Items.Item;
 import com.tw.paintbots.Items.ItemArea;
 import com.tw.paintbots.Items.ItemType;
+import com.tw.paintbots.LevelLoader.LevelInfo;
 import com.tw.paintbots.NonePlayer;
+import com.tw.paintbots.Items.PowerUp;
+import com.tw.paintbots.Items.PowerUpType;
 
 // =============================================================== //
 /**
@@ -47,6 +52,8 @@ public class GameManager {
    */
   public static final class SecretKey { private SecretKey() {} }
   private static final SecretKey secret_key = new SecretKey();
+  public static final class SecretLock { private SecretLock() {} }
+  private static final SecretLock secret_lock = new SecretLock();
   //@formatter:on
 
   // ======================== GameState enum ======================= //
@@ -67,7 +74,7 @@ public class GameManager {
   // GameManager uses singleton pattern
   private static GameManager instance = null;
   private double elapsed_time = 0.0;
-  private double delta_time = 0.0;
+  private double delta_time = 1.0 / 30.0;
   private GameState game_state = GameState.MENU;
 
   // --- RenderLayer 20 is reserved for game board elements, e.g. objects.
@@ -81,7 +88,7 @@ public class GameManager {
   private ArrayList<String> bot_names = new ArrayList<>();
   private int menu_select = 0;
   private boolean read_menu_key = true;
-  private ArrayList<String> level_files = new ArrayList<>();
+  private ArrayList<LevelInfo> levels = new ArrayList<>();
 
   // --- List of Entities needed to create other ones
   private SimpleRenderable floor = null;
@@ -89,9 +96,17 @@ public class GameManager {
   private StartTimer start_timer = null;
   private ArrayList<Player> players = new ArrayList<>();
   private ArrayList<PlayerState> player_states = new ArrayList<>();
+  private ArrayList<Player> move_order = new ArrayList<>();
   private Canvas canvas = null;
   private Board board = null;
   private HashMap<String, Class<?>> bots = null;
+  private ArrayList<PowerUp> power_ups = new ArrayList<>();
+  private ArrayList<PowerUp> power_ups_spawned = new ArrayList<>();
+  private ArrayList<ExecutorService> executors = new ArrayList<>();
+  private final int max_update_time = 10;
+  private final int max_init_time = 500;
+  private Random rnd = null;
+  // ---
 
   // ===================== GameManager methods ===================== //
   /**
@@ -106,10 +121,39 @@ public class GameManager {
 
   // --------------------------------------------------------------- //
   /**
-   * Constructor is private due to the sigleton pattern.
+   * Constructor is private due to the singleton pattern.
    */
-  private GameManager() {
+  private GameManager() {}
+
+  // --------------------------------------------------------------- //
+  private void initRandomSeed() {
+    int seed = game_settings.random_seed;
+    rnd = new Random(seed);
+    delta_time = 1.0 / game_settings.fps;
+  }
+
+  // --------------------------------------------------------------- //
+  /** Initialize the desktop game.
+   *
+   * @param settings The initial GameSettings that can be changed in the menu game_settings = settings;
+   */
+  public void initDesktopGame(GameSettings settings, GameKey key) {
+    Objects.requireNonNull(key);
+    // ---
+    game_settings = settings;
+    initRandomSeed();
+    // ---
     loadBots();
+    // ---
+    System.out.println("loaded bots:");
+    Set<String> loaded_names = bots.keySet();
+    for (String name : loaded_names) {
+      bot_names.add(name);
+      System.out.println(name);
+    }
+    // ---
+    extendBotList();
+    // ---
     loadLevels();
   }
 
@@ -123,16 +167,21 @@ public class GameManager {
     // --- load some bots
     BotLoader bot_loader = new BotLoader();
     bots = bot_loader.loadBots();
+  }
+
+  // --------------------------------------------------------------- //
+  /**
+   * Add HUMAN, NONE and RandomBot to the selection list for the deskop game.
+   */
+  private void extendBotList() {
     // ---
-    bot_names.add("Human");
-    bot_names.add("---");
-    // ---
-    Set<String> loaded_names = bots.keySet();
-    for (String name : loaded_names)
-      bot_names.add(name);
+    bot_names.add(0, "Human");
+    bot_names.add(1, "---");
+    bot_names.add(2, "RandomBot");
     // ---
     bots.put("Human", HumanPlayer.class);
     bots.put("---", null);
+    bots.put("RandomBot", RandomBot.class);
   }
 
   // --------------------------------------------------------------- //
@@ -141,8 +190,17 @@ public class GameManager {
    */
   private void loadLevels() {
     LevelLoader level_loader = new LevelLoader();
-    level_files = level_loader.loadLevelFiles();
-    level_files.add(0, "default");
+    levels = level_loader.loadLevelFiles();
+    // ---
+    //@formatter:off
+    levels.add(0, new LevelInfo("level.lvl",     "Nothing Special", true));
+    levels.add(1, new LevelInfo("admission.lvl", "Admission", true));
+    levels.add(2, new LevelInfo("blocked.lvl",   "Blocked Corners", true));
+    levels.add(3, new LevelInfo("olivia.lvl",    "Amazing Maze by Olivia", true));
+    levels.add(4, new LevelInfo("dario.lvl",     "Happy Face by Dario", true));
+    levels.add(5, new LevelInfo("daniel.lvl",    "Symmetric Corners by Daniel", true));
+    levels.add(6, new LevelInfo("maurice.lvl",   "Tree Scale = 1.0 by Maurice", true));
+    //@formatter:on
   }
 
   // --------------------------------------------------------------- //
@@ -156,9 +214,18 @@ public class GameManager {
    */
   public void destroy(GameKey key) {
     Objects.requireNonNull(key);
+    // ---
     for (Entity entity : entities)
-      entity.destroy(secret_key);
+      entity.destroy(secret_lock);
     entities.clear();
+    // ---
+    for (Player player : players)
+      player.destroy(secret_lock);
+    players.clear();
+    move_order.clear();
+    // ---
+    for (ExecutorService executor : executors)
+      executor.shutdownNow();
   }
 
   // --------------------------------------------------------------- //
@@ -177,7 +244,7 @@ public class GameManager {
   //@formatter:on
   public void update(GameKey key) {
     Objects.requireNonNull(key);
-    delta_time = Gdx.graphics.getDeltaTime();
+    // delta_time = Gdx.graphics.getDeltaTime();
     elapsed_time += delta_time;
     // ---
     switch (game_state) {
@@ -274,7 +341,7 @@ public class GameManager {
    */
   private void changeSelectedBot() {
     UIMenuItem bot_select = menu_item.get(menu_select);
-    int bot_index = bot_select.getItemIndex(secret_key);
+    int bot_index = bot_select.getItemIndex(secret_lock);
     // ---
     if (Gdx.input.isKeyPressed(Keys.LEFT))
       bot_index -= 1;
@@ -286,7 +353,7 @@ public class GameManager {
     if (bot_index >= bot_names.size())
       bot_index = 0;
     // ---
-    bot_select.setItem(bot_names.get(bot_index), bot_index, secret_key);
+    bot_select.setItem(bot_names.get(bot_index), bot_index, secret_lock);
   }
 
   // --------------------------------------------------------------- //
@@ -296,7 +363,7 @@ public class GameManager {
    */
   private void changeSelectedLevel() {
     UIMenuItem level_select = menu_item.get(menu_select);
-    int level_index = level_select.getItemIndex(secret_key);
+    int level_index = level_select.getItemIndex(secret_lock);
     // ---
     if (Gdx.input.isKeyPressed(Keys.LEFT))
       level_index -= 1;
@@ -304,11 +371,12 @@ public class GameManager {
       level_index += 1;
     // --- clamp to entry count
     if (level_index < 0)
-      level_index = level_files.size() - 1;
-    if (level_index >= level_files.size())
+      level_index = levels.size() - 1;
+    if (level_index >= levels.size())
       level_index = 0;
     // ---
-    level_select.setItem(level_files.get(level_index), level_index, secret_key);
+    level_select.setItem(levels.get(level_index).level_name, level_index,
+        secret_lock);
   }
 
   // --------------------------------------------------------------- //
@@ -320,7 +388,7 @@ public class GameManager {
     // --- read bot settings from menu
     for (int i = 0; i < 4; ++i) {
       UIMenuItem bot_select = menu_item.get(i);
-      int bot_idx = bot_select.getItemIndex(secret_key);
+      int bot_idx = bot_select.getItemIndex(secret_lock);
       if (bot_idx == 0) {
         game_settings.player_types[i] = PlayerType.HUMAN;
         game_settings.bot_names[i] = "Human";
@@ -329,25 +397,23 @@ public class GameManager {
         game_settings.bot_names[i] = "---";
       } else {
         game_settings.player_types[i] = PlayerType.AI;
-        game_settings.bot_names[i] = bot_select.getItemName(secret_key);
+        game_settings.bot_names[i] = bot_select.getItemName(secret_lock);
       }
     }
     // --- read level settings from menu
     UIMenuItem level_select = menu_item.get(4);
-    String level_file = "";
-    if (level_select.getItemIndex(secret_key) != 0)
-      level_file = System.getProperty("user.dir") + "/levels/"
-          + level_select.getItemName(secret_key);
-    game_settings.level_file = level_file;
+    int level_idx = level_select.getItemIndex(secret_lock);
+    game_settings.level = levels.get(level_idx);
     // ---
-    game_state = GameState.STARTTIMER;
-    elapsed_time = 0.0;
-    hideMenu();
     try {
       loadMap();
     } catch (GameMangerException e) {
       e.printStackTrace();
     }
+    // ---
+    game_state = GameState.STARTTIMER;
+    elapsed_time = 0.0;
+    hideMenu();
   }
 
   // --------------------------------------------------------------- //
@@ -385,20 +451,7 @@ public class GameManager {
 
   // --------------------------------------------------------------- //
   private void exitGame() {
-    System.out.println("-------------------------");
-    System.out.println("score:");
-    for (Player player : players) {
-      // --- do nothing if player is inactive
-      if (!player.isActive())
-        continue;
-      // --- print the bot name
-      if (player.getType() == PlayerType.HUMAN)
-        System.out.print("Human: ");
-      else
-        System.out.print(((AIPlayer) player).getBotName() + ": ");
-      // --- print score
-      System.out.println(player.getScore());
-    }
+    printScore();
     Gdx.app.exit();
   }
 
@@ -478,7 +531,11 @@ public class GameManager {
       if (entity.isActive())
         entity.update(secret_key);
     // ---
+    updateMoveOrder();
+    updatePlayers();
+    // ---
     moveAllPlayers();
+    handlePowerUps();
     paintOnCanvas();
     adjustScores();
     // ---
@@ -495,6 +552,69 @@ public class GameManager {
         continue;
       savePlayerState(idx);
     }
+  }
+
+  // --------------------------------------------------------------- //
+  private void updateMoveOrder() {
+    Player first = move_order.get(0);
+    move_order.remove(first);
+    move_order.add(first);
+  }
+
+  // --------------------------------------------------------------- //
+  private void updatePlayers() {
+    for (Player player : move_order) {
+      // --- inactive players are ignored
+      if (!player.isActive())
+        continue;
+      // --- update active players in a own thread to limit processing time
+      int player_id = player.getPlayerID();
+      ExecutorService executor = executors.get(player_id);
+      // ---
+      Runnable update_task = () -> {
+        player.update(secret_key);
+      };
+      Future future = executor.submit(update_task);
+      try {
+        future.get(max_update_time, TimeUnit.MILLISECONDS);
+      } catch (Exception e) {
+        // ---
+        if (player.getType() == PlayerType.AI)
+          System.out.print("Bot " + ((AIPlayer) player).getBotName());
+        else
+          System.out.print("Player " + player.getPlayerID());
+        // ---
+        System.out.println(" threw an exception and is disqualified.");
+        if (e instanceof TimeoutException)
+          System.out.println("It took too long for update.");
+        System.out.println("Message: " + e.getMessage());
+        // ---
+        if (player.getType() == PlayerType.AI) {
+          disqualifyPlayer(player);
+          hidePlayer(player);
+        }
+        // future.cancel(true);
+        // executor.shutdown();
+      }
+    }
+  }
+
+  // --------------------------------------------------------------- //
+  /**
+   * In each turn the move order is cycled. E.g. if four players take part at
+   * the game in the 1st turn the order is (0,1,2,3) in the 2nd turn (1,2,3,0)
+   * in the 3rd turn (2,3,0,1) and so on. With this method you can get the order
+   * in which the players are handled. This is especially relevant for painting
+   * at the canvas (the last one decides the final color) and collecting power
+   * ups (the first one gets the power up).
+   *
+   * @return An ArrayList with the indexes of the players in their move order.
+   */
+  public ArrayList<Integer> getMoveOder() {
+    ArrayList<Integer> order = new ArrayList<>();
+    for (Player player : move_order)
+      order.add(player.getPlayerID());
+    return order;
   }
 
   // --------------------------------------------------------------- //
@@ -551,7 +671,8 @@ public class GameManager {
           item.render(batch, 20);
         ++idx_item;
       } else {
-        player.render(batch, 20);
+        if (player.isVisible())
+          player.render(batch, 20);
         ++idx_player;
       }
     }
@@ -590,7 +711,7 @@ public class GameManager {
         int pos_x = origin[0] + x;
         int pos_y = origin[1] + y;
         ItemType type = area.getType(x, y);
-        board.setType(pos_x, pos_y, type, secret_key);
+        board.setType(pos_x, pos_y, type, secret_lock);
       }
   }
 
@@ -599,12 +720,10 @@ public class GameManager {
    * This method is the entry point from the main class into the actual game.
    * This method can only be called the PaintBotsGame class
    *
-   * @param settings The initial GameSettings that can be changed in the menu
    * @param key The GameKey that is only available to the PaintBotsGame class
    */
-  public void loadMenu(GameSettings settings, GameKey key) {
+  public void loadMenu(GameKey key) {
     Objects.requireNonNull(key);
-    game_settings = settings;
     createBackground();
     createMenu();
   }
@@ -626,7 +745,7 @@ public class GameManager {
 
       // index 4 shows the level selection
       if (i == 4)
-        select.setItemName("default", secret_key);
+        select.setItemName(levels.get(0).level_name, secret_lock);
 
       addRenderable(select);
       addEntity(select);
@@ -643,19 +762,23 @@ public class GameManager {
     initCanvasRenderables();
     createBoard();
     loadLevelContent();
+    generatePowerUps(14);
     // --- players have to be loaded after the level
+    createExecutors();
     sanityCheckPlayerSettings(); // throws an exception if something is wrong
     createPlayers();
     initPlayerRenderables();
   }
 
   // --------------------------------------------------------------- //
+  //@formatter:off
   /**
    * Check the game settings for correctness. If something is wrong, throw an
-   * exceptions. Things that may be wrong are: - the number of players is not in
-   * [1,4] - not each player gets a start position - not each player gets a
-   * start direction
-   */
+   * exceptions. Things that may be wrong are:
+   *   - the number of players is not in [1,4]
+   *   - not each player gets a start position
+   *   - not each player gets a start direction
+   */ //@formatter:on
   private void sanityCheckPlayerSettings() throws GameMangerException {
     // --- sanity check
     int player_count = game_settings.player_types.length;
@@ -691,7 +814,7 @@ public class GameManager {
     int width = game_settings.board_dimensions[0];
     int height = game_settings.board_dimensions[1];
     floor.setRenderSize(width, height);
-    Entity.setBoardDimensions(Array.of(width, height), secret_key);
+    Entity.setBoardDimensions(Array.of(width, height), secret_lock);
     // ---
     addRenderable(floor);
     addEntity(floor);
@@ -718,7 +841,8 @@ public class GameManager {
 
   // --------------------------------------------------------------- //
   private void createStartTimer() {
-    start_timer = new StartTimer(5.0f);
+    float countdown = game_settings.countdown;
+    start_timer = new StartTimer(countdown);
     start_timer.setAnker(floor);
     start_timer.setElapsed(0.0f);
     // --- define position and size
@@ -743,8 +867,12 @@ public class GameManager {
         // --- load bot
         if (game_settings.player_types[i] == PlayerType.AI) {
           player = createBot(i);
-          if (player == null)
-            continue;
+          if (player == null) { // something went wrong during load
+            Player.decreaseIDCounter(secret_lock);
+            String bot_name = game_settings.bot_names[i];
+            System.out.println("Replace " + bot_name + " with inactive player");
+            game_settings.player_types[i] = PlayerType.NONE;
+          }
         }
         // --- load human player
         if (game_settings.player_types[i] == PlayerType.HUMAN)
@@ -756,8 +884,10 @@ public class GameManager {
         }
         // ---
         initPlayer(player);
-        addEntity(player);
+        if (player.getType() == PlayerType.AI)
+          initBot((AIPlayer) player);
         players.add(player);
+        move_order.add(player);
         player_states.add(new PlayerState());
         savePlayerState(i);
       } catch (Exception e) {
@@ -791,22 +921,69 @@ public class GameManager {
   }
 
   // --------------------------------------------------------------- //
+  /** The bot has 1000ms to initialize */
+  private void initBot(AIPlayer bot) {
+    // --- update active players in a own thread to limit processing time
+    int player_id = bot.getPlayerID();
+    ExecutorService executor = executors.get(player_id);
+    // ---
+    Runnable update_task = () -> {
+      bot.initBot();
+    };
+    Future future = executor.submit(update_task);
+    try {
+      future.get(max_init_time, TimeUnit.MILLISECONDS);
+    } catch (Exception e) {
+      // ---
+      System.out.print("Bot " + bot.getBotName());
+      if (e instanceof TimeoutException)
+        System.out
+            .println(" took too long for initialization and is disqualified.");
+      else
+        System.out.println(
+            " threw an exception during initialization and is disqualified.");
+      // ---
+      disqualifyPlayer(bot);
+      // future.cancel(true);
+      // executor.shutdown();
+    }
+  }
+
+  // --------------------------------------------------------------- //
   private void initPlayerRenderables() {
     int active_count = 0;
     for (Player player : players) {
       if (player.getType() == PlayerType.NONE)
         continue;
-      player.initRenderables(secret_key);
-      player.setAnker(floor, secret_key);
-      player_layer.add(player.getAnimation(secret_key));
-      addRenderable(player.getIndicator(secret_key));
+      if (!player.isActive())
+        continue;
+      player.initRenderables(secret_lock);
+      player.setAnker(floor, secret_lock);
+      player_layer.add(player.getAnimation(secret_lock));
+      addRenderable(player.getIndicator(secret_lock));
       createPlayerUI(player, active_count);
       // --- place renderable at correct location
       Vector2 pos = player.getPosition();
-      player.getAnimation(secret_key)
+      player.getAnimation(secret_lock)
           .setRenderPosition(Array.of((int) pos.x, (int) pos.y));
       ++active_count;
     }
+  }
+
+  // --------------------------------------------------------------- //
+  /**
+   * Create executors as daemin threads, which allow the application to close
+   * even if the thread was interrupted.
+   */
+  private void createExecutors() {
+    for (int i = 0; i < 4; ++i)
+      executors.add(Executors.newFixedThreadPool(1, new ThreadFactory() {
+        public Thread newThread(Runnable r) {
+          Thread t = Executors.defaultThreadFactory().newThread(r);
+          t.setDaemon(true);
+          return t;
+        }
+      }));
   }
 
   // --------------------------------------------------------------- //
@@ -822,12 +999,16 @@ public class GameManager {
     int start_paint = game_settings.start_paint_amount;
     int paint_radius = game_settings.paint_radius;
     int refill_speed = game_settings.refill_speed;
-    player.setPosition(pos, secret_key);
+    int walk_speed = game_settings.walk_speed;
+    player.setPosition(pos, secret_lock);
     player.setInitialDirection(dir, secret_key);
-    player.setMaximumPaintAmount(max_paint, secret_key);
-    player.setPaintAmount(start_paint, secret_key);
-    player.setPaintRadius(paint_radius, secret_key);
-    player.setRefillSpeed(refill_speed, secret_key);
+    player.setMaximumPaintAmount(max_paint, secret_lock);
+    player.setPaintAmount(start_paint, secret_lock);
+    player.setPaintRadius(paint_radius, secret_lock);
+    player.setRefillSpeed(refill_speed, secret_lock);
+    player.setWalkSpeed(walk_speed, secret_lock);
+    player.setScore(0, secret_lock);
+    player.removePowerUps(secret_lock);
   }
 
   // --------------------------------------------------------------- //
@@ -847,6 +1028,7 @@ public class GameManager {
     // ---
     addRenderable(info_board);
     addEntity(info_board);
+    player.setUIBoard(info_board, secret_lock);
   }
 
   // --------------------------------------------------------------- //
@@ -861,12 +1043,14 @@ public class GameManager {
   }
 
   // --------------------------------------------------------------- //
-  /** Calls 'movePlayer(int idx)' for each player */
+  /** Calls 'movePlayer(int idx)' for each player if the player is active. */
   private void moveAllPlayers() {
-    for (int player_idx = 0; player_idx < players.size(); ++player_idx) {
-      if (players.get(player_idx).getType() == PlayerType.NONE)
+    for (Player player : players) {
+      if (player.getType() == PlayerType.NONE)
         continue;
-      movePlayer(player_idx);
+      if (!player.isActive())
+        continue;
+      movePlayer(player.getPlayerID());
     }
   }
 
@@ -877,33 +1061,56 @@ public class GameManager {
    * the borders of the board.
    */
   private void movePlayer(int player_idx) {
-    Vector2 old_pos = player_states.get(player_idx).old_pos;
+    Vector2 old_pos = player_states.get(player_idx).pos;
     Player player = players.get(player_idx);
     Vector2 move_dir = player.getDirection();
+    // --- check for correct direction
+    if (move_dir.len2() < 0.00000001) {
+      System.out.println("Player " + player_idx
+          + " returned direction with length 0 and is disqualified.");
+      disqualifyPlayer(player);
+      return;
+    }
+    // ---
     move_dir.setLength(1.0f);
-    // ---
     Vector2 new_pos = old_pos.cpy();
-    new_pos.add(move_dir.scl(200.0f * (float) delta_time)); // scale
+    int walk_speed = player.getWalkSpeed();
+    new_pos.add(move_dir.scl(walk_speed * (float) delta_time)); // scale
     clampPositionToBorder(new_pos);
-    clampPositionToObstacles(new_pos, old_pos);
+    clampPositionToObstacles(player, new_pos, old_pos);
     // ---
-    player.setPosition(new_pos, secret_key);
-    player_states.get(player_idx).new_pos = new_pos;
+    player.setPosition(new_pos, secret_lock);
+    player_states.get(player_idx).pos = new_pos;
+  }
+
+  // --------------------------------------------------------------- //
+  private void disqualifyPlayer(Player player) {
+    player.setActive(false);
+  }
+
+  // --------------------------------------------------------------- //
+  private void hidePlayer(Player player) {
+    if (game_settings.headless)
+      return;
+    player.getAnimation(secret_lock).setVisible(false);
+    player.getIndicator(secret_lock).setVisible(false);
   }
 
   // --------------------------------------------------------------- //
   private void interactWithBoard() {
-    for (int player_idx = 0; player_idx < players.size(); ++player_idx) {
-      if (players.get(player_idx).getType() == PlayerType.NONE)
+    for (Player player : players) {
+      if (player.getType() == PlayerType.NONE)
         continue;
-      interactWithBoard(player_idx);
+      if (!player.isActive())
+        continue;
+      interactWithBoard(player.getPlayerID());
     }
   }
 
   // --------------------------------------------------------------- //
   private void interactWithBoard(int player_idx) {
     Player player = players.get(player_idx);
-    Vector2 pos = player_states.get(player_idx).new_pos;
+    Vector2 pos = player_states.get(player_idx).pos;
     int x = (int) pos.x;
     int y = (int) pos.y;
     ItemType cell_type = board.getType(x, y);
@@ -915,7 +1122,7 @@ public class GameManager {
     if (cell_type == ItemType.REFILL) {
       int refill_speed = player.getRefillSpeed();
       int increase = (int) (refill_speed * delta_time);
-      player.increasePaintAmount(increase, secret_key);
+      player.increasePaintAmount(increase, secret_lock);
       return;
     }
 
@@ -928,7 +1135,7 @@ public class GameManager {
     //@formatter:on
       int refill_speed = player.getRefillSpeed();
       int increase = (int) (refill_speed * delta_time);
-      player.increasePaintAmount(increase, secret_key);
+      player.increasePaintAmount(increase, secret_lock);
     }
   }
 
@@ -953,25 +1160,26 @@ public class GameManager {
   }
 
   // --------------------------------------------------------------- //
-  private void clampPositionToObstacles(Vector2 pos, Vector2 old_pos) {
+  private void clampPositionToObstacles(Player player, Vector2 pos,
+      Vector2 old_pos) {
     int pos_x = (int) pos.x;
     int pos_y = (int) pos.y;
-    if (board.getType(pos_x, pos_y).isPassable())
+    if (board.getType(pos_x, pos_y).isPassable(player))
       return;
     // --- clamp x-coordinate
     int old_x = (int) old_pos.x;
-    if (board.getType(old_x, pos_y).isPassable()) {
+    if (board.getType(old_x, pos_y).isPassable(player)) {
       pos.x = old_pos.x;
       return;
     }
     // --- clamp y-coordinate
     int old_y = (int) old_pos.y;
-    if (board.getType(pos_x, old_y).isPassable()) {
+    if (board.getType(pos_x, old_y).isPassable(player)) {
       pos.y = old_pos.y;
       return;
     }
     // --- clamp x- and y-cooridnates
-    if (board.getType(old_x, old_y).isPassable()) {
+    if (board.getType(old_x, old_y).isPassable(player)) {
       pos.x = old_pos.x;
       pos.y = old_pos.y;
       return;
@@ -979,6 +1187,162 @@ public class GameManager {
     // If we reached this point an neither condition is true, we might have
     // started in an obstacle. So just go on and give a hint.
     System.out.println("ERROR: obstacle collision " + pos_x + " " + pos_y);
+  }
+
+  // --------------------------------------------------------------- //
+  private void handlePowerUps() {
+    if (checkPowerUpSpawn())
+      spawnPowerUp();
+    checkPowerUpDeath();
+    // ---
+    collectPowerUps();
+  }
+
+  // --------------------------------------------------------------- //
+  /**
+   * If there is one more PowerUp in the spawn list, check its spawn time and
+   * return true, if it should be spawned.
+   */
+  private boolean checkPowerUpSpawn() {
+    if (power_ups.isEmpty())
+      return false;
+    float spawn_time = power_ups.get(0).getSpawnTime();
+    return spawn_time < elapsed_time;
+  }
+
+  // --------------------------------------------------------------- //
+  /** Spawn the next power up fom the list. */
+  private void spawnPowerUp() {
+    PowerUp buff = power_ups.remove(0);
+    power_ups_spawned.add(buff);
+    addEntity(buff);
+    addRenderable(buff);
+  }
+
+  // --------------------------------------------------------------- //
+  /**
+   * PowerUps have a specific (random) life time. Check if PowerUps that
+   * currently lie around should be removed.
+   */
+  private void checkPowerUpDeath() {
+    for (PowerUp buff : power_ups_spawned) {
+      if (!buff.isActive())
+        continue;
+      if (buff.getDeathTime() < elapsed_time) {
+        buff.setActive(false);
+        buff.setVisible(false);
+      }
+    }
+  }
+
+  // --------------------------------------------------------------- //
+  /** Check if one of the players collides with the power ups. */
+  private void collectPowerUps() {
+    for (Player player : move_order) {
+      Vector2 player_pos = player.getPosition();
+      player_pos.add(0.0f, -25.0f);
+      for (PowerUp buff : power_ups_spawned) {
+        // --- if the power up was aleready collected do nothing
+        if (!buff.isActive())
+          continue;
+        // --- check distance to power up
+        Vector2 buff_pos = buff.getPosition();
+        double dist = buff_pos.sub(player_pos).len2();
+        if (dist > 2500.0f)
+          continue;
+        // --- if player is close, try to collect it
+        if (!collectPowerUp(buff, player))
+          continue;
+        // --- if the power up is collected, remove it from the board
+        buff.setActive(false);
+      }
+    }
+  }
+
+  // --------------------------------------------------------------- //
+  /** The specified player collects the specified power up. */
+  private boolean collectPowerUp(PowerUp buff, Player player) {
+    // --- activate instant items
+    if (!buff.getType().isCollectible())
+      return activatePowerUp(buff, player);
+    // --- check if the player has maximum power ups
+    if (player.getPowerUpCount() >= 2)
+      return false;
+    // --- if he has still space give him the power up
+    player.givePowerUp(buff, secret_lock);
+    activatePermanentPowerUp(buff, player);
+    return true;
+  }
+
+  // --------------------------------------------------------------- //
+  private void activatePermanentPowerUp(PowerUp buff, Player player) {
+    switch (buff.getType()) {
+      // --- increase the walk speed by 15%
+      case SPEED: {
+        int speed = player.getWalkSpeed();
+        speed *= 1.15f;
+        player.setWalkSpeed(speed, secret_lock);
+      }
+        break;
+      // --- increase the paint radius by 15%
+      case PAINT_RADIUS: {
+        int radius = player.getPaintRadius();
+        radius *= 1.50f;
+        player.setPaintRadius(radius, secret_lock);
+      }
+        break;
+      // --- increase the maximum paint amount radius by 15%
+      case PAINT_AMOUNT: {
+        int amount = player.getMaximumPaintAmount();
+        amount *= 1.20f;
+        player.setMaximumPaintAmount(amount, secret_lock);
+      }
+        break;
+      // --- increase the refill speed by 15%
+      case REFILL_SPEED: {
+        int refill = player.getRefillSpeed();
+        refill *= 1.50f;
+        player.setRefillSpeed(refill, secret_lock);
+      }
+        break;
+      // ---
+      default:
+        break;
+    }
+  }
+
+  // --------------------------------------------------------------- //
+  private boolean activatePowerUp(PowerUp buff, Player player) {
+    switch (buff.getType()) {
+      // --- refill the paint
+      case INSTANT_REFILL: {
+        int refill = player.getMaximumPaintAmount();
+        player.setPaintAmount(refill, secret_lock);
+      }
+        break;
+      // --- place 1 big color blob
+      case PAINT_EXPLOSION_I: {
+        Vector2 pos = player.getPosition();
+        PaintColor color = player.getPaintColor();
+        canvas.paint(pos, color, 250, board, secret_lock);
+      }
+        break;
+      // --- place 10 random color blobs
+      case PAINT_EXPLOSION_II: {
+        PaintColor color = player.getPaintColor();
+        for (int i = 0; i < 20; ++i) {
+          int[] rnd_pos = generatePowerUpPosition();
+          Vector2 pos = new Vector2(rnd_pos[0], rnd_pos[1]);
+          int rnd_size = (int) ((rnd.nextDouble() * 0.5 + 0.25) * 100);
+          canvas.paint(pos, color, rnd_size, board, secret_lock);
+        }
+      }
+        break;
+      default:
+        break;
+    }
+    buff.setVisible(false);
+    return true;
   }
 
   // --------------------------------------------------------------- //
@@ -991,26 +1355,33 @@ public class GameManager {
 
   // --------------------------------------------------------------- //
   private void initCanvasRenderables() {
-    canvas.initCanvasRenderables(secret_key);
+    canvas.initCanvasRenderables(secret_lock);
     canvas.setAnker(floor);
     addRenderable(canvas);
   }
 
   // --------------------------------------------------------------- //
   private void paintOnCanvas() {
-    for (int idx = 0; idx < players.size(); ++idx) {
-      Player player = players.get(idx);
-      if (player.getType() == PlayerType.NONE)
+    for (Player player : move_order) {
+      if (!player.isActive())
         continue;
       if ((player.getPaintAmount() <= 0.0))
         continue;
-      Vector2 position = player_states.get(idx).new_pos;
+      int idx = player.getPlayerID();
+      Vector2 position = player_states.get(idx).pos;
       int radius = player.getPaintRadius();
       int used_paint = canvas.paint(position, player.getPaintColor(), radius,
-          board, secret_key);
-      player.decreasePaintAmount(used_paint, secret_key);
+          board, secret_lock);
+      player.decreasePaintAmount(used_paint, secret_lock);
+      if ((player.getType() == PlayerType.AI)
+          && ((AIPlayer) player).getBotName().equals("RandomBot"))
+        player.increasePaintAmount(used_paint, secret_lock);
     }
-    canvas.sendPixmapToTexture(secret_key);
+    // ---
+    if (game_settings.headless)
+      return;
+    // ---
+    canvas.sendPixmapToTexture(secret_lock);
   }
 
   // --------------------------------------------------------------- //
@@ -1024,7 +1395,7 @@ public class GameManager {
     Player player = players.get(player_idx);
     long pixels = canvas.getPaintCount()[player_idx];
     long score = pixels * 100 / (board.getPaintableArea() + 1); // max 99%
-    player.setScore((int) score, secret_key);
+    player.setScore((int) score, secret_lock);
   }
 
   // --------------------------------------------------------------- //
@@ -1040,9 +1411,9 @@ public class GameManager {
     if (render_layers.get(20) == null)
       render_layers.put(20, new ArrayList<Renderable>());
     // ---
-    String level_file = game_settings.level_file;
+    LevelInfo level_info = game_settings.level;
     List<Item> level_items = new ArrayList<>();
-    Level level = new Level(level_file, secret_key);
+    Level level = new Level(level_info, secret_lock);
     level.loadLevel(level_items, game_settings);
     // ---
     for (Item item : level_items) {
@@ -1054,6 +1425,59 @@ public class GameManager {
     // ---
     List<Renderable> items_list = render_layers.get(20);
     items_list.sort(new RenderDepthComparator());
+    // ---
+    board.saveToFile(secret_lock);
+  }
+
+  // --------------------------------------------------------------- //
+  private void generatePowerUps(int count) {
+    int game_time = game_settings.game_length;
+    int spawn_delta = game_time / (count + 2); // time between two spawns
+    // ---
+    int spawn_time = 0;
+    for (int i = 0; i < count; ++i) {
+      spawn_time += spawn_delta;
+      // --- random time
+      int time_off =
+          (int) (((rnd.nextDouble() * spawn_delta) - spawn_delta) / 2);
+      int life_time = (int) (((rnd.nextDouble() * spawn_delta) + spawn_delta));
+      life_time = Math.max(life_time, 15);
+      // --- random type
+      int rnd_idx = (int) (rnd.nextDouble() * (PowerUpType.getTypeCount() + 1));
+      PowerUpType type = PowerUpType.idxToType(rnd_idx);
+      // --- create the power up
+      PowerUp power_up = new PowerUp(type, spawn_time + time_off, life_time);
+      // --- random position
+      int[] pos = generatePowerUpPosition();
+      power_up.setPosition(new Vector2(pos[0], pos[1]), secret_lock);
+      power_ups.add(power_up);
+      // --- load headless
+      if (game_settings.headless)
+        continue;
+      // ---
+      power_up.setAnker(floor);
+      power_up.setRenderPosition(pos);
+    }
+  }
+
+  // --------------------------------------------------------------- //
+  /**
+   * PowerUps are generated at positions, that are passable. Note: this method
+   * does not check if the location is reachable.
+   *
+   * @return An array with the location on the board, that is passable.
+   */
+  private int[] generatePowerUpPosition() {
+    int brd_width = game_settings.board_dimensions[0];
+    int brd_height = game_settings.board_dimensions[1];
+    int offset = 100;
+    int rnd_x = 0;
+    int rnd_y = 0;
+    do {
+      rnd_x = (int) (rnd.nextDouble() * (brd_width - offset) + offset / 2);
+      rnd_y = (int) (rnd.nextDouble() * (brd_height - offset) + offset / 2);
+    } while (board.getType(rnd_x, rnd_y) != ItemType.NONE);
+    return Array.of(rnd_x, rnd_y);
   }
 
   // --------------------------------------------------------------- //
@@ -1085,11 +1509,10 @@ public class GameManager {
 
   // --------------------------------------------------------------- //
   /**
-   * Get the time between the current and the last update step.
-   * Note: This value is fixed to 1/60s for the programming contest.
+   * Get the time between the current and the last update step in seconds.
+   * Note: This value is fixed to 1/30s for the programming contest.
    */
   public double getDeltaTime() { return delta_time; }
-
 
   // --------------------------------------------------------------- //
   /**
@@ -1116,5 +1539,270 @@ public class GameManager {
    */
   public Canvas getCanvas() { return canvas; }
 
+  // --------------------------------------------------------------- //
+  /** Get a list with the current active power ups that are placed at the board.
+   * */
+  public ArrayList<PowerUp.Info> getActivePowerUps() {
+    ArrayList<PowerUp.Info> list = new ArrayList<>();
+    for (PowerUp buff : power_ups_spawned) {
+      if (!buff.isActive())
+        continue;
+      PowerUp.Info info = buff.getInfo();
+      list.add(info);
+    }
+    return list;
+  }
   //@formatter:on
+
+  // --------------------------------------------------------------- //
+  private void printScore() {
+    System.out.println("-------------------------");
+    System.out.println("score:");
+    for (Player player : players) {
+      // ---
+      if (player.getType() == PlayerType.NONE)
+        continue;
+      // ---
+      System.out.print("P" + player.getPlayerID() + ": ");
+      // --- no score if inactive/disqualified
+      if (!player.isActive()) {
+        System.out.println("inactive/disqualified");
+        continue;
+      }
+      // --- print score
+      int score = player.getScore();
+      System.out.print(score < 10 ? " " : "");
+      System.out.print(score);
+      // --- print the bot name
+      if (player.getType() == PlayerType.HUMAN)
+        System.out.print(" Human");
+      else
+        System.out.print(" " + ((AIPlayer) player).getBotName());
+      System.out.println("");
+    }
+  }
+
+  // =============================================================== //
+  //                         Admission Mode                          //
+  // =============================================================== //
+  public void initAdmissionMode(GameSettings settings) {
+    initAdmissionMode(settings, false);
+  }
+
+  // --------------------------------------------------------------- //
+  /** @return true if the game runs in admission mode. */
+  public boolean admissionMode() {
+    return game_settings.headless;
+  }
+
+  // --------------------------------------------------------------- //
+  /** @return the random seed used for random values. */
+  public int randomSeed() {
+    return game_settings.random_seed;
+  }
+
+  // --------------------------------------------------------------- //
+  public boolean initAdmissionMode(GameSettings settings, boolean verbose) {
+    if (game_settings != null) {
+      System.out.print("desktop game is running");
+      return false;
+    }
+    // ---
+    System.out.print(verbose ? "\n--== Init Admission ==--\n" : "");
+    // ---
+    loadBots();
+    if (bots.isEmpty()) {
+      System.out.println("no bots loaded - stop admission");
+      return false;
+    }
+    // --- print to console
+    Set<String> loaded_names = bots.keySet();
+    if (verbose) {
+      System.out.println("loaded bots:");
+      for (String name : loaded_names)
+        System.out.println(name);
+    }
+    if (settings.bot_names[3] == null) {
+      settings.bot_names[3] = loaded_names.iterator().next();
+    }
+    bots.put("RandomBot", RandomBot.class);
+    // ---
+    game_settings = settings;
+    // ---
+    int width = game_settings.board_dimensions[0];
+    int height = game_settings.board_dimensions[1];
+    Entity.setBoardDimensions(Array.of(width, height), secret_lock);
+    // ---
+    System.out.print(verbose ? "create canvas\n" : "");
+    createCanvas();
+    // ---
+    System.out.print(verbose ? "create board\n" : "");
+    createBoard();
+    // ---
+    System.out.print(verbose ? "load admission board\n" : "");
+    loadAdmissionBoard();
+    // ---
+    System.out.print(verbose ? "create executors\n" : "");
+    createExecutors();
+    // ---
+    try {
+      System.out.print(verbose ? "create players\n" : "");
+      sanityCheckPlayerSettings();
+      createPlayers();
+    } catch (GameMangerException e) {
+      e.printStackTrace();
+      return false;
+    }
+    if (verbose)
+      for (Player player : move_order) {
+        System.out.print("Player " + player.getPlayerID() + ": ");
+        if (!player.isActive()) {
+          System.out.println("inactive");
+          continue;
+        }
+        AIPlayer bot = (AIPlayer) player;
+        System.out.println(bot.getBotName());
+      }
+    // ---
+    return true;
+  }
+
+  // --------------------------------------------------------------- //
+  private void loadAdmissionBoard() {
+    // --- load the refill areas
+    for (int x = 402; x < 604; ++x)
+      for (int y = 409; y < 561; ++y)
+        board.setType(x, y, ItemType.REFILL, secret_lock);
+    // --- load the fences
+    for (int x = 313; x < 693; ++x)
+      for (int y = 409; y < 597; ++y)
+        board.setType(x, y, ItemType.OBSTACLE, secret_lock);
+    // --- set the positions of the players
+    game_settings.start_positions[0] = new Vector2(100.0f, 100.0f);
+    game_settings.start_positions[1] = new Vector2(100.0f, 900.0f);
+    game_settings.start_positions[2] = new Vector2(900.0f, 100.0f);
+    game_settings.start_positions[3] = new Vector2(900.0f, 900.0f);
+    // ---
+    game_settings.start_directions[0] = new Vector2(1.0f, 1.0f);
+    game_settings.start_directions[1] = new Vector2(1.0f, -1.0f);
+    game_settings.start_directions[2] = new Vector2(-1.0f, 1.0f);
+    game_settings.start_directions[3] = new Vector2(-1.0f, -1.0f);
+    // board.saveToFile(secret_lock);
+  }
+
+  // --------------------------------------------------------------- //
+  private void simulateGame() {
+    elapsed_time = 0.0;
+    while (elapsed_time < game_settings.game_length) {
+      elapsed_time += delta_time;
+      updateGameHeadless();
+    }
+  }
+
+  // --------------------------------------------------------------- //
+  private void updateGameHeadless() {
+    preUpdate();
+    for (Entity entity : entities)
+      if (entity.isActive())
+        entity.update(secret_key);
+    // ---
+    updateMoveOrder();
+    updatePlayers();
+    // ---
+    moveAllPlayers();
+    handlePowerUps();
+    paintOnCanvas();
+    adjustScores();
+    // ---
+    interactWithBoard();
+  }
+
+  // --------------------------------------------------------------- //
+  public void resetAdmissionMode(int run) {
+    if (game_settings.headless == false)
+      return;
+    initRandomSeed();
+    resetPowerUps();
+    resetCanvas();
+    resetPlayers();
+    setMoveOrder(run);
+    setAdmissionPosition(run);
+    initPlayersForAdmission();
+  }
+
+  // --------------------------------------------------------------- //
+  private void resetPowerUps() {
+    // --- power ups
+    for (PowerUp buff : power_ups) {
+      buff.setActive(false);
+      buff.setVisible(false);
+    }
+    for (PowerUp buff : power_ups_spawned) {
+      buff.setActive(false);
+      buff.setVisible(false);
+    }
+    power_ups.clear();
+    power_ups_spawned.clear();
+    // ---
+    generatePowerUps(14);
+  }
+
+  // --------------------------------------------------------------- //
+  private boolean resetPlayers() {
+    try {
+      for (Player player : players) {
+        if (player.getType() == PlayerType.NONE)
+          continue;
+        player.setActive(true);
+        initPlayer(player);
+      }
+    } catch (Exception e) {
+      System.out.println(e.getMessage());
+      return false;
+    }
+    return true;
+  }
+
+  // --------------------------------------------------------------- //
+  private void initPlayersForAdmission() {
+    for (Player player : players) {
+      if (!player.isActive())
+        continue;
+      if (player.getType() == PlayerType.AI)
+        initBot((AIPlayer) player);
+    }
+  }
+
+  // --------------------------------------------------------------- //
+  private void resetCanvas() {
+    createCanvas();
+  }
+
+  // --------------------------------------------------------------- //
+  private void setMoveOrder(int shift) {
+    move_order.clear();
+    for (Player player : players)
+      move_order.add(player);
+    for (int i = 0; i < shift; ++i)
+      updateMoveOrder();
+  }
+
+  // --------------------------------------------------------------- //
+  private void setAdmissionPosition(int run) {
+    for (Player player : move_order) {
+      int idx = (player.getPlayerID() + run) % move_order.size();
+      Vector2 pos = game_settings.start_positions[idx];
+      Vector2 dir = game_settings.start_directions[idx].setLength(1.0f);
+      player.setPosition(pos, secret_lock);
+      player.setInitialDirection(dir, secret_key);
+    }
+  }
+
+  // --------------------------------------------------------------- //
+  public void runAdmissionMode() {
+    if (game_settings.headless == false)
+      return;
+    simulateGame();
+    printScore();
+  }
 }

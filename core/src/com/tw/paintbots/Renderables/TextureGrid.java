@@ -7,8 +7,10 @@ import java.util.Objects;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-
+import com.tw.paintbots.GameManager;
+import com.tw.paintbots.GameSettings;
 import com.tw.paintbots.GameManager.SecretKey;
+import com.tw.paintbots.GameManager.SecretLock;
 
 // =============================================================== //
 public abstract class TextureGrid extends Renderable {
@@ -29,6 +31,9 @@ public abstract class TextureGrid extends Renderable {
     // ---
     this.columns = columns;
     this.rows = rows;
+    // ---
+    if (GameManager.get().admissionMode())
+      return;
     // ---
     if (!isInitialized()) {
       setGridIndex(texture_grid_counter++);
@@ -81,8 +86,8 @@ public abstract class TextureGrid extends Renderable {
 
   // ======================== Entity methods ======================= //
   @Override
-  public void destroy(SecretKey key) {
-    Objects.requireNonNull(key);
+  public void destroy(SecretLock lock) {
+    Objects.requireNonNull(lock);
     for (Texture texture : loaded_textures)
       texture.dispose();
   }

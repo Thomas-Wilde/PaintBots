@@ -17,7 +17,7 @@ public abstract class AIPlayer extends Player {
 
   // --------------------------------------------------------------- //
   @Override
-  public PlayerType getType() {
+  final public PlayerType getType() {
     return PlayerType.AI;
   }
 

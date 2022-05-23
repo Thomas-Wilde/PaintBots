@@ -21,12 +21,17 @@ public class PaintBotsGame extends ApplicationAdapter {
   private SpriteBatch batch;
   private OrthographicCamera camera;
   private GameManager game_mgr = GameManager.get();
+  private GameSettings settings = null;
 
   // ==================== PaintBotGame methods ==================== //
+  public PaintBotsGame(GameSettings settings) {
+    this.settings = settings;
+  }
+
   public void initGameManager() {
-    GameSettings settings = new GameSettings();
     try {
-      game_mgr.loadMenu(settings, game_key);
+      game_mgr.initDesktopGame(settings, game_key);
+      game_mgr.loadMenu(game_key);
     } catch (Exception e) {
       System.out.println(e.getMessage());
     }
@@ -40,7 +45,6 @@ public class PaintBotsGame extends ApplicationAdapter {
     batch = new SpriteBatch();
     camera = new OrthographicCamera();
     // --- load game settings
-    GameSettings settings = new GameSettings();
     int[] resolution = settings.cam_resolution;
     camera.setToOrtho(false, resolution[0], resolution[1]);
     // ---

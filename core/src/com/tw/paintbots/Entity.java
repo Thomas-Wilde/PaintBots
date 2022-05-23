@@ -2,6 +2,7 @@ package com.tw.paintbots;
 
 import java.util.Objects;
 import com.badlogic.gdx.math.Vector2;
+import com.tw.paintbots.GameManager.SecretLock;
 import com.tw.paintbots.GameManager.SecretKey;
 
 /**
@@ -52,9 +53,9 @@ public abstract class Entity {
    *
    * @return false if the position is outside of the board, true otherwise.
    */
-  public boolean setPosition(Vector2 position, SecretKey key) {
+  public boolean setPosition(Vector2 position, SecretLock lock) {
     // ---
-    Objects.requireNonNull(key);
+    Objects.requireNonNull(lock);
     if (board_dimensions == null)
       System.out.println("board dimensions not set in Entity");
     Objects.requireNonNull(board_dimensions);
@@ -73,8 +74,8 @@ public abstract class Entity {
    * define the extent and therefore the maximum allowed coordinates of Entity
    * positions. Only the GameManager can set this value.
    */
-  public static void setBoardDimensions(int[] dimensions, SecretKey key) {
-    Objects.requireNonNull(key);
+  public static void setBoardDimensions(int[] dimensions, SecretLock lock) {
+    Objects.requireNonNull(lock);
     board_dimensions = dimensions.clone();
   }
 
@@ -94,8 +95,8 @@ public abstract class Entity {
    * Remove this entity from the board by settings its position to null, i.e.
    * [-1, -1]. Only the GameManager can call this method.
    */
-  public void removeFromBoard(SecretKey key) {
-    Objects.requireNonNull(key);
+  public void removeFromBoard(SecretLock lock) {
+    Objects.requireNonNull(lock);
     position = new Vector2(-1.0f, -1.0f);
   }
 
@@ -110,7 +111,7 @@ public abstract class Entity {
    * This method is called by the GameManager at the end of the lifetime, e.g.
    * to clean up resources. Only the GameManager can call this method.
    */
-  public abstract void destroy(SecretKey key);
+  public abstract void destroy(SecretLock lock);
 
   // --------------------------------------------------------------- //
   /**

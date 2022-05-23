@@ -98,11 +98,13 @@ public class HumanPlayer extends Player {
   // --------------------------------------------------------------- //
   /** Maps a pressed key to the player rotation. */
   private void mapKeyToRotation() {
+    double delta_time = GameManager.get().getDeltaTime();
     int id = getPlayerID();
+    // --- interaction was designed for 60 fps; 60*Δt scales this value
     if (Gdx.input.isKeyPressed(key_map[id][0]))
-      rot_degree += 5.0;
+      rot_degree += 5.0 * 60.0 * delta_time;
     if (Gdx.input.isKeyPressed(key_map[id][1]))
-      rot_degree -= 5.0;
+      rot_degree -= 5.0 * 60.0 * delta_time;
 
     // --- avoid negative values due to dirction look up id.
     if (rot_degree < 0.0)
