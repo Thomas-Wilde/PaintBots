@@ -202,6 +202,9 @@ public abstract class Player extends Entity {
 
     state.is_active = this.isActive();
 
+    for (PowerUp buff : power_ups)
+      state.power_ups.add(buff.getType());
+
     return state;
   }
 
