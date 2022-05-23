@@ -1,0 +1,8 @@
+<map id="com.tw.paintbots.Items.PowerUp" name="com.tw.paintbots.Items.PowerUp">
+<area shape="rect" id="node1" title=" " alt="" coords="217,289,431,316"/>
+<area shape="rect" id="node2" href="$classcom_1_1tw_1_1paintbots_1_1_renderables_1_1_texture_grid.xhtml" title=" " alt="" coords="59,185,258,227"/>
+<area shape="rect" id="node3" href="$classcom_1_1tw_1_1paintbots_1_1_renderables_1_1_renderable.xhtml" title=" " alt="" coords="59,95,258,136"/>
+<area shape="rect" id="node4" href="$classcom_1_1tw_1_1paintbots_1_1_entity.xhtml" title=" " alt="" coords="5,5,160,32"/>
+<area shape="rect" id="node5" title=" " alt="" coords="183,5,289,32"/>
+<area shape="rect" id="node6" href="$enumcom_1_1tw_1_1paintbots_1_1_items_1_1_power_up_type.xhtml" title=" " alt="" coords="282,185,478,227"/>
+</map>

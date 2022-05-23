@@ -1,5 +1,6 @@
 <map id="com.tw.paintbots.GameSettings" name="com.tw.paintbots.GameSettings">
-<area shape="rect" id="node1" title=" " alt="" coords="70,109,277,136"/>
-<area shape="rect" id="node2" href="$enumcom_1_1tw_1_1paintbots_1_1_player_type.xhtml" title=" " alt="" coords="5,5,192,32"/>
-<area shape="rect" id="node3" title=" " alt="" coords="216,5,283,32"/>
+<area shape="rect" id="node1" title=" " alt="" coords="146,124,353,151"/>
+<area shape="rect" id="node2" href="$enumcom_1_1tw_1_1paintbots_1_1_player_type.xhtml" title=" " alt="" coords="5,13,192,39"/>
+<area shape="rect" id="node3" title=" " alt="" coords="216,13,283,39"/>
+<area shape="rect" id="node4" title=" " alt="" coords="306,5,505,47"/>
 </map>

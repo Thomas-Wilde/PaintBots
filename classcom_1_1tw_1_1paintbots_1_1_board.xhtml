@@ -85,8 +85,11 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a4ac47d60cf72089be1b0c0ddd8f65093"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a136b99b1bc718cc02464ce06ad3cc64c"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcom_1_1tw_1_1paintbots_1_1_board.xhtml#a136b99b1bc718cc02464ce06ad3cc64c">getPaintableArea</a> ()</td></tr>
 <tr class="separator:a136b99b1bc718cc02464ce06ad3cc64c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a11af835f24723f89437569d8f727c91e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcom_1_1tw_1_1paintbots_1_1_board.xhtml#a11af835f24723f89437569d8f727c91e">setType</a> (int x, int y, <a class="el" href="enumcom_1_1tw_1_1paintbots_1_1_items_1_1_item_type.xhtml">ItemType</a> type, SecretKey key)</td></tr>
-<tr class="separator:a11af835f24723f89437569d8f727c91e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a87b4bdaddf1ac00b74a34d1c445ee864"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcom_1_1tw_1_1paintbots_1_1_board.xhtml#a87b4bdaddf1ac00b74a34d1c445ee864">setType</a> (int x, int y, <a class="el" href="enumcom_1_1tw_1_1paintbots_1_1_items_1_1_item_type.xhtml">ItemType</a> type, SecretLock lock)</td></tr>
+<tr class="separator:a87b4bdaddf1ac00b74a34d1c445ee864"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a85ff8034f3189448784c89822817a737"><td class="memItemLeft" align="right" valign="top"><a id="a85ff8034f3189448784c89822817a737" name="a85ff8034f3189448784c89822817a737"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>saveToFile</b> (SecretLock lock)</td></tr>
+<tr class="separator:a85ff8034f3189448784c89822817a737"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >The <a class="el" href="classcom_1_1tw_1_1paintbots_1_1_board.xhtml">Board</a> represents the area on which the players move around, i.e. the game board. It contains different areas and gives information, e.g. about obstacles, paintable areas, and possible interactions. The <a class="el" href="classcom_1_1tw_1_1paintbots_1_1_board.xhtml">Board</a> has the same dimensions as the Canvas. It is split into different cells, e.g. the pixels that can be painted. </p>
@@ -260,8 +263,8 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a11af835f24723f89437569d8f727c91e" name="a11af835f24723f89437569d8f727c91e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a11af835f24723f89437569d8f727c91e">&#9670;&nbsp;</a></span>setType()</h2>
+<a id="a87b4bdaddf1ac00b74a34d1c445ee864" name="a87b4bdaddf1ac00b74a34d1c445ee864"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a87b4bdaddf1ac00b74a34d1c445ee864">&#9670;&nbsp;</a></span>setType()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -290,8 +293,8 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">SecretKey&#160;</td>
-          <td class="paramname"><em>key</em>&#160;</td>
+          <td class="paramtype">SecretLock&#160;</td>
+          <td class="paramname"><em>lock</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -311,7 +314,7 @@ Public Member Functions</h2></td></tr>
     <tr><td class="paramname">x</td><td>coordinate of the location </td></tr>
     <tr><td class="paramname">y</td><td>coordinate of the location </td></tr>
     <tr><td class="paramname">type</td><td>which the cell should be </td></tr>
-    <tr><td class="paramname">key</td><td>SecretKey only available to the <a class="el" href="classcom_1_1tw_1_1paintbots_1_1_game_manager.xhtml">GameManager</a> </td></tr>
+    <tr><td class="paramname">lock</td><td>SecretLock only available to the <a class="el" href="classcom_1_1tw_1_1paintbots_1_1_game_manager.xhtml">GameManager</a> </td></tr>
   </table>
   </dd>
 </dl>
