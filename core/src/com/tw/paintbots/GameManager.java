@@ -1649,7 +1649,7 @@ public class GameManager {
   }
 
   // --------------------------------------------------------------- //
-  public void loadAdmissionBoard() {
+  private void loadAdmissionBoard() {
     // --- load the refill areas
     for (int x = 402; x < 604; ++x)
       for (int y = 409; y < 561; ++y)
