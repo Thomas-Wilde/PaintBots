@@ -838,7 +838,8 @@ public class GameManager {
 
   // --------------------------------------------------------------- //
   private void createStartTimer() {
-    start_timer = new StartTimer(5.0f);
+    float countdown = game_settings.countdown;
+    start_timer = new StartTimer(countdown);
     start_timer.setAnker(floor);
     start_timer.setElapsed(0.0f);
     // --- define position and size
