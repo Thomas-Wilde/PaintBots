@@ -3,6 +3,7 @@ package com.tw.paintbots.Items;
 import com.tw.paintbots.Array;
 import com.tw.paintbots.GameSettings;
 import com.tw.paintbots.Renderables.TextureGrid;
+import com.tw.paintbots.GameManager;
 
 public class PowerUp extends TextureGrid {
   // ---
@@ -18,7 +19,7 @@ public class PowerUp extends TextureGrid {
     this.spawn_time = spawn_time;
     this.death_time = spawn_time + life_time;
     // ---
-    if (GameSettings.headless)
+    if (GameManager.get().admissionMode())
       return;
     // ---
     setTextureIndex(type.getTypeID(), 0);

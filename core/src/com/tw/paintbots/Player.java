@@ -344,7 +344,7 @@ public abstract class Player extends Entity {
       return;
     power_ups.add(buff);
     // ---
-    if (GameSettings.headless)
+    if (GameManager.get().admissionMode())
       return;
     // --- set size and position of poower up item
     buff.setAnker(board);

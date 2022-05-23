@@ -127,15 +127,20 @@ public class GameManager {
 
   // --------------------------------------------------------------- //
   private void initRandomSeed() {
-    int seed = GameSettings.random_seed;
+    int seed = game_settings.random_seed;
     rnd = new Random(seed);
-    delta_time = 1.0 / GameSettings.fps;
+    delta_time = 1.0 / game_settings.fps;
   }
 
   // --------------------------------------------------------------- //
-  public void initDesktopGame(GameKey key) {
+  /** Initialize the desktop game.
+   *
+   * @param settings The initial GameSettings that can be changed in the menu game_settings = settings;
+   */
+  public void initDesktopGame(GameSettings settings, GameKey key) {
     Objects.requireNonNull(key);
     // ---
+    game_settings = settings;
     initRandomSeed();
     // ---
     loadBots();
@@ -715,12 +720,10 @@ public class GameManager {
    * This method is the entry point from the main class into the actual game.
    * This method can only be called the PaintBotsGame class
    *
-   * @param settings The initial GameSettings that can be changed in the menu
    * @param key The GameKey that is only available to the PaintBotsGame class
    */
-  public void loadMenu(GameSettings settings, GameKey key) {
+  public void loadMenu(GameKey key) {
     Objects.requireNonNull(key);
-    game_settings = settings;
     createBackground();
     createMenu();
   }
@@ -1375,7 +1378,7 @@ public class GameManager {
         player.increasePaintAmount(used_paint, secret_lock);
     }
     // ---
-    if (GameSettings.headless)
+    if (game_settings.headless)
       return;
     // ---
     canvas.sendPixmapToTexture(secret_lock);
@@ -1449,7 +1452,7 @@ public class GameManager {
       power_up.setPosition(new Vector2(pos[0], pos[1]), secret_lock);
       power_ups.add(power_up);
       // --- load headless
-      if (GameSettings.headless)
+      if (game_settings.headless)
         continue;
       // ---
       power_up.setAnker(floor);
@@ -1671,7 +1674,7 @@ public class GameManager {
   // --------------------------------------------------------------- //
   private void simulateGame() {
     elapsed_time = 0.0;
-    while (elapsed_time < GameSettings.game_length) {
+    while (elapsed_time < game_settings.game_length) {
       elapsed_time += delta_time;
       updateGameHeadless();
     }
@@ -1697,6 +1700,8 @@ public class GameManager {
 
   // --------------------------------------------------------------- //
   public void resetAdmissionMode(int run) {
+    if (game_settings.headless == false)
+      return;
     initRandomSeed();
     resetPowerUps();
     resetCanvas();
@@ -1776,6 +1781,8 @@ public class GameManager {
 
   // --------------------------------------------------------------- //
   public void runAdmissionMode() {
+    if (game_settings.headless == false)
+      return;
     simulateGame();
     printScore();
   }
