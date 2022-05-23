@@ -24,13 +24,14 @@ public class GameSettings {
   public int[] cam_resolution =
       {(board_dimensions[0] + 2 * board_border[0] + ui_width),
           (board_dimensions[1] + 2 * board_border[1])};
-  public static int game_length = 150;
+  public int game_length = 150;
   public int max_paint_amount = 250000;
   public int start_paint_amount = 250000;
   public int paint_radius = 40;
   public int refill_speed = 100000;
   public int walk_speed = 200;
-  public static int random_seed = 1337;
-  public static int fps = 30;
-  public static boolean headless = false;
+  public int random_seed = 1337;
+  public int fps = 30;
+  public boolean headless = false;
+  public float countdown = 5.0f;
 }
