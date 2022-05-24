@@ -104,7 +104,7 @@ public class GameManager {
   private ArrayList<PowerUp> power_ups_spawned = new ArrayList<>();
   private ArrayList<ExecutorService> executors = new ArrayList<>();
   private final int max_update_time = 10;
-  private final int max_init_time = 500;
+  private final int max_init_time = 1250;
   private Random rnd = null;
   // ---
 
@@ -1239,6 +1239,8 @@ public class GameManager {
   /** Check if one of the players collides with the power ups. */
   private void collectPowerUps() {
     for (Player player : move_order) {
+      if (!player.isActive())
+        continue;
       Vector2 player_pos = player.getPosition();
       player_pos.add(0.0f, -25.0f);
       for (PowerUp buff : power_ups_spawned) {
