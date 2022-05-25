@@ -27,7 +27,7 @@ Es werden folgende PowerUps unterschieden:
    kleine Farbkreise auf dem gesamten Spielfeld. Dabei wird keine Farbe aus dem
    eigenen Vorrat verbraucht.
 
-![PaintBotsGame](/figures/PaintBots_powerups.png)
+![PowerUps](./figures/PaintBots_powerups.png)
 
 Jeder Spieler kann biz zu 2 permanente PowerUps (1.-4.) einsammeln, um deren
 Effekt dauerhaft zu bekommen. Wenn mehrfach das gleiche PowerUp eingesammelt
@@ -35,4 +35,4 @@ wird, dann werden die Effekte *multipliziert* (nicht addiert) -- zum Beispiel
 erhöht das Radius PowerUp den Malradius auf den Wert `1.2*1.2=1.44`. Es gibt
 *keine* Möglichkeit einmal eingesammelte PowerUps wieder abzulegen.
 
-![PaintBotsGame](/figures/PaintBots_powerups_collected.png)
+![PowerUpsCollected](./figures/PaintBots_powerups_collected.png)

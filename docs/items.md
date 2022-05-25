@@ -1,7 +1,7 @@
 PaintBots - Gegenstände auf dem Feld
 ===
 
-![PaintBotsGame](./figures/PaintBots_items.png)
+![Items](./figures/PaintBots_items.png)
 
 Oben siehst Du die Gegenstände, die auf dem Spielfeld stehen können. Je nach
 Gegenstand wird der Spieler beeinflusst. Alle Gegenstände können in
