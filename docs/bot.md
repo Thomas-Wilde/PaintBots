@@ -20,13 +20,13 @@ Grundgrüst für Deinen Bot steht.
 
 1. Deine Datei **muss** zum `package bots;` gehören.
 2. Ändere den Klassennamen von `RenameMeBot` so, dass der Klassenname zu Deinem
-   Bot passt -- `RenameMeBot` und `PaintBot` sind verboten[^RenameBot].
+   Bot passt -- `RenameMeBot`, `PaintBot` und `RandomBot` sind verboten[^RenameBot].
 3. Schreibe **NICHT** `public` vor die Klasse -- die Sichtbarkeit **muss**
    `package-private` bleiben. Außerdem würde der Bot dann sowieso nicht
    kompilieren.
 4. Überschreibe die Methoden:
    - `public String getBotName() { return "RenameMeBot"; }` die den Namen
-     Deines Bots zurück gibt.
+     Deines Bots zurück gibt. Auch hier gilt `RenameMeBot`, `PaintBot` und `RandomBot` sind verboten!
    - `public String getStudent() { return "Your full name here!"; }`
      die Deinen Vor- und Nachnamen zurück gibt.
    - `public int getMatrikel()  { return 123456; }` die Deine
@@ -42,22 +42,25 @@ Grundgrüst für Deinen Bot steht.
    Richtung Dein Bot laufen soll. Rufe dazu am besten weitere Hilfsmethoden, wie
    `myUpdate()`, auf!
 
-[^RenameBot]: Wer eine Klasse einreicht, die `RenameMeBot` oder `PaintBot` heißt, bekommt keine Zulassung zur Klausur, weil er/sie keine Phantasie für einen eigenen Namen hat.
+**Achtung:** Mit Version *0.05.23* ruft keiner der Konstruktorer mehr
+`initBot()` auf!
+
+[^RenameBot]: Wer eine Klasse einreicht, die `RenameMeBot`, `PaintBot` oder `RandomBot` heißt, bekommt keine Zulassung zur Klausur, weil er/sie keine Phantasie für einen eigenen Namen hat.
 
 
 ## Wie kann ich den Bot kompilieren?
 
 Beim Starten des Spiels wird ein Unterordner `bots` angelegt. Am einfachsten
 kopierst Du die Datei `PaintBot.java` in diesen Unterordner. Dann öffnest Du ein
-Terminal und navigierst zu dem Ordner, in dem sich die `paintbots_0_xx.xx.jar`
+Terminal und navigierst zu dem Ordner, in dem sich die `paintbots_0.xx.xx.jar`
 und der Unterordner befinden. Jetzt kannst Du den Bot mit folgendem Befehl von
 der Kommandozeile aus kompilieren:
 
 ```
-javac -cp paintbots_0_xx.xx.jar ./bots/PaintBot.java
+javac -cp paintbots_0.xx.xx.jar ./bots/PaintBot.java
 ```
 
-Dabei musst Du `paintbots_0_xx.xx.jar` durch den richtigen Dateinamen deiner
+Dabei musst Du `paintbots_0.xx.xx.jar` durch den richtigen Dateinamen deiner
 PaintBots-Version ersetzen. Im Unterordner `bots` sollten jetzt die
 `class`-Dateien erstellt werden, die zu Deinem Bot gehören.
 

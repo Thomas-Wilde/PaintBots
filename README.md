@@ -33,6 +33,9 @@ For some more information about the contest you can read the following documents
 - [The intro](docs/intro.md)
 - [Information about creating levels](docs/levels.md)
 - [Information about creating bots](docs/bot.md)
+- [Information about items](docs/items.md)
+- [Information about power ups](docs/powerups.md)
+- [Information about the task](docs/task.md)
 
 ## Release & Documentation
 You can find the current release [here][paintbots-release]. The corresponding source

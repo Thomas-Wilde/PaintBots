@@ -35,13 +35,18 @@ gesetzt. Dazu gehören:
 - `REFILL_PURPLE` hier kann *lila* auffüllen,
 - `REFILL_BLUE` hier kann *blau* auffüllen,
 - `REFILL_ORANGE` hier kann *orange* auffüllen.
+- `POLE_GREEN` hier kann nur *grün* durch laufen
+- `POLE_PURPLE` hier kann nur *lila* durch laufen
+- `POLE_BLUE` hier kann nur *blau* durch laufen
+- `POLE_ORANGE` hier kann nur *orange* durch laufen
 
 
 ## Mögliche Gegenstände
 
 In der `lvl`-Datei kannst Du folgende Kürzel für Gegenstände verwenden:
 
-- `PB` Farbstand mit allen Farben (**P**aint**B**ooth),
+- `PB` Farbstand mit zum Auffüllen für alle Farben (**P**aint **B**ooth),
+- `RA` Farbtöpfe zum Auffüllen für alle Farben (**R**efill **A**ll),
 - `RO` Farbe auffüllen für *orange* (**R**efill **O**range),
 - `RG` Farbe auffüllen für *grün* (**R**efill **G**reen),
 - `RB` Farbe auffüllen für *blau* (**R**efill **B**lue),
@@ -52,6 +57,14 @@ In der `lvl`-Datei kannst Du folgende Kürzel für Gegenstände verwenden:
 - `TM` mittlerer Baum (**T**ree **M**edium),
 - `TL` großer Baum (**T**ree **L**arge),
 - `BSH` ein horizontaler Stapel mit Fässern (**B**arrel **S**tack **H**orizontal).
+- `PGH` eine horizontales Tor, durch das nur *grün* laufen kann (**P**ole **G**reen **Horizontal**)
+- `PPH` eine horizontales Tor, durch das nur *lila* laufen kann (**P**ole **P**urple **Horizontal**)
+- `PBH` eine horizontales Tor, durch das nur *blau* laufen kann (**P**ole **B**lue **Horizontal**)
+- `POH` eine horizontales Tor, durch das nur *orange* laufen kann (**P**ole **O**range **Horizontal**)
+- `PGV` eine vertikales Tor, durch das nur *grün* laufen kann (**P**ole **G**reen **V**ertical)
+- `PPV` eine vertikales Tor, durch das nur *lila* laufen kann (**P**ole **P**urple **V**ertical)
+- `PBV` eine vertikales Tor, durch das nur *blau* laufen kann (**P**ole **B**lue **V**ertical)
+- `POV` eine vertikales Tor, durch das nur *orange* laufen kann (**P**ole **O**range **V**ertical)
 
 
 ## Startposition der Spieler
