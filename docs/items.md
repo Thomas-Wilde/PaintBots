@@ -27,11 +27,3 @@ unterschiedlichen Größen (Skalierungen) vorkommen.
 4. Die Farbtore ganz unten lassen nur den Spieler mit der jeweiligen Farbe
    passieren -- alle anderen werden am Laufen gehindert. Die Tore gibt es auch
    in vertikaler Ausrichtung.
-
-
-{:comment
-%%% Local Variables:
-%%% ispell-local-dictionary: "de"
-%%% coding: utf-8
-%%% End:
-}

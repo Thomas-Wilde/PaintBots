@@ -96,9 +96,3 @@ Beim Kreativwettbewerb ist **alles** erlaubt... auch Schummeln!
 
 **Wir wünschen Dir viel Spaß & Erfolg!**
 
-{:comment
-%%% Local Variables:
-%%% ispell-local-dictionary: "de"
-%%% coding: utf-8
-%%% End:
-}

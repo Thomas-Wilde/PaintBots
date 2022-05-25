@@ -35,13 +35,4 @@ wird, dann werden die Effekte *multipliziert* (nicht addiert) -- zum Beispiel
 erhöht das Radius PowerUp den Malradius auf den Wert `1.2*1.2=1.44`. Es gibt
 *keine* Möglichkeit einmal eingesammelte PowerUps wieder abzulegen.
 
-![PaintBotsGame](/figures/PaintBots_powerups_collected.png){:width="10%"}
-
-
-
-{:comment
-%%% Local Variables:
-%%% ispell-local-dictionary: "de"
-%%% coding: utf-8
-%%% End:
-}
+![PaintBotsGame](/figures/PaintBots_powerups_collected.png)
