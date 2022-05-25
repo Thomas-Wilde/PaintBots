@@ -1,8 +1,9 @@
 <map id="com.tw.paintbots.Player" name="com.tw.paintbots.Player">
-<area shape="rect" id="node1" title=" " alt="" coords="232,80,391,107"/>
-<area shape="rect" id="node3" href="$classcom_1_1tw_1_1paintbots_1_1_a_i_player.xhtml" title=" " alt="" coords="15,155,187,181"/>
-<area shape="rect" id="node5" href="$classcom_1_1tw_1_1paintbots_1_1_human_player.xhtml" title=" " alt="" coords="211,155,412,181"/>
-<area shape="rect" id="node6" href="$classcom_1_1tw_1_1paintbots_1_1_none_player.xhtml" title=" " alt="" coords="436,155,627,181"/>
-<area shape="rect" id="node2" href="$classcom_1_1tw_1_1paintbots_1_1_entity.xhtml" title=" " alt="" coords="234,5,389,32"/>
-<area shape="rect" id="node4" title=" " alt="" coords="5,229,196,256"/>
+<area shape="rect" id="node1" title=" " alt="" coords="285,80,444,107"/>
+<area shape="rect" id="node3" href="$classcom_1_1tw_1_1paintbots_1_1_a_i_player.xhtml" title=" " alt="" coords="68,155,240,181"/>
+<area shape="rect" id="node6" href="$classcom_1_1tw_1_1paintbots_1_1_human_player.xhtml" title=" " alt="" coords="264,155,465,181"/>
+<area shape="rect" id="node7" href="$classcom_1_1tw_1_1paintbots_1_1_none_player.xhtml" title=" " alt="" coords="489,155,680,181"/>
+<area shape="rect" id="node2" href="$classcom_1_1tw_1_1paintbots_1_1_entity.xhtml" title=" " alt="" coords="287,5,442,32"/>
+<area shape="rect" id="node4" title=" " alt="" coords="5,229,124,256"/>
+<area shape="rect" id="node5" title=" " alt="" coords="148,229,339,256"/>
 </map>
