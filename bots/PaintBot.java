@@ -1,4 +1,4 @@
-package com.tw.paintbots; // !! Do NOT change this package name !!
+package bots; // !! Do NOT change this package name !!
 
 import java.util.Objects;
 
