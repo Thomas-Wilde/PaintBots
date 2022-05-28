@@ -5,6 +5,7 @@ import java.lang.reflect.Constructor;
 import java.util.Objects;
 import java.util.Random;
 import java.util.List;
+import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
@@ -106,8 +107,14 @@ public class GameManager {
   private final int max_update_time = 10;
   private final int max_init_time = 1250;
   private Random rnd = null;
+  
+  
+  private ArrayList<Integer> frame_times=new ArrayList<Integer>();
+  private long mean_frame_time=0;
   // ---
-
+public long getMeanFrameTime(){
+mean_frame_time= (long) frame_times.stream( ).mapToDouble(a->a).average().orElse(0);
+return mean_frame_time;}
   // ===================== GameManager methods ===================== //
   /**
    * The GameManager implements the singleton pattern. With this method you can
@@ -443,6 +450,9 @@ public class GameManager {
 
   // --------------------------------------------------------------- //
   private void updateResultTable() {
+  
+  System.out.println(getMeanFrameTime());
+  
     // --- exit on ESC or return
     if (Gdx.input.isKeyPressed(Keys.ESCAPE)
         || Gdx.input.isKeyPressed(Keys.ENTER))
@@ -563,6 +573,14 @@ public class GameManager {
 
   // --------------------------------------------------------------- //
   private void updatePlayers() {
+
+  long start= System.nanoTime();
+
+
+    ArrayList<Future> futures = new ArrayList<Future>();
+
+
+
     for (Player player : move_order) {
       // --- inactive players are ignored
       if (!player.isActive())
@@ -574,10 +592,17 @@ public class GameManager {
       Runnable update_task = () -> {
         player.update(secret_key);
       };
-      Future future = executor.submit(update_task);
-      try {
+     // Future future = executor.submit(update_task);
+
+      futures.add(executor.submit(update_task));
+
+    }
+
+    for(Future future : futures )
+    {    try {
         future.get(max_update_time, TimeUnit.MILLISECONDS);
       } catch (Exception e) {
+        Player player = move_order.get(futures.indexOf(future));
         // ---
         if (player.getType() == PlayerType.AI)
           System.out.print("Bot " + ((AIPlayer) player).getBotName());
@@ -596,7 +621,16 @@ public class GameManager {
         // future.cancel(true);
         // executor.shutdown();
       }
-    }
+  }
+
+	
+
+
+
+    
+    long end = System.nanoTime();
+	
+	frame_times.add( Math.toIntExact(end-start ) );
   }
 
   // --------------------------------------------------------------- //
