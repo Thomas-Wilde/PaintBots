@@ -600,6 +600,7 @@ return mean_frame_time;}
 
     for(Future future : futures )
     {    try {
+
         future.get(max_update_time, TimeUnit.MILLISECONDS);
       } catch (Exception e) {
         Player player = move_order.get(futures.indexOf(future));
@@ -623,10 +624,7 @@ return mean_frame_time;}
       }
   }
 
-	
-
-
-
+}
     
     long end = System.nanoTime();
 	
