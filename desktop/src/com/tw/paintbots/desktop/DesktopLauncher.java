@@ -93,7 +93,7 @@ public class DesktopLauncher {
   // --------------------------------------------------------------- //
   public static void main(String[] arg) {
     // ===================== //
-    String version = "0.05.25";
+    String version = "0.05.30";
     // ===================== //
     // ---
     if (argContains(arg, "-version")) {
