@@ -110,6 +110,8 @@ public class DesktopLauncher {
       settings.random_seed = parseRandomSeed(arg);// ---
       if (argContains(arg, "-hidecountdown"))
         settings.countdown = 0.0f;
+      if (argContains(arg, "-loadsettings"))
+        settings.load_settings = true;
       // ---
       Lwjgl3ApplicationConfiguration config =
           new Lwjgl3ApplicationConfiguration();

@@ -26,7 +26,7 @@ import com.tw.paintbots.Renderables.StartTimer;
 import com.tw.paintbots.Renderables.UIPlayerBoard;
 import com.tw.paintbots.Renderables.UIResultBoard;
 import com.tw.paintbots.Renderables.UIMenuItem;
-import com.tw.paintbots.LevelLoader;
+import com.tw.paintbots.SettingsLoader;
 import com.tw.paintbots.Items.Item;
 import com.tw.paintbots.Items.ItemArea;
 import com.tw.paintbots.Items.ItemType;
@@ -133,9 +133,11 @@ public class GameManager {
   }
 
   // --------------------------------------------------------------- //
-  /** Initialize the desktop game.
+  /**
+   * Initialize the desktop game.
    *
-   * @param settings The initial GameSettings that can be changed in the menu game_settings = settings;
+   * @param settings The initial GameSettings that can be changed in the menu
+   *        game_settings = settings;
    */
   public void initDesktopGame(GameSettings settings, GameKey key) {
     Objects.requireNonNull(key);
@@ -726,6 +728,29 @@ public class GameManager {
     Objects.requireNonNull(key);
     createBackground();
     createMenu();
+    // ---
+    if (game_settings.load_settings) {
+      System.out.println("load settings from file");
+      SettingsLoader loader = new SettingsLoader();
+      if (!loader.loadSettings(game_settings)) {
+        System.out.println("failed to load settings");
+        return;
+      }
+      int level_index = game_settings.level_index;
+      if (level_index >= levels.size() || level_index < 0)
+        level_index = 0;
+      game_settings.level = levels.get(level_index);
+      // ---
+      try {
+        loadMap();
+      } catch (GameMangerException e) {
+        e.printStackTrace();
+      }
+      // ---
+      game_state = GameState.STARTTIMER;
+      elapsed_time = 0.0;
+      hideMenu();
+    }
   }
 
   // --------------------------------------------------------------- //
@@ -1585,7 +1610,7 @@ public class GameManager {
   }
 
   // =============================================================== //
-  //                         Admission Mode                          //
+  // Admission Mode //
   // =============================================================== //
   public void initAdmissionMode(GameSettings settings) {
     initAdmissionMode(settings, false);

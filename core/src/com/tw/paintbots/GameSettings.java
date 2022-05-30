@@ -34,4 +34,8 @@ public class GameSettings {
   public int fps = 30;
   public boolean headless = false;
   public float countdown = 5.0f;
+  public boolean load_settings = false;
+  public int level_index = 0;
+  public int init_time = 1000;
+  public int update_time = 5;
 }
