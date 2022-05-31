@@ -939,7 +939,14 @@ public class GameManager {
     try {
       Constructor<?> cons = bot_class.getConstructor(String.class);
       cons.setAccessible(true);
+      long start = System.nanoTime();
       player = (AIPlayer) cons.newInstance("AI_" + bot_name + player_idx);
+      long end = System.nanoTime();
+      long elapsed = (end - start)/1000000;
+      if (elapsed > (max_init_time/5)) {
+        System.out.println("Do not initialize your bot in the constructor!");
+        throw new TimeoutException("Bot creation took to look - " + elapsed + "ms " + bot_name);
+      }
     } catch (Exception e) {
       System.out.println(e.getMessage());
       return null;
@@ -950,7 +957,7 @@ public class GameManager {
 
   // --------------------------------------------------------------- //
   /** The bot has 1000ms to initialize */
-  private void initBot(AIPlayer bot) {
+  private void initBot(AIPlayer bot)  {
     // --- update active players in a own thread to limit processing time
     int player_id = bot.getPlayerID();
     ExecutorService executor = executors.get(player_id);
@@ -970,7 +977,8 @@ public class GameManager {
       else
         System.out.println(
             " threw an exception during initialization and is disqualified.");
-      // ---
+            // ---
+      System.out.println("Message: " + e.getMessage());
       disqualifyPlayer(bot);
       // future.cancel(true);
       // executor.shutdown();
