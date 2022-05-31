@@ -103,8 +103,8 @@ public class GameManager {
   private ArrayList<PowerUp> power_ups = new ArrayList<>();
   private ArrayList<PowerUp> power_ups_spawned = new ArrayList<>();
   private ArrayList<ExecutorService> executors = new ArrayList<>();
-  private final int max_update_time = 10;
-  private final int max_init_time = 1250;
+  private int max_update_time = 10;
+  private int max_init_time = 1250;
   private Random rnd = null;
   // ---
 
@@ -746,6 +746,9 @@ public class GameManager {
       } catch (GameMangerException e) {
         e.printStackTrace();
       }
+      // ---
+      max_init_time = game_settings.init_time;
+      max_update_time = game_settings.update_time;
       // ---
       game_state = GameState.STARTTIMER;
       elapsed_time = 0.0;
