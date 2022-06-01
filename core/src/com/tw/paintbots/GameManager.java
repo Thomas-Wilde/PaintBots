@@ -1111,7 +1111,7 @@ public class GameManager {
     Player player = players.get(player_idx);
     Vector2 move_dir = player.getDirection();
     // --- check for correct direction
-    if (move_dir.len2() < 0.00000001) {
+    if (move_dir.len2() < 0.00000001 || move_dir.len2() != move_dir.len2()) {
       System.out.println("Player " + player_idx
           + " returned direction with length 0 and is disqualified.");
       disqualifyPlayer(player);
