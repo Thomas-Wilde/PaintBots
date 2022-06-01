@@ -1133,6 +1133,11 @@ public class GameManager {
   // --------------------------------------------------------------- //
   private boolean isDirectionValid(Vector2 dir) {
     // ---
+    if (dir == null) {
+      System.out.println("Direction is null.");
+      return false;
+    }
+    // ---
     boolean zero_length = (dir.len2() < 0.00000001);
     if (zero_length) {
       System.out.println("Direction has length 0.");
