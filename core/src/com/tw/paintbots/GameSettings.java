@@ -38,4 +38,5 @@ public class GameSettings {
   public int level_index = 0;
   public int init_time = 1000;
   public int update_time = 5;
+  public int game_speed = 1;
 }

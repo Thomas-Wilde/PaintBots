@@ -57,7 +57,7 @@ public class SettingsLoader extends ClassLoader {
   private boolean createSettingsFile() {
     String file_path = System.getProperty("user.dir") + "/" + settings_file;
     String content =
-        "time 150\nmax_paint 250000\nstart_paint 250000\nradius 40\nrefill 100000\nwalk 200\nseed 1337\ncountdown 5.0\nbot0 Human\nbot1 RandomBot\nbot2 ---\nbot3 ---\nlevel 0\ninit_time 1000\nupdate_time 5";
+        "time 150\nmax_paint 250000\nstart_paint 250000\nradius 40\nrefill 100000\nwalk 200\nseed 1337\ncountdown 5.0\nbot0 Human\nbot1 RandomBot\nbot2 ---\nbot3 ---\nlevel 0\ninit_time 1000\nupdate_time 5\ngame_speed 1";
     Path path = Paths.get(settings_file);
     try {
       Files.write(path, content.getBytes(), StandardOpenOption.CREATE);
@@ -85,7 +85,7 @@ public class SettingsLoader extends ClassLoader {
     // ---
     String[] expect = {"time", "max_paint", "start_paint", "radius", "refill",
         "walk", "seed", "countdown", "bot0", "bot1", "bot2", "bot3", "level",
-        "init_time", "update_time"};
+        "init_time", "update_time", "game_speed"};
     for (int i = 0; i < expect.length; ++i)
       if (!checkLine(data.get(i), expect[i])) {
         System.out.println("expected " + expect[i] + " got " + data.get(i));
@@ -108,6 +108,7 @@ public class SettingsLoader extends ClassLoader {
     settings.level_index        = Integer.valueOf(data.get(12).split(" ")[1]);
     settings.init_time          = Integer.valueOf(data.get(13).split(" ")[1]);
     settings.update_time        = Integer.valueOf(data.get(14).split(" ")[1]);
+    settings.game_speed         = Integer.valueOf(data.get(15).split(" ")[1]);
     //@formatter:on
 
     for (int i = 0; i < 4; ++i) {

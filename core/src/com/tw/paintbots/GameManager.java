@@ -106,6 +106,7 @@ public class GameManager {
   private int max_update_time = 10;
   private int max_init_time = 1250;
   private Random rnd = null;
+  private int game_speed = 1;
   // ---
 
   // ===================== GameManager methods ===================== //
@@ -128,6 +129,7 @@ public class GameManager {
   // --------------------------------------------------------------- //
   private void initRandomSeed() {
     int seed = game_settings.random_seed;
+    System.out.println("random seed:" + seed);
     rnd = new Random(seed);
     delta_time = 1.0 / game_settings.fps;
   }
@@ -247,7 +249,7 @@ public class GameManager {
   public void update(GameKey key) {
     Objects.requireNonNull(key);
     // delta_time = Gdx.graphics.getDeltaTime();
-    elapsed_time += delta_time;
+    // elapsed_time += delta_time;
     // ---
     switch (game_state) {
       // ---
@@ -257,12 +259,17 @@ public class GameManager {
         break;
       // ---
       case STARTTIMER: {
+        elapsed_time += delta_time;
         updateStartTime();
       }
         break;
       // ---
       case GAME:
-        updateGame();
+        int count = 0;
+        do {
+          elapsed_time += delta_time;
+          updateGame();
+        } while (++count < game_speed);
         break;
       // ---
       case RESULT:
@@ -740,6 +747,7 @@ public class GameManager {
       if (level_index >= levels.size() || level_index < 0)
         level_index = 0;
       game_settings.level = levels.get(level_index);
+      initRandomSeed();
       // ---
       try {
         loadMap();
@@ -749,6 +757,7 @@ public class GameManager {
       // ---
       max_init_time = game_settings.init_time;
       max_update_time = game_settings.update_time;
+      game_speed = game_settings.game_speed;
       // ---
       game_state = GameState.STARTTIMER;
       elapsed_time = 0.0;
@@ -942,10 +951,11 @@ public class GameManager {
       long start = System.nanoTime();
       player = (AIPlayer) cons.newInstance("AI_" + bot_name + player_idx);
       long end = System.nanoTime();
-      long elapsed = (end - start)/1000000;
-      if (elapsed > (max_init_time/5)) {
+      long elapsed = (end - start) / 1000000;
+      if (elapsed > (max_init_time / 5)) {
         System.out.println("Do not initialize your bot in the constructor!");
-        throw new TimeoutException("Bot creation took to look - " + elapsed + "ms " + bot_name);
+        throw new TimeoutException(
+            "Bot creation took to look - " + elapsed + "ms " + bot_name);
       }
     } catch (Exception e) {
       System.out.println(e.getMessage());
@@ -957,7 +967,7 @@ public class GameManager {
 
   // --------------------------------------------------------------- //
   /** The bot has 1000ms to initialize */
-  private void initBot(AIPlayer bot)  {
+  private void initBot(AIPlayer bot) {
     // --- update active players in a own thread to limit processing time
     int player_id = bot.getPlayerID();
     ExecutorService executor = executors.get(player_id);
@@ -977,7 +987,7 @@ public class GameManager {
       else
         System.out.println(
             " threw an exception during initialization and is disqualified.");
-            // ---
+      // ---
       System.out.println("Message: " + e.getMessage());
       disqualifyPlayer(bot);
       // future.cancel(true);
