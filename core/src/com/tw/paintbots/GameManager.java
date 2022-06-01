@@ -1111,10 +1111,11 @@ public class GameManager {
     Player player = players.get(player_idx);
     Vector2 move_dir = player.getDirection();
     // --- check for correct direction
-    if (move_dir.len2() < 0.00000001) {
+    if (!isDirectionValid(move_dir)) {
       System.out.println("Player " + player_idx
-          + " returned direction with length 0 and is disqualified.");
+          + " returned an invalid direction and is disqualified.");
       disqualifyPlayer(player);
+      hidePlayer(player);
       return;
     }
     // ---
@@ -1127,6 +1128,26 @@ public class GameManager {
     // ---
     player.setPosition(new_pos, secret_lock);
     player_states.get(player_idx).pos = new_pos;
+  }
+
+  // --------------------------------------------------------------- //
+  private boolean isDirectionValid(Vector2 dir) {
+    // ---
+    boolean zero_length = (dir.len2() < 0.00000001);
+    if (zero_length) {
+      System.out.println("Direction has length 0.");
+      return false;
+    }
+    // ---
+    Float X = Float.valueOf(dir.x);
+    Float Y = Float.valueOf(dir.y);
+    boolean not_a_number = X.isNaN() || Y.isNaN();
+    if (not_a_number) {
+      System.out.println("Direction contains invalid values (NaN).");
+      return false;
+    }
+    // ---
+    return true;
   }
 
   // --------------------------------------------------------------- //
