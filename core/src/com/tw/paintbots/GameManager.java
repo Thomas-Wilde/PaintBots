@@ -1115,6 +1115,7 @@ public class GameManager {
       System.out.println("Player " + player_idx
           + " returned direction with length 0 and is disqualified.");
       disqualifyPlayer(player);
+      hidePlayer(player);
       return;
     }
     // ---
