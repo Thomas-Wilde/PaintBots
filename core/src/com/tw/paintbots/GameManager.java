@@ -1138,17 +1138,15 @@ public class GameManager {
       return false;
     }
     // ---
-    boolean zero_length = (dir.len2() < 0.00000001);
-    if (zero_length) {
-      System.out.println("Direction has length 0.");
+    boolean is_finite = Float.isFinite(dir.x) && Float.isFinite(dir.y);
+    if (!is_finite) {
+      System.out.println("Direction contains invalid values (Inf or NaN).");
       return false;
     }
     // ---
-    Float X = Float.valueOf(dir.x);
-    Float Y = Float.valueOf(dir.y);
-    boolean not_a_number = X.isNaN() || Y.isNaN();
-    if (not_a_number) {
-      System.out.println("Direction contains invalid values (NaN).");
+    boolean zero_length = (dir.len() < 0.00000001);
+    if (zero_length) {
+      System.out.println("Direction has length 0.");
       return false;
     }
     // ---
