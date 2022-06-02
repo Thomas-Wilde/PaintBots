@@ -167,7 +167,7 @@ public class DesktopLauncher {
     System.out.println(bot + " won " + wins + " out of " + runs + " rounds");
     float rate = (float) (wins) / (float) (runs);
     System.out.println("Win rate: " + rate);
-    if (rate > 0.74)
+    if (wins >= 8)
       System.out.println("BESTANDEN");
     else
       System.out.println("NICHT BESTANDEN");
