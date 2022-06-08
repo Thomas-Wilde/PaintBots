@@ -66,7 +66,7 @@ cd PaintBots
 ./gradlew desktop:dist
 ```
 
-You can find the compiled jar-file subfolder 
+You can find the compiled jar-file in the subfolder 
 `desktop/build/libs/desktop-1.0.jar`.
 
 [gradle]: https://gradle.org
