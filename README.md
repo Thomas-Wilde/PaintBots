@@ -58,5 +58,16 @@ cd PaintBots
 ./gradlew desktop:run
 ```
 
+If you want to compile the jar-file use the following commands:
+
+```
+git clone git@github.com:Thomas-Wilde/PaintBots.git
+cd PaintBots
+./gradlew desktop:dist
+```
+
+You can find the compiled jar-file subfolder 
+`desktop/build/libs/desktop-1.0.jar`.
+
 [gradle]: https://gradle.org
 [libGDX]: https://libgdx.com/
