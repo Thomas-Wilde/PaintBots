@@ -1453,9 +1453,9 @@ public class GameManager {
       if ((player.getType() == PlayerType.AI)
           && ((AIPlayer) player).getBotName().equals("RandomBot")) {
         player.increasePaintAmount(used_paint, secret_lock);
-        player.setWalkSpeed((int) (game_settings.walk_speed * 0.65),
+        player.setWalkSpeed((int) (game_settings.walk_speed * 0.80),
             secret_lock);
-        player.setPaintRadius((int) (game_settings.paint_radius * 0.65),
+        player.setPaintRadius((int) (game_settings.paint_radius * 0.80),
             secret_lock);
       }
     }
