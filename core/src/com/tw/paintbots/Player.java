@@ -193,6 +193,7 @@ public abstract class Player extends Entity {
 
     state.pos = this.getPosition();
     state.dir = this.getDirection().cpy();
+    state.speed = this.getWalkSpeed();
 
     state.score = this.getScore();
     state.paint_radius = this.getPaintRadius();

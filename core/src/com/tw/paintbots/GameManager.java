@@ -197,13 +197,18 @@ public class GameManager {
     levels = level_loader.loadLevelFiles();
     // ---
     //@formatter:off
-    levels.add(0, new LevelInfo("level.lvl",     "Nothing Special", true));
-    levels.add(1, new LevelInfo("admission.lvl", "Admission", true));
-    levels.add(2, new LevelInfo("blocked.lvl",   "Blocked Corners", true));
-    levels.add(3, new LevelInfo("olivia.lvl",    "Amazing Maze by Olivia", true));
-    levels.add(4, new LevelInfo("dario.lvl",     "Happy Face by Dario", true));
-    levels.add(5, new LevelInfo("daniel.lvl",    "Symmetric Corners by Daniel", true));
-    levels.add(6, new LevelInfo("maurice.lvl",   "Tree Scale = 1.0 by Maurice", true));
+    levels.add(0,  new LevelInfo("level.lvl",     "Nothing Special", true));
+    levels.add(1,  new LevelInfo("admission.lvl", "Admission", true));
+    levels.add(2,  new LevelInfo("blocked.lvl",   "Blocked Corners", true));
+    levels.add(3,  new LevelInfo("olivia.lvl",    "Amazing Maze by Olivia", true));
+    levels.add(4,  new LevelInfo("dario.lvl",     "Happy Face by Dario", true));
+    levels.add(5,  new LevelInfo("daniel.lvl",    "Symmetric Corners by Daniel", true));
+    levels.add(6,  new LevelInfo("maurice.lvl",   "Tree Scale = 1.0 by Maurice", true));
+    levels.add(7,  new LevelInfo("contest_1.lvl", "Contest I", true));
+    levels.add(8,  new LevelInfo("contest_2.lvl", "Contest II", true));
+    levels.add(9,  new LevelInfo("contest_3.lvl", "Contest III", true));
+    levels.add(10, new LevelInfo("contest_4.lvl", "Contest IV", true));
+    levels.add(11, new LevelInfo("contest_5.lvl", "Contest V", true));
     //@formatter:on
   }
 
@@ -1448,8 +1453,13 @@ public class GameManager {
           board, secret_lock);
       player.decreasePaintAmount(used_paint, secret_lock);
       if ((player.getType() == PlayerType.AI)
-          && ((AIPlayer) player).getBotName().equals("RandomBot"))
+          && ((AIPlayer) player).getBotName().equals("RandomBot")) {
         player.increasePaintAmount(used_paint, secret_lock);
+        player.setWalkSpeed((int) (game_settings.walk_speed * 0.65),
+            secret_lock);
+        player.setPaintRadius((int) (game_settings.paint_radius * 0.65),
+            secret_lock);
+      }
     }
     // ---
     if (game_settings.headless)

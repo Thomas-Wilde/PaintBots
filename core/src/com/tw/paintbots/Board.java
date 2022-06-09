@@ -6,6 +6,7 @@ import com.tw.paintbots.GameManager.SecretLock;
 import com.tw.paintbots.Items.ItemType;
 
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.PixmapIO;
@@ -132,14 +133,35 @@ public class Board {
     Objects.requireNonNull(lock);
     Pixmap pixmap = new Pixmap(width, height, Format.RGBA8888);
     pixmap.setColor(1.0f, 1.0f, 1.0f, 0.0f);
+
     for (int x = 0; x < width; ++x)
       for (int y = 0; y < height; ++y) {
-        float type = (float) getType(x, y).getTypeID();
-        pixmap.setColor(type / 255.0f, type / 255.0f, type / 255.0f, 1.0f);
+        pixmap.setColor(typeToColor(getType(x, y)));
         pixmap.drawPixel(x, height - y);
       }
     FileHandle fh = new FileHandle("board.png");
     PixmapIO.writePNG(fh, pixmap);
     pixmap.dispose();
+  }
+
+  // --------------------------------------------------------------- //
+  private Color typeToColor(ItemType type) {
+    //@formatter:off
+    switch (type) {
+      case NONE:          return Color.DARK_GRAY;
+      case OBSTACLE:      return Color.CORAL;
+      case BLOCKED:       return Color.RED;
+      case REFILL:        return Color.MAROON;
+      case REFILL_GREEN:  return Color.GREEN;
+      case REFILL_PURPLE: return Color.PURPLE;
+      case REFILL_BLUE:   return Color.BLUE;
+      case REFILL_ORANGE: return Color.ORANGE;
+      case POLE_GREEN:    return Color.FOREST;
+      case POLE_PURPLE:   return Color.PINK;
+      case POLE_BLUE:     return Color.CYAN;
+      case POLE_ORANGE:   return Color.FIREBRICK;
+      default: return Color.BLACK;
+    }
+    //@formatter:on
   }
 }
