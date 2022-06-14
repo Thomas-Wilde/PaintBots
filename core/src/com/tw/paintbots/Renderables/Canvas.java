@@ -107,16 +107,15 @@ public class Canvas extends Renderable {
           continue;
         // --- check if we leave the board
         int paint_x = ctr_x + i;
-        int paint_y = height - ctr_y + j;
+        int paint_y = ctr_y + j;
         if (paint_x < 0 || paint_x >= width || paint_y < 0 || paint_y >= height)
           continue;
         // --- paint only at places with no items
-        ItemType cell_type =
-            board.getType(paint_x, board.getHeight() - paint_y - 1);
+        ItemType cell_type = board.getType(paint_x, paint_y);
         if (!cell_type.isPaintable())
           continue;
         // ---
-        updatePixmap(paint_x, paint_y);
+        updatePixmap(paint_x, height - paint_y);
         paint += updatePaintCount(paint_x, paint_y, color);
       }
     return paint;
@@ -194,13 +193,15 @@ public class Canvas extends Renderable {
 
   // --------------------------------------------------------------- //
   /**
-   * Return the information about the current color state at the asked
-   * location. If the location was not painted yet or is out of the board
-   * dimensions PaintColor.NONE is returned. The canvas has the same dimension
-   * as the board.
+   * Return the information about the current color state at the asked location.
+   * If the location was not painted yet or is out of the board dimensions
+   * PaintColor.NONE is returned. The canvas has the same dimension as the
+   * board.
+   *
    * @param x - x-coordinate of the location of interest
    * @param y - y-coordinate of the location of interest
-   * @return The color at the corresponding location or PaintColor.NONE. */
+   * @return The color at the corresponding location or PaintColor.NONE.
+   */
   public PaintColor getColor(int x, int y) {
     // ---
     if (x < 0 || x >= width || y < 0 || y >= height)
