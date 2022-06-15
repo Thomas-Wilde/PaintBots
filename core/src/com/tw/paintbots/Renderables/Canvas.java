@@ -220,6 +220,18 @@ public class Canvas extends Renderable {
     return PaintColor.NONE;
   }
 
+  // --------------------------------------------------------------- //
+  /**
+  * Return the color at the given location. The origin (0, 0) is placed
+  * at the bottom left corner. Same as calling getColor(x, height - y).
+  * @param x - x-coordinate of the location of interest
+  * @param y - y-coordinate of the location of interest
+  * @return The color at the corresponding location or PaintColor.NONE.
+  * @see getColor */
+  public PaintColor getColorUpturn(int x, int y) {
+    return getColor(x, height - y);
+  }
+
   // ===================== Renderable methods ===================== //
   @Override
   protected void initResolution() {
