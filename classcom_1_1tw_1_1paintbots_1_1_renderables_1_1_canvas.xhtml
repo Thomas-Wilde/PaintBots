@@ -103,6 +103,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:aafebc5e84cce27b641e14b098b03de84"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa837442e15b0496ced7603ce141df06d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="enumcom_1_1tw_1_1paintbots_1_1_paint_color.xhtml">PaintColor</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcom_1_1tw_1_1paintbots_1_1_renderables_1_1_canvas.xhtml#aa837442e15b0496ced7603ce141df06d">getColor</a> (int x, int y)</td></tr>
 <tr class="separator:aa837442e15b0496ced7603ce141df06d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a48e049795c39c4764c2b2a525207728f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="enumcom_1_1tw_1_1paintbots_1_1_paint_color.xhtml">PaintColor</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcom_1_1tw_1_1paintbots_1_1_renderables_1_1_canvas.xhtml#a48e049795c39c4764c2b2a525207728f">getColorUpturn</a> (int x, int y)</td></tr>
+<tr class="separator:a48e049795c39c4764c2b2a525207728f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afccd79aaadd931337458c7f8f5b0dc4e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcom_1_1tw_1_1paintbots_1_1_renderables_1_1_canvas.xhtml#afccd79aaadd931337458c7f8f5b0dc4e">destroy</a> (SecretLock lock)</td></tr>
 <tr class="separator:afccd79aaadd931337458c7f8f5b0dc4e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab7754e83dddb66353666cbfc25f93f3a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcom_1_1tw_1_1paintbots_1_1_renderables_1_1_canvas.xhtml#ab7754e83dddb66353666cbfc25f93f3a">update</a> (SecretKey key)</td></tr>
@@ -269,6 +271,51 @@ int[]&#160;</td><td class="memItemRight" valign="bottom"><b>resolution</b> = nul
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The color at the corresponding location or PaintColor.NONE. </dd></dl>
+
+</div>
+</div>
+<a id="a48e049795c39c4764c2b2a525207728f" name="a48e049795c39c4764c2b2a525207728f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a48e049795c39c4764c2b2a525207728f">&#9670;&nbsp;</a></span>getColorUpturn()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="enumcom_1_1tw_1_1paintbots_1_1_paint_color.xhtml">PaintColor</a> com.tw.paintbots.Renderables.Canvas.getColorUpturn </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>y</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >Return the color at the given location. The origin (0, 0) is placed at the bottom left corner. Same as calling getColor(x, height - y). </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">x</td><td>- x-coordinate of the location of interest </td></tr>
+    <tr><td class="paramname">y</td><td>- y-coordinate of the location of interest </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The color at the corresponding location or PaintColor.NONE. </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classcom_1_1tw_1_1paintbots_1_1_renderables_1_1_canvas.xhtml#aa837442e15b0496ced7603ce141df06d">getColor</a> </dd></dl>
 
 </div>
 </div>
