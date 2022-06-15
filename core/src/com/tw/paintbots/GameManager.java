@@ -602,6 +602,8 @@ public class GameManager {
         if (e instanceof TimeoutException)
           System.out.println("It took too long for update.");
         System.out.println("Message: " + e.getMessage());
+        System.out.println("StackTrace:");
+        e.printStackTrace(System.out);
         // ---
         if (player.getType() == PlayerType.AI) {
           disqualifyPlayer(player);
@@ -994,6 +996,8 @@ public class GameManager {
             " threw an exception during initialization and is disqualified.");
       // ---
       System.out.println("Message: " + e.getMessage());
+      System.out.println("StackTrace: ");
+      e.printStackTrace(System.out);
       disqualifyPlayer(bot);
       // future.cancel(true);
       // executor.shutdown();
