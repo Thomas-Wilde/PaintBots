@@ -1057,7 +1057,8 @@ public class GameManager {
           return t;
         }
       });
-      executor.submit(() -> System.out.println("Executor #" + i + " initializing."));
+      int executorIndex = i;
+      executor.submit(() -> System.out.println("Executor #" + executorIndex + " initializing."));
       executors.add(executor);
     }
   }
