@@ -598,14 +598,17 @@ public class GameManager {
       try {
         future.get(THREAD_KILL_TIME, TimeUnit.MILLISECONDS);
 
-        long endTime = System.currentTimeMillis();
+        long updateTime = System.currentTimeMillis() - startTime;
         LinkedList<Long> rollingAverages = this.rollingAverages.get(player_id);
-        rollingAverages.add(endTime - startTime);
+        rollingAverages.add(updateTime);
         if (rollingAverages.size() > this.game_settings.fps) {
           rollingAverages.remove();
         }
+        if (updateTime > this.max_update_time) {
+          System.out.println("Player #" + player_id + " (" + player.getName() + ") took more than " + this.max_update_time + "ms to update.");
+        }
         if ((rollingAverages.size() > 10) && (calculateAverage(rollingAverages) > this.max_update_time)) {
-            throw new TimeoutException("Player #" + player_id + " (" + player.getName() + ") took more than " + this.max_update_time + "ms to update.");
+            throw new TimeoutException("Player #" + player_id + " (" + player.getName() + ") has a higher average than " + this.max_update_time + "ms to update.");
         }
       } catch (Exception e) {
         // ---
