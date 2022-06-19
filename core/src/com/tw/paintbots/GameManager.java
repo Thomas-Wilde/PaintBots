@@ -2,12 +2,7 @@ package com.tw.paintbots;
 
 import java.lang.reflect.Constructor;
 
-import java.util.Objects;
-import java.util.Random;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.*;
 
 import com.badlogic.gdx.Gdx;
@@ -26,12 +21,10 @@ import com.tw.paintbots.Renderables.StartTimer;
 import com.tw.paintbots.Renderables.UIPlayerBoard;
 import com.tw.paintbots.Renderables.UIResultBoard;
 import com.tw.paintbots.Renderables.UIMenuItem;
-import com.tw.paintbots.SettingsLoader;
 import com.tw.paintbots.Items.Item;
 import com.tw.paintbots.Items.ItemArea;
 import com.tw.paintbots.Items.ItemType;
 import com.tw.paintbots.LevelLoader.LevelInfo;
-import com.tw.paintbots.NonePlayer;
 import com.tw.paintbots.Items.PowerUp;
 import com.tw.paintbots.Items.PowerUpType;
 
@@ -54,6 +47,7 @@ public class GameManager {
   private static final SecretKey secret_key = new SecretKey();
   public static final class SecretLock { private SecretLock() {} }
   private static final SecretLock secret_lock = new SecretLock();
+  private static final int THREAD_KILL_TIME = 100;
   //@formatter:on
 
   // ======================== GameState enum ======================= //
@@ -103,6 +97,7 @@ public class GameManager {
   private ArrayList<PowerUp> power_ups = new ArrayList<>();
   private ArrayList<PowerUp> power_ups_spawned = new ArrayList<>();
   private ArrayList<ExecutorService> executors = new ArrayList<>();
+  private final ArrayList<LinkedList<Long>> rollingAverages = new ArrayList<>();
   private int max_update_time = 10;
   private int max_init_time = 1250;
   private Random rnd = null;
@@ -575,6 +570,16 @@ public class GameManager {
     move_order.add(first);
   }
 
+  private static long calculateAverage(Iterable<Long> series) {
+    long sum = 0;
+    int count = 0;
+    for (Long element : series) {
+      sum += element;
+      count++;
+    }
+    return sum / count;
+  }
+
   // --------------------------------------------------------------- //
   private void updatePlayers() {
     for (Player player : move_order) {
@@ -588,9 +593,20 @@ public class GameManager {
       Runnable update_task = () -> {
         player.update(secret_key);
       };
+      long startTime = System.currentTimeMillis();
       Future future = executor.submit(update_task);
       try {
-        future.get(max_update_time, TimeUnit.MILLISECONDS);
+        future.get(THREAD_KILL_TIME, TimeUnit.MILLISECONDS);
+
+        long endTime = System.currentTimeMillis();
+        LinkedList<Long> rollingAverages = this.rollingAverages.get(player_id);
+        rollingAverages.add(endTime - startTime);
+        if (rollingAverages.size() > this.game_settings.fps) {
+          rollingAverages.remove();
+        }
+        if ((rollingAverages.size() > 10) && (calculateAverage(rollingAverages) > this.max_update_time)) {
+            throw new TimeoutException("Player #" + player_id + " (" + player.getName() + ") took more than " + this.max_update_time + "ms to update.");
+        }
       } catch (Exception e) {
         // ---
         if (player.getType() == PlayerType.AI)
@@ -809,6 +825,7 @@ public class GameManager {
     generatePowerUps(14);
     // --- players have to be loaded after the level
     createExecutors();
+    initRollingAverages();
     sanityCheckPlayerSettings(); // throws an exception if something is wrong
     createPlayers();
     initPlayerRenderables();
@@ -1029,16 +1046,26 @@ public class GameManager {
   /**
    * Create executors as daemin threads, which allow the application to close
    * even if the thread was interrupted.
+   * Plus, let something run inside every executor to get them 'warmed up'.
    */
   private void createExecutors() {
-    for (int i = 0; i < 4; ++i)
-      executors.add(Executors.newFixedThreadPool(1, new ThreadFactory() {
+    for (int i = 0; i < 4; ++i) {
+      ExecutorService executor = Executors.newFixedThreadPool(1, new ThreadFactory() {
         public Thread newThread(Runnable r) {
           Thread t = Executors.defaultThreadFactory().newThread(r);
           t.setDaemon(true);
           return t;
         }
-      }));
+      });
+      executor.submit(() -> System.out.println("Executor #" + i + " initializing."));
+      executors.add(executor);
+    }
+  }
+
+  private void initRollingAverages() {
+    for (int i = 0; i < 4; i++) {
+      this.rollingAverages.add(new LinkedList<>());
+    }
   }
 
   // --------------------------------------------------------------- //
@@ -1730,6 +1757,9 @@ public class GameManager {
     // ---
     System.out.print(verbose ? "create executors\n" : "");
     createExecutors();
+    // ---
+    System.out.print(verbose ? "init rolling averages\n" : "");
+    initRollingAverages();
     // ---
     try {
       System.out.print(verbose ? "create players\n" : "");
