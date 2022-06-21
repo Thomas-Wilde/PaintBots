@@ -1,0 +1,10 @@
+# This is a simple level file.
+# Comments start with a '#' and are ignored.
+# ---
+#
+P0,600,600,1.0,1.0
+P1,600,400,1.0,-1.0
+P2,400,600,-1.0,1.0
+P3,400,400,-1.0,-1.0
+# ---
+RA,496,564,0.65,0.65
