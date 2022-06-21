@@ -1,10 +1,13 @@
 package com.tw.paintbots;
 
+import java.nio.ByteBuffer;
 import java.util.Objects;
+import java.nio.*;
+import java.net.*;
 
 import com.tw.paintbots.GameManager.SecretLock;
 import com.tw.paintbots.Items.ItemType;
-
+import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -139,9 +142,54 @@ public class Board {
         pixmap.setColor(typeToColor(getType(x, y)));
         pixmap.drawPixel(x, height - y);
       }
+    // ---
     FileHandle fh = new FileHandle("board.png");
     PixmapIO.writePNG(fh, pixmap);
     pixmap.dispose();
+    // ---
+    FileHandle fh_bin = new FileHandle("level.bin");
+    int[] board_data = new int[cells.length];
+    for (int i = 0; i < cells.length; ++i)
+      board_data[i] = cells[i].getTypeID();
+    ByteBuffer byte_buff = ByteBuffer.allocate(cells.length * 4);
+    IntBuffer int_buff = byte_buff.asIntBuffer();
+    int_buff.put(board_data);
+    fh_bin.writeBytes(byte_buff.array(), false);
+    // ---
+    // for (int x = 0; x < width; x += 10) {
+    // for (int y = 0; y < height; y += 10) {
+    // System.out.print(getType(x, y).getTypeID());
+    // }
+    // System.out.println();
+    // }
+  }
+
+  // --------------------------------------------------------------- //
+  public void setContent(int[] content, SecretLock lock) {
+    //@formatter:off
+    for (int i = 0; i < content.length; ++i) {
+      switch (content[i]) {
+        case 1: cells[i]  = ItemType.OBSTACLE; break;
+        case 2: cells[i]  = ItemType.BLOCKED; break;
+        case 10: cells[i] = ItemType.REFILL; break;
+        case 11: cells[i] = ItemType.REFILL_GREEN; break;
+        case 12: cells[i] = ItemType.REFILL_PURPLE; break;
+        case 13: cells[i] = ItemType.REFILL_BLUE; break;
+        case 14: cells[i] = ItemType.REFILL_ORANGE; break;
+        case 21: cells[i] = ItemType.POLE_GREEN; break;
+        case 22: cells[i] = ItemType.POLE_PURPLE; break;
+        case 23: cells[i] = ItemType.POLE_BLUE; break;
+        case 24: cells[i] = ItemType.POLE_ORANGE; break;
+        default: break;
+      }
+    }
+    //@formatter:on
+    // for (int x = 0; x < width; x += 10) {
+    // for (int y = 0; y < height; y += 10) {
+    // System.out.print(getType(x, y).getTypeID());
+    // }
+    // System.out.println();
+    // }
   }
 
   // --------------------------------------------------------------- //

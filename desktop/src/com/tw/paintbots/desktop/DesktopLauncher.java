@@ -1,7 +1,10 @@
 package com.tw.paintbots.desktop;
 
+import java.io.OutputStream;
+import java.io.PrintStream;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
+import com.badlogic.gdx.math.Vector2;
 import com.tw.paintbots.GameManager;
 import com.tw.paintbots.GameSettings;
 import com.tw.paintbots.PaintBotsGame;
@@ -100,6 +103,15 @@ public class DesktopLauncher {
       System.out.println("PaintBots version: " + version);
     }
     // ---
+    if (argContains(arg, "-contest")) {
+      // config.setWindowedMode(1500, 1000);
+      // config.setIdleFPS(settings.fps);
+      // config.setForegroundFPS(settings.fps);
+      // new Lwjgl3Application(new PaintBotsGame(settings), config);
+      runContestMode(arg);
+      return;
+    }
+    // ---
     if (argContains(arg, "-admission")) {
       runAdmissionMode(arg);
     } else {
@@ -186,6 +198,29 @@ public class DesktopLauncher {
   }
 
   // --------------------------------------------------------------- //
+  private static String[] extractBotNames(String[] arg) {
+    String[] bot_names = new String[4];
+    for (int i = 0; i < 4; ++i) {
+      String find = "-bot";
+      find += String.valueOf(i);
+      // ---
+      if (!argContains(arg, find)) {
+        System.out.println(find + " argument missing");
+        return null;
+      }
+      // ---
+      int idx = getArgIndex(arg, find) + 1;
+      if (arg.length <= idx) {
+        System.out.println("parameter " + find + " was found but no value");
+        return null;
+      }
+      // ---
+      bot_names[i] = arg[idx];
+    }
+    return bot_names;
+  }
+
+  // --------------------------------------------------------------- //
   private static boolean checkForWin(GameSettings settings) {
     GameManager mgr = GameManager.get();
     PlayerState[] states = new PlayerState[4];
@@ -209,5 +244,76 @@ public class DesktopLauncher {
     // --- highest score
     System.out.println(bot + " won");
     return true;
+  }
+
+  // --------------------------------------------------------------- //
+
+  private static void runContestMode(String[] args) {
+    System.out.println("run contest mode");
+    String[] bot_names = extractBotNames(args);
+    // ---
+    GameManager mgr = GameManager.get();
+    GameSettings settings = new GameSettings();
+    // --- we run in admission mode
+    settings.headless = true;
+    settings.game_length = parseTime(args);
+    settings.random_seed = (int) Math.random() * 31415926;
+    settings.random_seed = 1337;
+    // --- we only use bots
+    for (int i = 0; i < 4; ++i) {
+      settings.player_types[i] = PlayerType.AI;
+      settings.bot_names[i] = bot_names[i];
+    }
+    // --- we load a specific contest level
+    // --- level 1
+    // settings.level = new LevelInfo("nothing.bin", "nothing special", true);
+    // settings.start_positions[0] = new Vector2(145f, 400f);
+    // settings.start_positions[1] = new Vector2(385f, 400f);
+    // settings.start_positions[2] = new Vector2(615f, 400f);
+    // settings.start_positions[3] = new Vector2(855f, 400f);
+    // --- level 1
+    settings.level = new LevelInfo("contestI.bin", "Contest I", true);
+    settings.start_positions[0] = new Vector2(600f, 600f);
+    settings.start_positions[1] = new Vector2(600f, 400f);
+    settings.start_positions[2] = new Vector2(400f, 600f);
+    settings.start_positions[3] = new Vector2(400f, 400f);
+    settings.start_directions[0] = new Vector2(1.0f, 1.0f);
+    settings.start_directions[1] = new Vector2(1.0f, -1.0f);
+    settings.start_directions[2] = new Vector2(-1.0f, 1.0f);
+    settings.start_directions[3] = new Vector2(-1.0f, -1.0f);
+    // settings.level = new LevelInfo("contest_2.lvl", "Contest II", true);
+    // settings.level = new LevelInfo("contest_3.lvl", "Contest III", true);
+    // settings.level = new LevelInfo("contest_4.lvl", "Contest IV", true);
+    // settings.level = new LevelInfo("contest_5.lvl", "Contest V", true);
+
+    PrintStream system_out = System.out;
+    PrintStream dummy_stream = new PrintStream(new OutputStream() {
+      public void write(int b) {}
+    });
+    System.setOut(dummy_stream);
+    // ---
+    if (!mgr.initContestMode(settings)) {
+      System.out.println("Contest FAILED");
+      return;
+    }
+    // ---
+    System.out.print("\nseed: " + settings.random_seed);
+    for (int i = 0; i < 4; ++i) {
+      mgr.resetAdmissionMode(i);
+      mgr.runAdmissionMode();
+    }
+    System.setOut(system_out);
+    System.out.println("Round finished");
+
+    // // ---
+    // System.out.println("========================");
+    // String bot = settings.bot_names[3];
+    // System.out.println(bot + " won " + wins + " out of " + runs + " rounds");
+    // float rate = (float) (wins) / (float) (runs);
+    // System.out.println("Win rate: " + rate);
+    // if (wins >= 8)
+    // System.out.println("BESTANDEN");
+    // else
+    // System.out.println("NICHT BESTANDEN");
   }
 }

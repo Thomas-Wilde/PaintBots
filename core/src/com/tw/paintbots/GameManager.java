@@ -1,7 +1,8 @@
 package com.tw.paintbots;
 
 import java.lang.reflect.Constructor;
-
+import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
 import java.util.Objects;
 import java.util.Random;
 import java.util.List;
@@ -14,6 +15,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.files.FileHandle;
 
 import com.tw.paintbots.PaintBotsGame.GameKey;
 import com.tw.paintbots.Renderables.Canvas;
@@ -129,7 +131,7 @@ public class GameManager {
   // --------------------------------------------------------------- //
   private void initRandomSeed() {
     int seed = game_settings.random_seed;
-    System.out.println("random seed:" + seed);
+    // System.out.println("random seed:" + seed);
     rnd = new Random(seed);
     delta_time = 1.0 / game_settings.fps;
   }
@@ -1589,9 +1591,19 @@ public class GameManager {
   /**
    * Get the time that passed since the start of the round in seconds.
    * Note: This is the simulated game time not the wall clock time.
-   *       Each game second consists of 60 update steps.
+   *       Each game second consists of 30 update steps.
    */
   public double getElapsedTime() { return elapsed_time; }
+
+  // // --------------------------------------------------------------- //
+  // /**
+  //  * Get the remaining time for the current game in seconds.
+  //  * Note: This is the simulated game time not the wall clock time.
+  //  *       Each game second consists of 30 update steps.
+  //  */
+  // public double getRemainingTime() {
+  //   return game_settings.game_length - elapsed_time;
+  // }
 
   // --------------------------------------------------------------- //
   /**
@@ -1890,5 +1902,83 @@ public class GameManager {
       return;
     simulateGame();
     printScore();
+  }
+
+  // =============================================================== //
+  // Contest Mode //
+  // =============================================================== //
+  public boolean initContestMode(GameSettings settings) {
+    return initContestMode(settings, false);
+  }
+
+  // --------------------------------------------------------------- //
+  public boolean initContestMode(GameSettings settings, boolean verbose) {
+    if (game_settings != null) {
+      System.out.print("desktop game is running");
+      return false;
+    }
+    // ---
+    System.out.print(verbose ? "\n--== Init Contest ==--\n" : "");
+    // ---
+    loadBots();
+    if (bots.isEmpty()) {
+      System.out.println("no bots loaded - stop contest");
+      return false;
+    }
+    bots.put("RandomBot", RandomBot.class);
+    // --- print to console
+    Set<String> loaded_names = bots.keySet();
+    if (verbose) {
+      System.out.println("loaded bots:");
+      for (String name : loaded_names)
+        System.out.println(name);
+    }
+    // ---
+    game_settings = settings;
+    // ---
+    int width = game_settings.board_dimensions[0];
+    int height = game_settings.board_dimensions[1];
+    Entity.setBoardDimensions(Array.of(width, height), secret_lock);
+    // ---
+    createCanvas();
+    createBoard();
+    loadContestLevel();
+    createExecutors();
+    // ---
+    try {
+      System.out.print(verbose ? "create players\n" : "");
+      sanityCheckPlayerSettings();
+      createPlayers();
+    } catch (GameMangerException e) {
+      e.printStackTrace();
+      return false;
+    }
+    if (verbose)
+      for (Player player : move_order) {
+        System.out.print("Player " + player.getPlayerID() + ": ");
+        if (!player.isActive()) {
+          System.out.println("inactive");
+          continue;
+        }
+        AIPlayer bot = (AIPlayer) player;
+        System.out.println(bot.getBotName());
+      }
+    // ---
+    return true;
+  }
+
+  // --------------------------------------------------------------- //
+  private void loadContestLevel() {
+    FileHandle fh_bin = new FileHandle(game_settings.level.file_name);
+    byte[] file_data = fh_bin.readBytes();
+    ByteBuffer byte_buff = ByteBuffer.allocate(file_data.length);
+    byte_buff.put(file_data);
+    // ---
+    int[] board_content = new int[file_data.length / 4];
+    for (int i = 0; i < board_content.length; ++i) {
+      int data = byte_buff.getInt(i * 4);
+      board_content[i] = data;
+    }
+    board.setContent(board_content, secret_lock);
   }
 }
