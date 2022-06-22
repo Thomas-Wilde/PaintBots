@@ -94,6 +94,27 @@ public class DesktopLauncher {
   }
 
   // --------------------------------------------------------------- //
+  private static String parseContestLevel(String[] arg) {
+    String level_file = "contestI.bin";
+    // --- check for game time seed
+    if (argContains(arg, "-level")) {
+      int idx = getArgIndex(arg, "-level");
+      int level_idx = idx + 1;
+      if (arg.length <= level_idx)
+        System.out.println("parameter -level was found but no value");
+      else {
+        try {
+          level_file = arg[level_idx];
+          System.out.println("level: " + level_file);
+        } catch (Exception e) {
+          System.out.println("level could not be extracted");
+        }
+      }
+    }
+    return level_file;
+  }
+
+  // --------------------------------------------------------------- //
   public static void main(String[] arg) {
     // ===================== //
     String version = "0.06.18";
@@ -258,7 +279,7 @@ public class DesktopLauncher {
     settings.headless = true;
     settings.game_length = parseTime(args);
     settings.random_seed = (int) Math.random() * 31415926;
-    settings.random_seed = 1337;
+    configureLevelSettings(args, settings);
     // --- we only use bots
     for (int i = 0; i < 4; ++i) {
       settings.player_types[i] = PlayerType.AI;
