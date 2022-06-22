@@ -285,27 +285,6 @@ public class DesktopLauncher {
       settings.player_types[i] = PlayerType.AI;
       settings.bot_names[i] = bot_names[i];
     }
-    // --- we load a specific contest level
-    // --- level 1
-    // settings.level = new LevelInfo("nothing.bin", "nothing special", true);
-    // settings.start_positions[0] = new Vector2(145f, 400f);
-    // settings.start_positions[1] = new Vector2(385f, 400f);
-    // settings.start_positions[2] = new Vector2(615f, 400f);
-    // settings.start_positions[3] = new Vector2(855f, 400f);
-    // --- level 1
-    settings.level = new LevelInfo("contestI.bin", "Contest I", true);
-    settings.start_positions[0] = new Vector2(600f, 600f);
-    settings.start_positions[1] = new Vector2(600f, 400f);
-    settings.start_positions[2] = new Vector2(400f, 600f);
-    settings.start_positions[3] = new Vector2(400f, 400f);
-    settings.start_directions[0] = new Vector2(1.0f, 1.0f);
-    settings.start_directions[1] = new Vector2(1.0f, -1.0f);
-    settings.start_directions[2] = new Vector2(-1.0f, 1.0f);
-    settings.start_directions[3] = new Vector2(-1.0f, -1.0f);
-    // settings.level = new LevelInfo("contest_2.lvl", "Contest II", true);
-    // settings.level = new LevelInfo("contest_3.lvl", "Contest III", true);
-    // settings.level = new LevelInfo("contest_4.lvl", "Contest IV", true);
-    // settings.level = new LevelInfo("contest_5.lvl", "Contest V", true);
 
     PrintStream system_out = System.out;
     PrintStream dummy_stream = new PrintStream(new OutputStream() {
@@ -326,15 +305,34 @@ public class DesktopLauncher {
     System.setOut(system_out);
     System.out.println("Round finished");
 
-    // // ---
-    // System.out.println("========================");
-    // String bot = settings.bot_names[3];
-    // System.out.println(bot + " won " + wins + " out of " + runs + " rounds");
-    // float rate = (float) (wins) / (float) (runs);
-    // System.out.println("Win rate: " + rate);
-    // if (wins >= 8)
-    // System.out.println("BESTANDEN");
-    // else
-    // System.out.println("NICHT BESTANDEN");
+  // --------------------------------------------------------------- //
+  private static boolean configureLevelSettings(String[] args,
+      GameSettings settings) {
+    String level_file = parseContestLevel(args);
+    // ---
+    if (level_file.equals("contestI.bin")) {
+      settings.level = new LevelInfo("contestI.bin", "Contest I", true);
+      settings.start_positions[0] = new Vector2(600f, 600f);
+      settings.start_positions[1] = new Vector2(600f, 400f);
+      settings.start_positions[2] = new Vector2(400f, 600f);
+      settings.start_positions[3] = new Vector2(400f, 400f);
+      settings.start_directions[0] = new Vector2(1.0f, 1.0f);
+      settings.start_directions[1] = new Vector2(1.0f, -1.0f);
+      settings.start_directions[2] = new Vector2(-1.0f, 1.0f);
+      settings.start_directions[3] = new Vector2(-1.0f, -1.0f);
+      return true;
+    }
+    // ---
+    // settings.level = new LevelInfo("nothing.bin", "nothing special", true);
+    // settings.start_positions[0] = new Vector2(145f, 400f);
+    // settings.start_positions[1] = new Vector2(385f, 400f);
+    // settings.start_positions[2] = new Vector2(615f, 400f);
+    // settings.start_positions[3] = new Vector2(855f, 400f);
+    // settings.level = new LevelInfo("contest_2.lvl", "Contest II", true);
+    // settings.level = new LevelInfo("contest_3.lvl", "Contest III", true);
+    // settings.level = new LevelInfo("contest_4.lvl", "Contest IV", true);
+    // settings.level = new LevelInfo("contest_5.lvl", "Contest V", true);
+    //
+    return false;
   }
 }
