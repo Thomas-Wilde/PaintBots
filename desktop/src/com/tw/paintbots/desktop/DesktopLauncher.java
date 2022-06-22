@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.tw.paintbots.GameManager;
 import com.tw.paintbots.GameSettings;
 import com.tw.paintbots.PaintBotsGame;
+import com.tw.paintbots.Player;
 import com.tw.paintbots.PlayerState;
 import com.tw.paintbots.PlayerType;
 import com.tw.paintbots.LevelLoader.LevelInfo;
@@ -286,24 +287,43 @@ public class DesktopLauncher {
       settings.bot_names[i] = bot_names[i];
     }
 
+    // ----
     PrintStream system_out = System.out;
     PrintStream dummy_stream = new PrintStream(new OutputStream() {
       public void write(int b) {}
     });
     System.setOut(dummy_stream);
     // ---
-    if (!mgr.initContestMode(settings)) {
-      System.out.println("Contest FAILED");
+    boolean init = mgr.initContestMode(settings);
+    if (!init) {
+      System.setOut(system_out);
+      System.out.println("Contest initialization failed.");
       return;
     }
     // ---
-    System.out.print("\nseed: " + settings.random_seed);
+    System.setOut(system_out);
+    String[] result = new String[4];
+    for (int i = 0; i < 4; ++i)
+      result[i] = new String("");
+    // System.out.print("\nseed: " + settings.random_seed);
     for (int i = 0; i < 4; ++i) {
       mgr.resetAdmissionMode(i);
       mgr.runAdmissionMode();
+      // ---
+      for (int j = 0; j < 4; ++j) {
+        PlayerState state = mgr.getPlayerState(j);
+        int score = state.score;
+        result[i] += (score < 10 ? " " : "");
+        result[i] += " " + state.score;
+      }
     }
-    System.setOut(system_out);
+    // ---
+    for (int j = 0; j < 4; ++j) {
+      result[j] += " " + settings.bot_names[j];
+      System.out.println(result[j]);
+    }
     System.out.println("Round finished");
+  }
 
   // --------------------------------------------------------------- //
   private static boolean configureLevelSettings(String[] args,
