@@ -1586,6 +1586,14 @@ public class GameManager {
     return players.get(player_idx).getState();
   }
 
+  // --------------------------------------------------------------- //
+  public List<PlayerState> getPlayerStates() {
+    List<PlayerState> result = new ArrayList<>();
+    for (Player player : players)
+      result.add(player.getState());
+    return result;
+  }
+
   //@formatter:off
   // --------------------------------------------------------------- //
   /**
