@@ -343,16 +343,59 @@ public class DesktopLauncher {
       return true;
     }
     // ---
-    // settings.level = new LevelInfo("nothing.bin", "nothing special", true);
-    // settings.start_positions[0] = new Vector2(145f, 400f);
-    // settings.start_positions[1] = new Vector2(385f, 400f);
-    // settings.start_positions[2] = new Vector2(615f, 400f);
-    // settings.start_positions[3] = new Vector2(855f, 400f);
-    // settings.level = new LevelInfo("contest_2.lvl", "Contest II", true);
-    // settings.level = new LevelInfo("contest_3.lvl", "Contest III", true);
-    // settings.level = new LevelInfo("contest_4.lvl", "Contest IV", true);
-    // settings.level = new LevelInfo("contest_5.lvl", "Contest V", true);
-    //
+    if (level_file.equals("contestII.bin")) {
+      settings.level = new LevelInfo("contestII.bin", "Contest II", true);
+      settings.start_positions[0] = new Vector2(100f, 100f);
+      settings.start_positions[1] = new Vector2(100f, 900f);
+      settings.start_positions[2] = new Vector2(900f, 100f);
+      settings.start_positions[3] = new Vector2(900f, 900f);
+      settings.start_directions[0] = new Vector2(1.0f, 1.0f);
+      settings.start_directions[1] = new Vector2(1.0f, -1.0f);
+      settings.start_directions[2] = new Vector2(-1.0f, 1.0f);
+      settings.start_directions[3] = new Vector2(-1.0f, -1.0f);
+      return true;
+    }
+    // ---
+    if (level_file.equals("contestIII.bin")) {
+      settings.level = new LevelInfo("contestIII.bin", "Contest III", true);
+      settings.start_positions[0] = new Vector2(600f, 600f);
+      settings.start_positions[1] = new Vector2(600f, 400f);
+      settings.start_positions[2] = new Vector2(400f, 600f);
+      settings.start_positions[3] = new Vector2(400f, 400f);
+      settings.start_directions[0] = new Vector2(1.0f, 1.0f);
+      settings.start_directions[1] = new Vector2(1.0f, -1.0f);
+      settings.start_directions[2] = new Vector2(-1.0f, 1.0f);
+      settings.start_directions[3] = new Vector2(-1.0f, -1.0f);
+      return true;
+    }
+
+    // ---
+    if (level_file.equals("contestIV.bin")) {
+      settings.level = new LevelInfo("contestIV.bin", "Contest IV", true);
+      settings.start_positions[0] = new Vector2(460, 460);
+      settings.start_positions[1] = new Vector2(460, 540);
+      settings.start_positions[2] = new Vector2(540, 460);
+      settings.start_positions[3] = new Vector2(540, 540);
+      settings.start_directions[0] = new Vector2(-1.0f, 0.0f);
+      settings.start_directions[1] = new Vector2(-1.0f, 0.0f);
+      settings.start_directions[2] = new Vector2(1.0f, 0.0f);
+      settings.start_directions[3] = new Vector2(1.0f, 0.0f);
+      return true;
+    }
+    // ---
+    if (level_file.equals("contestV.bin")) {
+      settings.level = new LevelInfo("contestV.bin", "Contest V", true);
+      settings.start_positions[0] = new Vector2(460f, 460f);
+      settings.start_positions[1] = new Vector2(460f, 540f);
+      settings.start_positions[2] = new Vector2(540f, 460f);
+      settings.start_positions[3] = new Vector2(540f, 540f);
+      settings.start_directions[0] = new Vector2(-1.0f, 0.0f);
+      settings.start_directions[1] = new Vector2(-1.0f, 0.0f);
+      settings.start_directions[2] = new Vector2(1.0f, 0.0f);
+      settings.start_directions[3] = new Vector2(1.0f, 0.0f);
+      return true;
+    }
+
     return false;
   }
 }
