@@ -1946,6 +1946,8 @@ public class GameManager {
     // ---
     int width = game_settings.board_dimensions[0];
     int height = game_settings.board_dimensions[1];
+    max_init_time = game_settings.init_time;
+    max_update_time = game_settings.update_time;
     Entity.setBoardDimensions(Array.of(width, height), secret_lock);
     // ---
     createCanvas();
