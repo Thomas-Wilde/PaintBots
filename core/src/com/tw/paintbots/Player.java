@@ -202,6 +202,8 @@ public abstract class Player extends Entity {
     state.refill_speed = this.getRefillSpeed();
 
     state.is_active = this.isActive();
+    if (this instanceof AIPlayer)
+      state.bot_name = ((AIPlayer) this).getBotName();
 
     for (PowerUp buff : power_ups)
       state.power_ups.add(buff.getType());
