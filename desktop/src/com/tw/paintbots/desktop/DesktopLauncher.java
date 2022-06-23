@@ -375,9 +375,9 @@ public class DesktopLauncher {
     // }
     // System.out.println("");
 
-    System.setOut(system_out);
-    System.out.println(table_info);
-    System.out.println(point_info);
+    // System.setOut(system_out);
+    // System.out.println(table_info);
+    // System.out.println(point_info);
 
     // -------------------------
     try {
