@@ -131,6 +131,8 @@ public class BotLoader extends ClassLoader {
         }
         // --- ... if not add it to the bod list
         bots.put(bot_obj.getBotName(), bot_class);
+        System.out
+            .println(bot_obj.getBotName() + " ### " + bot_obj.getStudent());
       } catch (Exception e) {
         System.out.println(
             "Could not load bot '" + filename + "'': " + e.getMessage());

@@ -18,8 +18,8 @@ public class LevelLoader {
       this.internal = internal;
     }
 
-    String file_name = "";
-    String level_name = "";
+    public String file_name = "";
+    public String level_name = "";
     boolean internal = false;
   }
 
