@@ -1,7 +1,11 @@
 package com.tw.paintbots.desktop;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.util.Arrays;
+import java.util.List;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.badlogic.gdx.math.Vector2;
@@ -271,6 +275,13 @@ public class DesktopLauncher {
   // --------------------------------------------------------------- //
 
   private static void runContestMode(String[] args) {
+    // ----
+    PrintStream system_out = System.out;
+    PrintStream dummy_stream = new PrintStream(new OutputStream() {
+      public void write(int b) {}
+    });
+    System.setOut(dummy_stream);
+    // ---
     System.out.println("run contest mode");
     String[] bot_names = extractBotNames(args);
     // ---
@@ -279,50 +290,140 @@ public class DesktopLauncher {
     // --- we run in admission mode
     settings.headless = true;
     settings.game_length = parseTime(args);
-    settings.random_seed = (int) Math.random() * 31415926;
+    settings.random_seed = (int) (Math.random() * 31415926);
+    settings.update_time = 1000;
+    settings.init_time = 2000;
     configureLevelSettings(args, settings);
     // --- we only use bots
     for (int i = 0; i < 4; ++i) {
       settings.player_types[i] = PlayerType.AI;
       settings.bot_names[i] = bot_names[i];
     }
-
-    // ----
-    PrintStream system_out = System.out;
-    PrintStream dummy_stream = new PrintStream(new OutputStream() {
-      public void write(int b) {}
-    });
-    System.setOut(dummy_stream);
     // ---
+    // System.setOut(system_out);
     boolean init = mgr.initContestMode(settings);
-    if (!init) {
+    List<PlayerState> states = mgr.getPlayerStates();
+    if (!init || states.size() < 4) {
       System.setOut(system_out);
       System.out.println("Contest initialization failed.");
+      System.out.println("loaded bots:");
+      for (PlayerState state : states)
+        System.out.println(state.bot_name);
       return;
     }
     // ---
-    System.setOut(system_out);
     String[] result = new String[4];
     for (int i = 0; i < 4; ++i)
-      result[i] = new String("");
-    // System.out.print("\nseed: " + settings.random_seed);
-    for (int i = 0; i < 4; ++i) {
-      mgr.resetAdmissionMode(i);
+      result[i] = new String("|");
+    int[] points = new int[4];
+    // --- play 4 rounds, each player starts at each position
+    for (int round = 0; round < 4; ++round) {
+      // --- compute round
+      mgr.resetAdmissionMode(round);
       mgr.runAdmissionMode();
-      // ---
-      for (int j = 0; j < 4; ++j) {
-        PlayerState state = mgr.getPlayerState(j);
-        int score = state.score;
-        result[i] += (score < 10 ? " " : "");
-        result[i] += " " + state.score;
+      // --- compute the points
+      int[] round_points = computeContestPoints();
+      // --- prepare result for each player
+      for (int pl_id = 0; pl_id < 4; ++pl_id) {
+        points[pl_id] += round_points[pl_id];
+        PlayerState state = mgr.getPlayerState(pl_id);
+        if (!state.is_active) {
+          result[pl_id] += "  x = ";
+        } else {
+          int score = state.score;
+          result[pl_id] += (score < 10 ? " " : "");
+          result[pl_id] += " " + state.score + " = ";
+        }
+        result[pl_id] += round_points[pl_id] + "pts |";
       }
     }
+    // -------------------------
+    String table_info = "";
+    String level = settings.level.level_name;
     // ---
+    //@formatter:off
+    table_info += "---\n\n";
+    table_info += "`level: " + level + " seed: " + settings.random_seed + " time: " + settings.game_length + "`\n\n";
+    table_info += "|  Round 1  |  Round 2  |  Round 3  |  Round 4  | Points  |   Bot   |\n";
+    table_info += "| --------: | --------: | --------: | --------: | ------: | :------ |\n";
     for (int j = 0; j < 4; ++j) {
-      result[j] += " " + settings.bot_names[j];
-      System.out.println(result[j]);
+      result[j] += (points[j] < 10 ? "     " : "    ") + points[j] + " |";
+      result[j] += " " + settings.bot_names[j] + " |\n";
+      table_info += result[j];
     }
-    System.out.println("Round finished");
+    table_info += "\n";
+
+    // -------------------------
+    String point_info = "";
+    for (int j = 0; j < 4; ++j) {
+      point_info += settings.bot_names[j] + ";";
+      point_info += points[j] + "\n";
+    }
+
+    //   String level = settings.level.level_name;
+  //   System.out.println("---\n");
+  //   System.out.println("`level: " + level + " seed: " + settings.random_seed
+  //       + " time: " + settings.game_length + "`\n");
+  // //@formatter:off
+  // System.out.println("|  Round 1  |  Round 2  |  Round 3  |  Round 4  | Points  |   Bot   |");
+  //   System.out.println("| :-------: | :-------: | :-------: | :-------: | :-----: | :-----: |");
+  //   //@formatter:on
+    // for (int j = 0; j < 4; ++j) {
+    // result[j] += (points[j] < 10 ? " " : " ") + points[j] + " |";
+    // result[j] += " " + settings.bot_names[j] + " |";
+    // System.out.println(result[j]);
+    // }
+    // System.out.println("");
+
+    System.setOut(system_out);
+    System.out.println(table_info);
+    System.out.println(point_info);
+
+    // -------------------------
+    try {
+      BufferedWriter writer =
+          new BufferedWriter(new FileWriter("contest_results.md", true));
+      writer.append(table_info);
+      writer.close();
+    } catch (Exception e) {
+      System.out.println("could not write to contest_results.md");
+    }
+
+    // -------------------------
+    try {
+      BufferedWriter writer =
+          new BufferedWriter(new FileWriter("contest_points.md", true));
+      writer.append(point_info);
+      writer.close();
+    } catch (Exception e) {
+      System.out.println("could not write to contest_points.md");
+    }
+  }
+
+  // --------------------------------------------------------------- //
+  private static int[] computeContestPoints() {
+    int[] points = new int[4];
+    GameManager mgr = GameManager.get();
+    int[] scores = new int[4];
+    PlayerState[] states = new PlayerState[4];
+    // ---
+    for (int i = 0; i < 4; ++i) {
+      PlayerState state = mgr.getPlayerState(i);
+      states[i] = state;
+      scores[i] = state.score;
+    }
+    Arrays.sort(scores);
+    for (int player_id = 0; player_id < 4; ++player_id) {
+      // ---
+      for (int score_id = 0; score_id < 4; ++score_id)
+        if (states[player_id].score == scores[score_id])
+          points[player_id] = score_id + 1;
+
+      // --- disqualified players get 0 points
+      if (!states[player_id].is_active)
+        points[player_id] = 0;
+    }
+    return points;
   }
 
   // --------------------------------------------------------------- //
