@@ -22,6 +22,7 @@ public class PlayerState {
   public int max_paint_amount = -1;
   public int refill_speed = -1;
   public boolean is_active = true;
+  public String bot_name = "";
 
   public ArrayList<PowerUpType> power_ups = new ArrayList<>();
 }
