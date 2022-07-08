@@ -105,7 +105,7 @@ public class GameManager {
   private ArrayList<PowerUp> power_ups = new ArrayList<>();
   private ArrayList<PowerUp> power_ups_spawned = new ArrayList<>();
   private ArrayList<ExecutorService> executors = new ArrayList<>();
-  private int max_update_time = 10;
+  private int max_update_time = 500;
   private int max_init_time = 1250;
   private Random rnd = null;
   private int game_speed = 1;
