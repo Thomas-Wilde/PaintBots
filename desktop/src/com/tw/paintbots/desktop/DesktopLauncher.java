@@ -290,7 +290,8 @@ public class DesktopLauncher {
     // --- we run in admission mode
     settings.headless = true;
     settings.game_length = parseTime(args);
-    settings.random_seed = (int) (Math.random() * 31415926);
+    // settings.random_seed = (int) (Math.random() * 31415926);
+    settings.random_seed = 31415926;
     settings.update_time = 1000;
     settings.init_time = 2000;
     configureLevelSettings(args, settings);
@@ -307,6 +308,7 @@ public class DesktopLauncher {
       System.setOut(system_out);
       System.out.println("Contest initialization failed.");
       System.out.println("loaded bots:");
+      System.out.println(dummy_stream.toString());
       for (PlayerState state : states)
         System.out.println(state.bot_name);
       return;
@@ -317,7 +319,8 @@ public class DesktopLauncher {
       result[i] = new String("|");
     int[] points = new int[4];
     // --- play 4 rounds, each player starts at each position
-    for (int round = 0; round < 4; ++round) {
+    // for (int round = 0; round < 4; ++round) {
+    for (int round = 0; round < 1; ++round) {
       // --- compute round
       mgr.resetAdmissionMode(round);
       mgr.runAdmissionMode();
@@ -344,14 +347,16 @@ public class DesktopLauncher {
     //@formatter:off
     table_info += "---\n\n";
     table_info += "`level: " + level + " seed: " + settings.random_seed + " time: " + settings.game_length + "`\n\n";
-    table_info += "|  Round 1  |  Round 2  |  Round 3  |  Round 4  | Points  |   Bot   |\n";
-    table_info += "| --------: | --------: | --------: | --------: | ------: | :------ |\n";
+    // table_info += "|  Round 1  |  Round 2  |  Round 3  |  Round 4  | Points  |   Bot   |\n";
+    // table_info += "| --------: | --------: | --------: | --------: | ------: | :------ |\n";
+    table_info += "|  Round 1  | Points  |   Bot   |\n";
+    table_info += "| --------: | ------: | :------ |\n";    
     for (int j = 0; j < 4; ++j) {
       result[j] += (points[j] < 10 ? "     " : "    ") + points[j] + " |";
       result[j] += " " + settings.bot_names[j] + " |\n";
       table_info += result[j];
     }
-    table_info += "\n";
+    table_info += "{: .table .overview}\n\n";
 
     // -------------------------
     String point_info = "";
@@ -496,7 +501,58 @@ public class DesktopLauncher {
       settings.start_directions[3] = new Vector2(1.0f, 0.0f);
       return true;
     }
-
+    // ---
+    if (level_file.equals("nothing.bin")) {
+      settings.level = new LevelInfo("nothing.bin", "Nothing Special", true);
+      settings.start_positions[0] = new Vector2(145.f, 400.f);
+      settings.start_positions[1] = new Vector2(385.f, 400.f);
+      settings.start_positions[2] = new Vector2(615.f, 400.f);
+      settings.start_positions[3] = new Vector2(855.f, 400.f);
+      settings.start_directions[0] = new Vector2(0.0f, 1.0f);
+      settings.start_directions[1] = new Vector2(0.0f, 1.0f);
+      settings.start_directions[2] = new Vector2(0.0f, 1.0f);
+      settings.start_directions[3] = new Vector2(0.0f, 1.0f);
+      return true;
+    }
+    // ---
+    if (level_file.equals("blocked.bin")) {
+      settings.level = new LevelInfo("blocked.bin", "Blocked Corners", true);
+      settings.start_positions[0] = new Vector2(200.f, 180.f);
+      settings.start_positions[1] = new Vector2(790.f, 790.f);
+      settings.start_positions[2] = new Vector2(200.f, 790.f);
+      settings.start_positions[3] = new Vector2(790.f, 180.f);
+      settings.start_directions[0] = new Vector2(1.0f, 1.0f);
+      settings.start_directions[1] = new Vector2(-1.0f, -1.0f);
+      settings.start_directions[2] = new Vector2(1.0f, -1.0f);
+      settings.start_directions[3] = new Vector2(-1.0f, 1.0f);
+      return true;
+    }
+    // ---
+    if (level_file.equals("happy.bin")) {
+      settings.level = new LevelInfo("happy.bin", "Happy Face", true);
+      settings.start_positions[0] = new Vector2(145f, 400f);
+      settings.start_positions[1] = new Vector2(385f, 400f);
+      settings.start_positions[2] = new Vector2(615f, 400f);
+      settings.start_positions[3] = new Vector2(855f, 400f);
+      settings.start_directions[0] = new Vector2(0.0f, 1.0f);
+      settings.start_directions[1] = new Vector2(0.0f, 1.0f);
+      settings.start_directions[2] = new Vector2(0.0f, 1.0f);
+      settings.start_directions[3] = new Vector2(0.0f, 1.0f);
+      return true;
+    }
+    // ---
+    if (level_file.equals("corners.bin")) {
+      settings.level = new LevelInfo("corners.bin", "Symmetric Corners", true);
+      settings.start_positions[0] = new Vector2(160f, 168f);
+      settings.start_positions[1] = new Vector2(856f, 168f);
+      settings.start_positions[2] = new Vector2(160f, 840f);
+      settings.start_positions[3] = new Vector2(856f, 840f);
+      settings.start_directions[0] = new Vector2(1f, 1f);
+      settings.start_directions[1] = new Vector2(-1f, 1f);
+      settings.start_directions[2] = new Vector2(1f, -1f);
+      settings.start_directions[3] = new Vector2(-1f, -1f);
+      return true;
+    }
     return false;
   }
 }
